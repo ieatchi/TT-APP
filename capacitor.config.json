@@ -1,0 +1,7 @@
+{
+  "appId": "net.nexumc.stretch",
+  "appName": "Stretch",
+  "webDir": "www",
+  "backgroundColor": "#09090b",
+  "android": { "allowMixedContent": false }
+}

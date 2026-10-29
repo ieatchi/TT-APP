@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#09090b">
+<title>Stretch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* One deliberate dark look: full-bleed stage up top, glass control dock pinned to the bottom (side rail on wide screens) */
+:root{
+  --bg:#09090b; --surface:#131316; --surface2:#1b1b20; --line:#26262d;
+  --fg:#f4f4f6; --muted:#8a8a96;
+  --cyan:#25f4ee; --pink:#fe2c55;
+  --sans:"Sora",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
+  --sal:env(safe-area-inset-left,0px); --sar:env(safe-area-inset-right,0px);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);overflow:hidden;overscroll-behavior:none;user-select:none;-webkit-user-select:none}
+button,label{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+.app{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto;padding-top:var(--sat)}
+@media (min-width:860px){.app{grid-template-columns:minmax(0,1fr) 380px;grid-template-rows:auto minmax(0,1fr)}
+  .top{grid-column:1/-1}.dock{grid-row:2;grid-column:2;border-top:0;border-left:1px solid var(--line);border-radius:0;padding-top:20px}}
+
+/* top bar */
+.top{display:flex;align-items:center;gap:12px;padding:10px max(16px,var(--sar)) 10px max(16px,var(--sal))}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.02em;font-size:18px}
+.mark{width:22px;height:22px;border-radius:6px;background:var(--fg);position:relative;box-shadow:-2px -1px 0 var(--cyan),2px 1px 0 var(--pink)}
+.mark::after{content:"";position:absolute;inset:5px 9px 5px 5px;background:var(--bg);border-radius:2px}
+.dim{font-family:var(--mono);font-size:11px;color:var(--muted);padding:4px 8px;border:1px solid var(--line);border-radius:999px}
+.spacer{flex:1}
+.icon-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center}
+.icon-btn svg{width:18px;height:18px}
+.icon-btn:active{transform:scale(.94)}
+
+/* stage */
+.stage{position:relative;display:grid;place-items:center;min-height:0;padding:6px 16px 14px}
+.frame{position:relative;border-radius:20px;overflow:hidden;background:#000;box-shadow:0 0 0 1px var(--line),0 30px 80px -20px rgba(0,0,0,.8)}
+canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.guides{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .2s}
+.guides.on{opacity:1}
+.guides i{position:absolute;background:rgba(255,255,255,.35)}
+.guides .v{left:50%;top:0;bottom:0;width:1px}.guides .h{top:50%;left:0;right:0;height:1px}
+.empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:10px;padding:22px;pointer-events:none}
+.pill{pointer-events:auto;display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:999px;background:rgba(255,255,255,.95);color:#000;font-weight:600;font-size:14px;border:0;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.pill svg{width:16px;height:16px}
+.empty[hidden]{display:none}
+.toast{position:absolute;left:50%;top:14px;transform:translate(-50%,-8px);opacity:0;padding:8px 14px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);font-size:13px;transition:.25s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* dock */
+.dock{background:var(--surface);border-top:1px solid var(--line);border-radius:22px 22px 0 0;padding:14px max(16px,var(--sar)) calc(14px + var(--sab)) max(16px,var(--sal));display:flex;flex-direction:column;gap:14px;min-height:0;overflow:auto}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);background:var(--bg);border-radius:14px;padding:4px;position:relative}
+.tabs button{border:0;background:none;padding:9px 0;font-size:13px;font-weight:600;color:var(--muted);border-radius:10px;position:relative;z-index:1;transition:color .2s}
+.tabs button[aria-selected="true"]{color:var(--fg)}
+.tabs .ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/3);background:var(--surface2);border-radius:10px;transition:transform .28s cubic-bezier(.3,.7,.2,1);box-shadow:inset 0 0 0 1px var(--line)}
+.panel{display:flex;flex-direction:column;gap:14px}
+.panel[hidden]{display:none}
+
+.ctl{display:flex;flex-direction:column;gap:8px}
+.ctl-head{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--muted)}
+.ctl-head output{font-family:var(--mono);font-size:12px;color:var(--fg);font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:4px;background:linear-gradient(90deg,var(--fg) var(--p,50%),var(--line) var(--p,50%))}
+input[type=range]::-moz-range-track{height:4px;border-radius:4px;background:var(--line)}
+input[type=range]::-moz-range-progress{height:4px;border-radius:4px;background:var(--fg)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--fg);margin-top:-9px;box-shadow:0 2px 8px rgba(0,0,0,.5);border:0}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--fg);border:0}
+
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.chip{border:1px solid var(--line);background:var(--surface2);border-radius:12px;padding:11px 0;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;transition:.15s}
+.chip svg{width:15px;height:15px}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip:active{transform:scale(.97)}
+.sub{font-size:13px;color:var(--muted)}
+
+.actions{display:grid;grid-template-columns:auto 1fr;gap:10px;margin-top:auto}
+.btn{border:1px solid var(--line);background:var(--surface2);border-radius:14px;padding:14px 16px;font-weight:600;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn svg{width:18px;height:18px}
+.btn.go{border:0;color:#fff;background:linear-gradient(100deg,var(--pink),#ff4f6f);box-shadow:3px 0 0 var(--cyan) inset}
+.btn:active{transform:scale(.98)}
+input[type=file]{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="logo"><span class="mark"></span>Stretch</div>
+    <span class="dim">9:16 · 1080×1920</span>
+    <span class="spacer"></span>
+    <label class="icon-btn" for="file" aria-label="Choose image" title="Choose image">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>
+    </label>
+    <input id="file" type="file" accept="image/*">
+  </header>
+
+  <main class="stage" id="stage">
+    <div class="frame" id="frame">
+      <canvas id="cv" width="1080" height="1920" aria-label="9:16 preview"></canvas>
+      <div class="guides" id="guides"><i class="v"></i><i class="h"></i></div>
+      <div class="empty" id="empty">
+        <label class="pill" for="file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          Add your image
+        </label>
+      </div>
+    </div>
+    <div class="toast" id="toast"></div>
+  </main>
+
+  <section class="dock">
+    <div class="tabs" role="tablist">
+      <span class="ind" id="ind"></span>
+      <button role="tab" aria-selected="true" data-tab="0">Stretch</button>
+      <button role="tab" aria-selected="false" data-tab="1">Blur</button>
+      <button role="tab" aria-selected="false" data-tab="2">Background</button>
+    </div>
+
+    <div class="panel" data-panel="0">
+      <div class="ctl"><div class="ctl-head"><span>Width</span><output id="swo"></output></div><input id="sw" type="range" min="20" max="400" value="178"></div>
+      <div class="ctl"><div class="ctl-head"><span>Height</span><output id="sho"></output></div><input id="sh" type="range" min="20" max="400" value="100"></div>
+      <div class="chips" id="anchor">
+        <button class="chip" data-a="left" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m6-6-6 6 6 6"/></svg>Left</button>
+        <button class="chip" data-a="center" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4"/></svg>Both</button>
+        <button class="chip" data-a="right" aria-pressed="true">Right<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+      </div>
+      <div class="chips" style="grid-template-columns:1fr 1fr">
+        <button class="chip" id="fillH">Fill height</button>
+        <button class="chip" id="fillAll">Fill screen</button>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="1" hidden>
+      <div class="ctl"><div class="ctl-head"><span>Image blur</span><output id="bluro"></output></div><input id="blur" type="range" min="0" max="60" value="0"></div>
+      <div class="ctl"><div class="ctl-head"><span>Backdrop blur</span><output id="bgbluro"></output></div><input id="bgblur" type="range" min="0" max="120" value="50"></div>
+      <p class="sub" style="margin:0">Backdrop blur applies when the background is set to Blurred.</p>
+    </div>
+
+    <div class="panel" data-panel="2" hidden>
+      <div class="chips" id="bgmode">
+        <button class="chip" data-m="blur" aria-pressed="true">Blurred</button>
+        <button class="chip" data-m="black" aria-pressed="false">Black</button>
+        <button class="chip" data-m="white" aria-pressed="false">White</button>
+      </div>
+      <div class="ctl"><div class="ctl-head"><span>Backdrop brightness</span><output id="bgbro"></output></div><input id="bgbr" type="range" min="20" max="120" value="80"></div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="reset" aria-label="Reset">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+      </button>
+      <button class="btn go" id="export">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14"/></svg>
+        <span id="exportLabel">Save image</span>
+      </button>
+    </div>
+  </section>
+</div>
+
+<script>
+const W=1080,H=1920;
+const $=id=>document.getElementById(id);
+const cv=$('cv'),ctx=cv.getContext('2d');
+const Cap=window.Capacitor, native=!!(Cap&&Cap.isNativePlatform&&Cap.isNativePlatform());
+let img=null,anchor='right',bgmode='blur',x=0,y=0,prevW=0,prevH=0,isSample=true;
+
+/* ---------- layout: fit the 9:16 frame inside the stage ---------- */
+function fit(){
+  const r=$('stage').getBoundingClientRect();
+  const aw=r.width-32, ah=r.height-20;
+  let h=ah, w=h*9/16; if(w>aw){w=aw;h=w*16/9;}
+  $('frame').style.width=Math.floor(w)+'px'; $('frame').style.height=Math.floor(h)+'px';
+}
+new ResizeObserver(fit).observe($('stage'));
+
+/* ---------- drawing ---------- */
+function size(){const b=W/img.width;return{w:img.width*b*$('sw').value/100,h:img.height*b*$('sh').value/100};}
+function place(){const{w,h}=size();x=anchor==='left'?W-w:anchor==='right'?0:(W-w)/2;y=(H-h)/2;prevW=w;prevH=h;draw();}
+function track(el){const p=(el.value-el.min)/(el.max-el.min)*100;el.style.setProperty('--p',p+'%');}
+function labels(){
+  $('swo').textContent=$('sw').value+'%';$('sho').textContent=$('sh').value+'%';
+  $('bluro').textContent=$('blur').value+'px';$('bgbluro').textContent=$('bgblur').value+'px';
+  $('bgbro').textContent=$('bgbr').value+'%';
+  document.querySelectorAll('input[type=range]').forEach(track);
+}
+function draw(){
+  labels();
+  ctx.filter='none';ctx.fillStyle=bgmode==='white'?'#fff':'#000';ctx.fillRect(0,0,W,H);
+  if(!img)return;
+  if(bgmode==='blur'){
+    const s=Math.max(W/img.width,H/img.height)*1.15,bw=img.width*s,bh=img.height*s;
+    ctx.filter=`blur(${$('bgblur').value}px) brightness(${$('bgbr').value/100})`;
+    ctx.drawImage(img,(W-bw)/2,(H-bh)/2,bw,bh);
+  }
+  const{w,h}=size();
+  ctx.filter=+$('blur').value?`blur(${$('blur').value}px)`:'none';
+  ctx.drawImage(img,x,y,w,h);ctx.filter='none';
+}
+
+/* ---------- sample so the stage isn't empty ---------- */
+(function sample(){
+  const c=document.createElement('canvas');c.width=c.height=900;const g=c.getContext('2d');
+  const gr=g.createLinearGradient(0,0,900,900);gr.addColorStop(0,'#25f4ee');gr.addColorStop(.55,'#5b4bff');gr.addColorStop(1,'#fe2c55');
+  g.fillStyle=gr;g.fillRect(0,0,900,900);
+  g.fillStyle='rgba(255,255,255,.18)';for(let i=0;i<9;i++){g.beginPath();g.arc(450,450,60+i*55,0,7);g.lineWidth=2;g.strokeStyle='rgba(255,255,255,.15)';g.stroke();}
+  g.fillStyle='#fff';g.beginPath();g.arc(450,450,120,0,7);g.fill();
+  const i=new Image();i.onload=()=>{img=i;place();};i.src=c.toDataURL();
+})();
+
+/* ---------- controls ---------- */
+['sw','sh'].forEach(id=>$(id).addEventListener('input',()=>{
+  const{w,h}=size();
+  if(anchor==='left')x-=w-prevW;else if(anchor==='center')x-=(w-prevW)/2;
+  y-=(h-prevH)/2;prevW=w;prevH=h;draw();
+}));
+['blur','bgblur','bgbr'].forEach(id=>$(id).addEventListener('input',draw));
+function group(id,key,cb){$(id).querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+  $(id).querySelectorAll('button').forEach(o=>o.setAttribute('aria-pressed',o===b));cb(b.dataset[key]);vibe();}));}
+group('anchor','a',a=>{anchor=a;place();});
+group('bgmode','m',m=>{bgmode=m;draw();});
+$('fillH').onclick=()=>{if(!img)return;$('sh').value=Math.min(400,Math.round(H/(img.height*W/img.width)*100));place();vibe();};
+$('fillAll').onclick=()=>{if(!img)return;$('sw').value=100;$('sh').value=Math.min(400,Math.round(H/(img.height*W/img.width)*100));place();vibe();};
+$('reset').onclick=()=>{$('sw').value=178;$('sh').value=100;$('blur').value=0;$('bgblur').value=50;$('bgbr').value=80;place();vibe();toast('Reset');};
+
+/* tabs */
+document.querySelectorAll('[role=tab]').forEach(t=>t.addEventListener('click',()=>{
+  const n=+t.dataset.tab;
+  document.querySelectorAll('[role=tab]').forEach(o=>o.setAttribute('aria-selected',o===t));
+  document.querySelectorAll('[data-panel]').forEach(p=>p.hidden=+p.dataset.panel!==n);
+  $('ind').style.transform=`translateX(${n*100}%)`;
+}));
+
+/* ---------- image input ---------- */
+function load(file){
+  if(!file||!file.type.startsWith('image/'))return;
+  const url=URL.createObjectURL(file);const i=new Image();
+  i.onload=()=>{img=i;isSample=false;$('empty').hidden=true;place();toast('Image loaded');};
+  i.src=url;
+}
+$('file').onchange=e=>{load(e.target.files[0]);e.target.value='';};
+document.addEventListener('dragover',e=>e.preventDefault());
+document.addEventListener('drop',e=>{e.preventDefault();load(e.dataTransfer.files[0]);});
+document.addEventListener('paste',e=>{const f=[...(e.clipboardData?.files||[])][0];if(f)load(f);});
+
+/* ---------- touch: drag to move, pinch to scale, double-tap to recenter ---------- */
+const pts=new Map();let start=null,lastTap=0;
+const k=()=>W/cv.getBoundingClientRect().width;
+cv.addEventListener('pointerdown',e=>{
+  cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const now=Date.now();if(pts.size===1&&now-lastTap<280){place();vibe();}lastTap=now;
+  snap();$('guides').classList.add('on');
+});
+function snap(){
+  const p=[...pts.values()];
+  start={x,y,sw:+$('sw').value,sh:+$('sh').value,
+    cx:p.reduce((a,b)=>a+b.x,0)/p.length,cy:p.reduce((a,b)=>a+b.y,0)/p.length,
+    d:p.length>1?Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y):0};
+}
+cv.addEventListener('pointermove',e=>{
+  if(!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const p=[...pts.values()],s=k();
+  const cx=p.reduce((a,b)=>a+b.x,0)/p.length,cy=p.reduce((a,b)=>a+b.y,0)/p.length;
+  if(p.length>1&&start.d){
+    const f=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y)/start.d;
+    const nsw=Math.max(20,Math.min(400,start.sw*f)),nsh=Math.max(20,Math.min(400,start.sh*f));
+    const b=W/img.width,ow=img.width*b*start.sw/100,oh=img.height*b*start.sh/100,nw=img.width*b*nsw/100,nh=img.height*b*nsh/100;
+    $('sw').value=Math.round(nsw);$('sh').value=Math.round(nsh);
+    x=start.x-(nw-ow)/2+(cx-start.cx)*s;y=start.y-(nh-oh)/2+(cy-start.cy)*s;prevW=nw;prevH=nh;
+  }else{x=start.x+(cx-start.cx)*s;y=start.y+(cy-start.cy)*s;}
+  draw();
+});
+function up(e){pts.delete(e.pointerId);if(pts.size)snap();else $('guides').classList.remove('on');}
+cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+
+/* ---------- export ---------- */
+function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),1600);}
+function vibe(){try{navigator.vibrate&&navigator.vibrate(8);}catch(_){}}
+const fname=()=>'stretch_'+Date.now()+'.png';
+
+$('export').onclick=async()=>{
+  draw();vibe();
+  try{
+    if(native&&Cap.Plugins.Filesystem&&Cap.Plugins.Share){
+      // APK: write PNG to cache, then open the share sheet (Save to Photos, TikTok, Drive…)
+      const data=cv.toDataURL('image/png').split(',')[1];
+      const name=fname();
+      const r=await Cap.Plugins.Filesystem.writeFile({path:name,data,directory:'CACHE'});
+      await Cap.Plugins.Share.share({title:'Stretch export',files:[r.uri]});
+      return;
+    }
+    const blob=await new Promise(r=>cv.toBlob(r,'image/png'));
+    const file=new File([blob],fname(),{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})&&matchMedia('(pointer:coarse)').matches){
+      await navigator.share({files:[file]});return;
+    }
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),3000);toast('Saved');
+  }catch(err){if(err&&err.name!=='AbortError'&&!/cancel/i.test(err.message||''))toast('Couldn’t save: '+(err.message||err));}
+};
+fit();
+</script>
+</body>
+</html>
