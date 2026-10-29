@@ -2,6 +2,8 @@ name: Build APK
 on:
   push:
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-24.04   # has the Android SDK preinstalled (ANDROID_HOME)
@@ -22,3 +24,9 @@ jobs:
         with:
           name: Stretch-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Publish release (phone download link)
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk Stretch.apk
+          gh release create "build-${{ github.run_number }}" Stretch.apk \
+            --title "Stretch build ${{ github.run_number }}" --notes "Tap Stretch.apk to download, then open it to install." --latest
