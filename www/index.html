@@ -8,11 +8,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
 <style>
-/* One deliberate dark look: full-bleed stage up top, glass control dock pinned to the bottom (side rail on wide screens) */
+/* Bundled caption fonts (work offline in the APK) */
+@font-face{font-family:"TikTok Sans";font-weight:900;font-display:block;src:url(fonts/tiktok-sans-latin-900-normal.woff2) format("woff2")}
+@font-face{font-family:"TikTok Sans";font-weight:700;font-display:block;src:url(fonts/tiktok-sans-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Montserrat";font-weight:900;font-display:block;src:url(fonts/montserrat-latin-900-normal.woff2) format("woff2")}
+@font-face{font-family:"Anton";font-weight:400;font-display:block;src:url(fonts/anton-latin-400-normal.woff2) format("woff2")}
+
+/* One deliberate dark look: full-bleed stage up top, control dock pinned to the bottom (side rail on wide screens) */
 :root{
   --bg:#09090b; --surface:#131316; --surface2:#1b1b20; --line:#26262d;
   --fg:#f4f4f6; --muted:#8a8a96;
-  --cyan:#25f4ee; --pink:#fe2c55;
+  --cyan:#25f4ee; --pink:#fe2c55; --yellow:#f7ce46;
   --sans:"Sora",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --mono:"JetBrains Mono",ui-monospace,monospace;
   --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
@@ -21,13 +27,13 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);overflow:hidden;overscroll-behavior:none;user-select:none;-webkit-user-select:none}
-button,label{font:inherit;color:inherit}
+button,label,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 
 .app{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto;padding-top:var(--sat)}
 @media (min-width:860px){.app{grid-template-columns:minmax(0,1fr) 380px;grid-template-rows:auto minmax(0,1fr)}
-  .top{grid-column:1/-1}.dock{grid-row:2;grid-column:2;border-top:0;border-left:1px solid var(--line);border-radius:0;padding-top:20px}}
+  .top{grid-column:1/-1}.dock{grid-row:2;grid-column:2;border-top:0;border-left:1px solid var(--line);border-radius:0;padding-top:20px;max-height:none!important}}
 
 /* top bar */
 .top{display:flex;align-items:center;gap:12px;padding:10px max(16px,var(--sar)) 10px max(16px,var(--sal))}
@@ -50,24 +56,26 @@ canvas:active{cursor:grabbing}
 .guides i{position:absolute;background:rgba(255,255,255,.35)}
 .guides .v{left:50%;top:0;bottom:0;width:1px}.guides .h{top:50%;left:0;right:0;height:1px}
 .empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:10px;padding:22px;pointer-events:none}
-.pill{pointer-events:auto;display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:999px;background:rgba(255,255,255,.95);color:#000;font-weight:600;font-size:14px;border:0;box-shadow:0 8px 30px rgba(0,0,0,.4)}
-.pill svg{width:16px;height:16px}
 .empty[hidden]{display:none}
+.pill{pointer-events:auto;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:999px;background:rgba(255,255,255,.95);color:#000;font-weight:600;font-size:14px;border:0;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.pill svg{width:16px;height:16px}
 .toast{position:absolute;left:50%;top:14px;transform:translate(-50%,-8px);opacity:0;padding:8px 14px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);font-size:13px;transition:.25s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
 /* dock */
-.dock{background:var(--surface);border-top:1px solid var(--line);border-radius:22px 22px 0 0;padding:14px max(16px,var(--sar)) calc(14px + var(--sab)) max(16px,var(--sal));display:flex;flex-direction:column;gap:14px;min-height:0;overflow:auto}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);background:var(--bg);border-radius:14px;padding:4px;position:relative}
+.dock{background:var(--surface);border-top:1px solid var(--line);border-radius:22px 22px 0 0;padding:14px max(16px,var(--sar)) calc(14px + var(--sab)) max(16px,var(--sal));display:flex;flex-direction:column;gap:14px;min-height:0;max-height:52vh;overflow:auto}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);background:var(--bg);border-radius:14px;padding:4px;position:relative;flex:none}
 .tabs button{border:0;background:none;padding:9px 0;font-size:13px;font-weight:600;color:var(--muted);border-radius:10px;position:relative;z-index:1;transition:color .2s}
 .tabs button[aria-selected="true"]{color:var(--fg)}
-.tabs .ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/3);background:var(--surface2);border-radius:10px;transition:transform .28s cubic-bezier(.3,.7,.2,1);box-shadow:inset 0 0 0 1px var(--line)}
+.tabs .ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/4);background:var(--surface2);border-radius:10px;transition:transform .28s cubic-bezier(.3,.7,.2,1);box-shadow:inset 0 0 0 1px var(--line)}
 .panel{display:flex;flex-direction:column;gap:14px}
 .panel[hidden]{display:none}
 
 .ctl{display:flex;flex-direction:column;gap:8px}
 .ctl-head{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--muted)}
-.ctl-head output{font-family:var(--mono);font-size:12px;color:var(--fg);font-variant-numeric:tabular-nums}
+.ctl-head output,.row output{font-family:var(--mono);font-size:12px;color:var(--fg);font-variant-numeric:tabular-nums}
+.row{display:grid;grid-template-columns:58px minmax(0,1fr) 46px;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.row output{text-align:right}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;margin:0}
 input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:4px;background:linear-gradient(90deg,var(--fg) var(--p,50%),var(--line) var(--p,50%))}
 input[type=range]::-moz-range-track{height:4px;border-radius:4px;background:var(--line)}
@@ -80,9 +88,27 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
 .chip svg{width:15px;height:15px}
 .chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 .chip:active{transform:scale(.97)}
-.sub{font-size:13px;color:var(--muted)}
+.sub{font-size:13px;color:var(--muted);margin:0}
 
-.actions{display:grid;grid-template-columns:auto 1fr;gap:10px;margin-top:auto}
+/* text panel */
+textarea{width:100%;min-height:52px;max-height:120px;resize:vertical;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.35;user-select:text;-webkit-user-select:text}
+textarea:focus{outline:none;border-color:var(--fg)}
+.f-tiktok{font-family:"TikTok Sans",var(--sans);font-weight:900}
+.f-bold{font-family:"Montserrat",var(--sans);font-weight:900}
+.f-tall{font-family:"Anton",var(--sans);font-weight:400;letter-spacing:.02em}
+.swatches{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sw{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);background:var(--c);padding:0;flex:none;position:relative}
+.sw[aria-pressed="true"]{border-color:var(--fg);box-shadow:0 0 0 2px var(--bg) inset}
+.sw.custom{background:conic-gradient(#ff3b3b,#ffd400,#3bff7a,#25f4ee,#5b4bff,#fe2c55,#ff3b3b);overflow:hidden}
+.sw.custom input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+.yellow{display:flex;align-items:center;gap:10px;width:100%;border:0;border-radius:14px;padding:12px 14px;background:var(--yellow);color:#111;font-weight:700;font-size:14px}
+.yellow .demo{font-family:"TikTok Sans",var(--sans);font-weight:900;font-size:20px;color:var(--yellow);-webkit-text-stroke:5px #000;paint-order:stroke fill;letter-spacing:.01em}
+.yellow small{margin-left:auto;font-weight:600;opacity:.65;font-size:12px}
+.yellow:active{transform:scale(.98)}
+.textbar{display:grid;grid-template-columns:1fr auto;gap:8px}
+.danger{color:var(--pink)}
+
+.actions{display:grid;grid-template-columns:auto 1fr;gap:10px;margin-top:auto;flex:none}
 .btn{border:1px solid var(--line);background:var(--surface2);border-radius:14px;padding:14px 16px;font-weight:600;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn svg{width:18px;height:18px}
 .btn.go{border:0;color:#fff;background:linear-gradient(100deg,var(--pink),#ff4f6f);box-shadow:3px 0 0 var(--cyan) inset}
@@ -97,6 +123,9 @@ input[type=file]{display:none}
     <div class="logo"><span class="mark"></span>Stretch</div>
     <span class="dim">9:16 · 1080×1920</span>
     <span class="spacer"></span>
+    <button class="icon-btn" id="quickText" aria-label="Add text" title="Add text">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6V4h16v2M12 4v16M9 20h6"/></svg>
+    </button>
     <label class="icon-btn" for="file" aria-label="Choose image" title="Choose image">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>
     </label>
@@ -117,14 +146,16 @@ input[type=file]{display:none}
     <div class="toast" id="toast"></div>
   </main>
 
-  <section class="dock">
+  <section class="dock" id="dock">
     <div class="tabs" role="tablist">
       <span class="ind" id="ind"></span>
       <button role="tab" aria-selected="true" data-tab="0">Stretch</button>
-      <button role="tab" aria-selected="false" data-tab="1">Blur</button>
-      <button role="tab" aria-selected="false" data-tab="2">Background</button>
+      <button role="tab" aria-selected="false" data-tab="1">Text</button>
+      <button role="tab" aria-selected="false" data-tab="2">Blur</button>
+      <button role="tab" aria-selected="false" data-tab="3">Backdrop</button>
     </div>
 
+    <!-- Stretch (image) -->
     <div class="panel" data-panel="0">
       <div class="ctl"><div class="ctl-head"><span>Width</span><output id="swo"></output></div><input id="sw" type="range" min="20" max="400" value="178"></div>
       <div class="ctl"><div class="ctl-head"><span>Height</span><output id="sho"></output></div><input id="sh" type="range" min="20" max="400" value="100"></div>
@@ -139,13 +170,56 @@ input[type=file]{display:none}
       </div>
     </div>
 
+    <!-- Text -->
     <div class="panel" data-panel="1" hidden>
-      <div class="ctl"><div class="ctl-head"><span>Image blur</span><output id="bluro"></output></div><input id="blur" type="range" min="0" max="60" value="0"></div>
-      <div class="ctl"><div class="ctl-head"><span>Backdrop blur</span><output id="bgbluro"></output></div><input id="bgblur" type="range" min="0" max="120" value="50"></div>
-      <p class="sub" style="margin:0">Backdrop blur applies when the background is set to Blurred.</p>
+      <div id="tnone" class="panel">
+        <button class="yellow" id="addYellow"><span class="demo">Aa</span>Add TikTok yellow text<small>1 tap</small></button>
+        <button class="chip" id="addText" style="padding:13px 0">+ Add plain text</button>
+        <p class="sub">Tap any text on the canvas to edit it. Drag to move it, pinch to resize it.</p>
+      </div>
+      <div id="tedit" class="panel" hidden>
+        <div class="textbar">
+          <textarea id="txt" rows="2" placeholder="Type your text" aria-label="Text"></textarea>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button class="chip" id="addText2" style="padding:0 14px;flex:1" aria-label="Add another text">+ New</button>
+            <button class="chip danger" id="delText" style="padding:0 14px;flex:1" aria-label="Delete text">Delete</button>
+          </div>
+        </div>
+        <button class="yellow" id="yellowNow"><span class="demo">Aa</span>TikTok yellow<small>tap to apply</small></button>
+        <div class="swatches" id="colors">
+          <button class="sw" data-c="#ffffff" style="--c:#ffffff" aria-label="White" aria-pressed="false"></button>
+          <button class="sw" data-c="#f7ce46" style="--c:#f7ce46" aria-label="TikTok yellow" aria-pressed="false"></button>
+          <button class="sw" data-c="#000000" style="--c:#000000" aria-label="Black" aria-pressed="false"></button>
+          <button class="sw" data-c="#fe2c55" style="--c:#fe2c55" aria-label="Pink" aria-pressed="false"></button>
+          <button class="sw" data-c="#25f4ee" style="--c:#25f4ee" aria-label="Cyan" aria-pressed="false"></button>
+          <button class="sw" data-c="#ff8a00" style="--c:#ff8a00" aria-label="Orange" aria-pressed="false"></button>
+          <label class="sw custom" aria-label="Custom colour"><input type="color" id="customColor" value="#7cff4f"></label>
+        </div>
+        <div class="chips" id="fontPick">
+          <button class="chip f-tiktok" data-f="tiktok" aria-pressed="true">TikTok</button>
+          <button class="chip f-bold" data-f="bold" aria-pressed="false">Bold</button>
+          <button class="chip f-tall" data-f="tall" aria-pressed="false">TALL</button>
+        </div>
+        <div class="chips" id="stylePick">
+          <button class="chip" data-s="outline" aria-pressed="true">Outline</button>
+          <button class="chip" data-s="box" aria-pressed="false">Box</button>
+          <button class="chip" data-s="plain" aria-pressed="false">Plain</button>
+        </div>
+        <div class="row"><span>Size</span><input id="tsz" type="range" min="30" max="400" value="120"><output id="tszo"></output></div>
+        <div class="row"><span>Width</span><input id="tsw" type="range" min="20" max="500" value="100"><output id="tswo"></output></div>
+        <div class="row"><span>Height</span><input id="tsh" type="range" min="20" max="500" value="100"><output id="tsho"></output></div>
+      </div>
     </div>
 
+    <!-- Blur -->
     <div class="panel" data-panel="2" hidden>
+      <div class="ctl"><div class="ctl-head"><span>Image blur</span><output id="bluro"></output></div><input id="blur" type="range" min="0" max="60" value="0"></div>
+      <div class="ctl"><div class="ctl-head"><span>Backdrop blur</span><output id="bgbluro"></output></div><input id="bgblur" type="range" min="0" max="120" value="50"></div>
+      <p class="sub">Backdrop blur applies when the backdrop is set to Blurred.</p>
+    </div>
+
+    <!-- Backdrop -->
+    <div class="panel" data-panel="3" hidden>
       <div class="chips" id="bgmode">
         <button class="chip" data-m="blur" aria-pressed="true">Blurred</button>
         <button class="chip" data-m="black" aria-pressed="false">Black</button>
@@ -155,12 +229,12 @@ input[type=file]{display:none}
     </div>
 
     <div class="actions">
-      <button class="btn" id="reset" aria-label="Reset">
+      <button class="btn" id="reset" aria-label="Reset image">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
       </button>
       <button class="btn go" id="export">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14"/></svg>
-        <span id="exportLabel">Save image</span>
+        <span>Save image</span>
       </button>
     </div>
   </section>
@@ -168,82 +242,177 @@ input[type=file]{display:none}
 
 <script>
 const W=1080,H=1920;
+const TT_YELLOW='#f7ce46';
+const FONTS={
+  tiktok:{family:'"TikTok Sans"',weight:900},
+  bold:{family:'Montserrat',weight:900},
+  tall:{family:'Anton',weight:400}
+};
 const $=id=>document.getElementById(id);
 const cv=$('cv'),ctx=cv.getContext('2d');
 const Cap=window.Capacitor, native=!!(Cap&&Cap.isNativePlatform&&Cap.isNativePlatform());
-let img=null,anchor='right',bgmode='blur',x=0,y=0,prevW=0,prevH=0,isSample=true;
+let img=null,anchor='right',bgmode='blur',x=0,y=0,prevW=0,prevH=0;
+let texts=[], sel=null, exporting=false, curTab=0;
 
 /* ---------- layout: fit the 9:16 frame inside the stage ---------- */
 function fit(){
   const r=$('stage').getBoundingClientRect();
   const aw=r.width-32, ah=r.height-20;
   let h=ah, w=h*9/16; if(w>aw){w=aw;h=w*16/9;}
-  $('frame').style.width=Math.floor(w)+'px'; $('frame').style.height=Math.floor(h)+'px';
+  $('frame').style.width=Math.max(0,Math.floor(w))+'px'; $('frame').style.height=Math.max(0,Math.floor(h))+'px';
 }
 new ResizeObserver(fit).observe($('stage'));
 
-/* ---------- drawing ---------- */
+/* ---------- image drawing ---------- */
 function size(){const b=W/img.width;return{w:img.width*b*$('sw').value/100,h:img.height*b*$('sh').value/100};}
-function place(){const{w,h}=size();x=anchor==='left'?W-w:anchor==='right'?0:(W-w)/2;y=(H-h)/2;prevW=w;prevH=h;draw();}
+function place(){if(!img)return;const{w,h}=size();x=anchor==='left'?W-w:anchor==='right'?0:(W-w)/2;y=(H-h)/2;prevW=w;prevH=h;draw();}
 function track(el){const p=(el.value-el.min)/(el.max-el.min)*100;el.style.setProperty('--p',p+'%');}
 function labels(){
   $('swo').textContent=$('sw').value+'%';$('sho').textContent=$('sh').value+'%';
   $('bluro').textContent=$('blur').value+'px';$('bgbluro').textContent=$('bgblur').value+'px';
   $('bgbro').textContent=$('bgbr').value+'%';
+  $('tszo').textContent=$('tsz').value;$('tswo').textContent=$('tsw').value+'%';$('tsho').textContent=$('tsh').value+'%';
   document.querySelectorAll('input[type=range]').forEach(track);
 }
+
+/* ---------- text layers ---------- */
+function isLight(hex){const n=parseInt(hex.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;return (r*299+g*587+b*114)/1000>150;}
+function setFont(t){const f=FONTS[t.font];ctx.font=`${f.weight} ${t.size}px ${f.family}, sans-serif`;}
+function metrics(t){
+  setFont(t);
+  const lines=(t.text||' ').split('\n'), lh=t.size*1.12;
+  const widths=lines.map(l=>ctx.measureText(l||' ').width);
+  const pad=t.style==='box'?t.size*.28:t.style==='outline'?t.size*.12:t.size*.04;
+  return{lines,lh,widths,pad,maxw:Math.max(...widths)};
+}
+function bounds(t){
+  const m=metrics(t);
+  const w=(m.maxw+m.pad*2)*t.sx/100, h=(m.lines.length*m.lh+m.pad*.8)*t.sy/100;
+  return{x:t.x-w/2,y:t.y-h/2,w,h};
+}
+function rr(x0,y0,w,h,r){ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x0,y0,w,h,r);else ctx.rect(x0,y0,w,h);}
+function drawText(t){
+  const m=metrics(t);
+  ctx.save();ctx.translate(t.x,t.y);ctx.scale(t.sx/100,t.sy/100);
+  setFont(t);ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';ctx.miterLimit=2;
+  const total=m.lines.length*m.lh;
+  if(t.style==='box'){ // TikTok-style rounded background block
+    ctx.fillStyle=t.color;
+    m.lines.forEach((ln,i)=>{const ly=-total/2+m.lh*i, w=m.widths[i]+m.pad*2;rr(-w/2,ly-m.pad*.15,w,m.lh+m.pad*.3,t.size*.2);ctx.fill();});
+  }
+  m.lines.forEach((ln,i)=>{
+    const ly=-total/2+m.lh*(i+.5)+t.size*.04;
+    if(t.style==='outline'){
+      ctx.lineWidth=t.size*.17;ctx.strokeStyle=isLight(t.color)?'#000':'#fff';ctx.strokeText(ln,0,ly);
+      ctx.fillStyle=t.color;ctx.fillText(ln,0,ly);
+    }else if(t.style==='box'){
+      ctx.fillStyle=isLight(t.color)?'#000':'#fff';ctx.fillText(ln,0,ly);
+    }else{
+      ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=t.size*.18;ctx.shadowOffsetY=t.size*.04;
+      ctx.fillStyle=t.color;ctx.fillText(ln,0,ly);ctx.shadowColor='transparent';
+    }
+  });
+  ctx.restore();
+}
+function drawSelection(t){
+  const b=bounds(t),p=14;
+  ctx.save();ctx.lineWidth=5;ctx.setLineDash([22,14]);
+  ctx.strokeStyle='rgba(0,0,0,.5)';ctx.strokeRect(b.x-p+2,b.y-p+2,b.w+p*2,b.h+p*2);
+  ctx.strokeStyle='#fff';ctx.strokeRect(b.x-p,b.y-p,b.w+p*2,b.h+p*2);
+  ctx.setLineDash([]);ctx.fillStyle='#fff';
+  [[b.x-p,b.y-p],[b.x+b.w+p,b.y-p],[b.x-p,b.y+b.h+p],[b.x+b.w+p,b.y+b.h+p]].forEach(([cx,cy])=>{ctx.beginPath();ctx.arc(cx,cy,12,0,7);ctx.fill();});
+  ctx.restore();
+}
+
+/* ---------- main draw ---------- */
 function draw(){
   labels();
   ctx.filter='none';ctx.fillStyle=bgmode==='white'?'#fff':'#000';ctx.fillRect(0,0,W,H);
-  if(!img)return;
-  if(bgmode==='blur'){
-    const s=Math.max(W/img.width,H/img.height)*1.15,bw=img.width*s,bh=img.height*s;
-    ctx.filter=`blur(${$('bgblur').value}px) brightness(${$('bgbr').value/100})`;
-    ctx.drawImage(img,(W-bw)/2,(H-bh)/2,bw,bh);
+  if(img){
+    if(bgmode==='blur'){
+      const s=Math.max(W/img.width,H/img.height)*1.15,bw=img.width*s,bh=img.height*s;
+      ctx.filter=`blur(${$('bgblur').value}px) brightness(${$('bgbr').value/100})`;
+      ctx.drawImage(img,(W-bw)/2,(H-bh)/2,bw,bh);
+    }
+    const{w,h}=size();
+    ctx.filter=+$('blur').value?`blur(${$('blur').value}px)`:'none';
+    ctx.drawImage(img,x,y,w,h);ctx.filter='none';
   }
-  const{w,h}=size();
-  ctx.filter=+$('blur').value?`blur(${$('blur').value}px)`:'none';
-  ctx.drawImage(img,x,y,w,h);ctx.filter='none';
+  texts.forEach(drawText);
+  if(sel&&!exporting)drawSelection(sel);
 }
 
-/* ---------- sample so the stage isn't empty ---------- */
+/* ---------- sample image so the stage isn't empty ---------- */
 (function sample(){
   const c=document.createElement('canvas');c.width=c.height=900;const g=c.getContext('2d');
   const gr=g.createLinearGradient(0,0,900,900);gr.addColorStop(0,'#25f4ee');gr.addColorStop(.55,'#5b4bff');gr.addColorStop(1,'#fe2c55');
   g.fillStyle=gr;g.fillRect(0,0,900,900);
-  g.fillStyle='rgba(255,255,255,.18)';for(let i=0;i<9;i++){g.beginPath();g.arc(450,450,60+i*55,0,7);g.lineWidth=2;g.strokeStyle='rgba(255,255,255,.15)';g.stroke();}
+  for(let i=0;i<9;i++){g.beginPath();g.arc(450,450,60+i*55,0,7);g.lineWidth=2;g.strokeStyle='rgba(255,255,255,.15)';g.stroke();}
   g.fillStyle='#fff';g.beginPath();g.arc(450,450,120,0,7);g.fill();
   const i=new Image();i.onload=()=>{img=i;place();};i.src=c.toDataURL();
 })();
 
-/* ---------- controls ---------- */
+/* ---------- tabs ---------- */
+function showTab(n){
+  curTab=n;
+  document.querySelectorAll('[role=tab]').forEach(o=>o.setAttribute('aria-selected',+o.dataset.tab===n));
+  document.querySelectorAll('.panel[data-panel]').forEach(p=>p.hidden=+p.dataset.panel!==n);
+  $('ind').style.transform=`translateX(${n*100}%)`;
+}
+document.querySelectorAll('[role=tab]').forEach(t=>t.addEventListener('click',()=>showTab(+t.dataset.tab)));
+
+/* ---------- image controls ---------- */
 ['sw','sh'].forEach(id=>$(id).addEventListener('input',()=>{
-  const{w,h}=size();
+  if(!img)return;const{w,h}=size();
   if(anchor==='left')x-=w-prevW;else if(anchor==='center')x-=(w-prevW)/2;
   y-=(h-prevH)/2;prevW=w;prevH=h;draw();
 }));
 ['blur','bgblur','bgbr'].forEach(id=>$(id).addEventListener('input',draw));
 function group(id,key,cb){$(id).querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
-  $(id).querySelectorAll('button').forEach(o=>o.setAttribute('aria-pressed',o===b));cb(b.dataset[key]);vibe();}));}
+  press(id,key,b.dataset[key]);cb(b.dataset[key]);vibe();}));}
+function press(id,key,val){$(id).querySelectorAll('button').forEach(o=>o.setAttribute('aria-pressed',o.dataset[key]===val));}
 group('anchor','a',a=>{anchor=a;place();});
 group('bgmode','m',m=>{bgmode=m;draw();});
 $('fillH').onclick=()=>{if(!img)return;$('sh').value=Math.min(400,Math.round(H/(img.height*W/img.width)*100));place();vibe();};
 $('fillAll').onclick=()=>{if(!img)return;$('sw').value=100;$('sh').value=Math.min(400,Math.round(H/(img.height*W/img.width)*100));place();vibe();};
-$('reset').onclick=()=>{$('sw').value=178;$('sh').value=100;$('blur').value=0;$('bgblur').value=50;$('bgbr').value=80;place();vibe();toast('Reset');};
+$('reset').onclick=()=>{$('sw').value=178;$('sh').value=100;$('blur').value=0;$('bgblur').value=50;$('bgbr').value=80;place();vibe();toast('Image reset');};
 
-/* tabs */
-document.querySelectorAll('[role=tab]').forEach(t=>t.addEventListener('click',()=>{
-  const n=+t.dataset.tab;
-  document.querySelectorAll('[role=tab]').forEach(o=>o.setAttribute('aria-selected',o===t));
-  document.querySelectorAll('[data-panel]').forEach(p=>p.hidden=+p.dataset.panel!==n);
-  $('ind').style.transform=`translateX(${n*100}%)`;
-}));
+/* ---------- text controls ---------- */
+function syncTextUI(){
+  $('tnone').hidden=!!sel;$('tedit').hidden=!sel;
+  if(!sel){draw();return;}
+  if(document.activeElement!==$('txt'))$('txt').value=sel.text;
+  $('tsz').value=Math.round(sel.size);$('tsw').value=Math.round(sel.sx);$('tsh').value=Math.round(sel.sy);
+  press('fontPick','f',sel.font);press('stylePick','s',sel.style);
+  $('colors').querySelectorAll('.sw[data-c]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.c===sel.color));
+  draw();
+}
+function addText(preset){
+  const t=Object.assign({text:'your text here',font:'tiktok',color:'#ffffff',style:'outline',size:120,sx:100,sy:100,x:W/2,y:H*.3+texts.length*170%(H*.5)},preset||{});
+  texts.push(t);sel=t;showTab(1);syncTextUI();vibe();
+  setTimeout(()=>{$('txt').focus();$('txt').select();},60);
+}
+const yellowPreset={color:TT_YELLOW,style:'outline',font:'tiktok'};
+$('addYellow').onclick=()=>addText(yellowPreset);
+$('addText').onclick=()=>addText();
+$('addText2').onclick=()=>addText(sel?{font:sel.font,color:sel.color,style:sel.style}:null);
+$('quickText').onclick=()=>addText(yellowPreset);
+$('yellowNow').onclick=()=>{if(!sel)return;sel.color=TT_YELLOW;if(sel.style==='plain')sel.style='outline';syncTextUI();vibe();toast('TikTok yellow');};
+$('delText').onclick=()=>{texts=texts.filter(t=>t!==sel);sel=null;syncTextUI();vibe();};
+$('txt').addEventListener('input',e=>{if(sel){sel.text=e.target.value;draw();}});
+$('colors').querySelectorAll('.sw[data-c]').forEach(b=>b.addEventListener('click',()=>{if(!sel)return;sel.color=b.dataset.c;syncTextUI();vibe();}));
+$('customColor').addEventListener('input',e=>{if(!sel)return;sel.color=e.target.value;syncTextUI();});
+group('fontPick','f',f=>{if(sel){sel.font=f;syncTextUI();}});
+group('stylePick','s',s=>{if(sel){sel.style=s;syncTextUI();}});
+$('tsz').addEventListener('input',e=>{if(sel){sel.size=+e.target.value;draw();}});
+$('tsw').addEventListener('input',e=>{if(sel){sel.sx=+e.target.value;draw();}});
+$('tsh').addEventListener('input',e=>{if(sel){sel.sy=+e.target.value;draw();}});
 
 /* ---------- image input ---------- */
 function load(file){
   if(!file||!file.type.startsWith('image/'))return;
   const url=URL.createObjectURL(file);const i=new Image();
-  i.onload=()=>{img=i;isSample=false;$('empty').hidden=true;place();toast('Image loaded');};
+  i.onload=()=>{img=i;$('empty').hidden=true;place();toast('Image loaded');};
   i.src=url;
 }
 $('file').onchange=e=>{load(e.target.files[0]);e.target.value='';};
@@ -251,17 +420,26 @@ document.addEventListener('dragover',e=>e.preventDefault());
 document.addEventListener('drop',e=>{e.preventDefault();load(e.dataTransfer.files[0]);});
 document.addEventListener('paste',e=>{const f=[...(e.clipboardData?.files||[])][0];if(f)load(f);});
 
-/* ---------- touch: drag to move, pinch to scale, double-tap to recenter ---------- */
+/* ---------- touch: tap to select, drag to move, pinch to scale, double-tap ---------- */
 const pts=new Map();let start=null,lastTap=0;
 const k=()=>W/cv.getBoundingClientRect().width;
+function toCanvas(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)*k(),y:(e.clientY-r.top)*k()};}
+function hit(p){for(let i=texts.length-1;i>=0;i--){const b=bounds(texts[i]),m=24;if(p.x>=b.x-m&&p.x<=b.x+b.w+m&&p.y>=b.y-m&&p.y<=b.y+b.h+m)return texts[i];}return null;}
 cv.addEventListener('pointerdown',e=>{
   cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
-  const now=Date.now();if(pts.size===1&&now-lastTap<280){place();vibe();}lastTap=now;
+  if(pts.size===1){
+    const t=hit(toCanvas(e));
+    if(t!==sel){sel=t;if(t){texts=texts.filter(o=>o!==t);texts.push(t);showTab(1);}syncTextUI();}
+    const now=Date.now();
+    if(now-lastTap<280){ if(sel){sel.x=W/2;draw();}else place(); vibe(); }
+    lastTap=now;
+  }
   snap();$('guides').classList.add('on');
 });
 function snap(){
   const p=[...pts.values()];
   start={x,y,sw:+$('sw').value,sh:+$('sh').value,
+    tx:sel?.x,ty:sel?.y,tsize:sel?.size,
     cx:p.reduce((a,b)=>a+b.x,0)/p.length,cy:p.reduce((a,b)=>a+b.y,0)/p.length,
     d:p.length>1?Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y):0};
 }
@@ -269,13 +447,20 @@ cv.addEventListener('pointermove',e=>{
   if(!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
   const p=[...pts.values()],s=k();
   const cx=p.reduce((a,b)=>a+b.x,0)/p.length,cy=p.reduce((a,b)=>a+b.y,0)/p.length;
-  if(p.length>1&&start.d){
-    const f=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y)/start.d;
-    const nsw=Math.max(20,Math.min(400,start.sw*f)),nsh=Math.max(20,Math.min(400,start.sh*f));
-    const b=W/img.width,ow=img.width*b*start.sw/100,oh=img.height*b*start.sh/100,nw=img.width*b*nsw/100,nh=img.height*b*nsh/100;
-    $('sw').value=Math.round(nsw);$('sh').value=Math.round(nsh);
-    x=start.x-(nw-ow)/2+(cx-start.cx)*s;y=start.y-(nh-oh)/2+(cy-start.cy)*s;prevW=nw;prevH=nh;
-  }else{x=start.x+(cx-start.cx)*s;y=start.y+(cy-start.cy)*s;}
+  const f=p.length>1&&start.d?Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y)/start.d:1;
+  if(sel){
+    sel.x=start.tx+(cx-start.cx)*s;sel.y=start.ty+(cy-start.cy)*s;
+    if(Math.abs(sel.x-W/2)<18)sel.x=W/2; // snap to centre line
+    if(Math.abs(sel.y-H/2)<18)sel.y=H/2;
+    if(f!==1){sel.size=Math.max(30,Math.min(400,start.tsize*f));$('tsz').value=Math.round(sel.size);}
+  }else if(img){
+    if(f!==1){
+      const nsw=Math.max(20,Math.min(400,start.sw*f)),nsh=Math.max(20,Math.min(400,start.sh*f));
+      const b=W/img.width,ow=img.width*b*start.sw/100,oh=img.height*b*start.sh/100,nw=img.width*b*nsw/100,nh=img.height*b*nsh/100;
+      $('sw').value=Math.round(nsw);$('sh').value=Math.round(nsh);
+      x=start.x-(nw-ow)/2+(cx-start.cx)*s;y=start.y-(nh-oh)/2+(cy-start.cy)*s;prevW=nw;prevH=nh;
+    }else{x=start.x+(cx-start.cx)*s;y=start.y+(cy-start.cy)*s;}
+  }
   draw();
 });
 function up(e){pts.delete(e.pointerId);if(pts.size)snap();else $('guides').classList.remove('on');}
@@ -287,17 +472,18 @@ function vibe(){try{navigator.vibrate&&navigator.vibrate(8);}catch(_){}}
 const fname=()=>'stretch_'+Date.now()+'.png';
 
 $('export').onclick=async()=>{
-  draw();vibe();
+  vibe();
+  exporting=true;draw();
+  const dataUrl=cv.toDataURL('image/png');
+  exporting=false;draw();
   try{
     if(native&&Cap.Plugins.Filesystem&&Cap.Plugins.Share){
       // APK: write PNG to cache, then open the share sheet (Save to Photos, TikTok, Drive…)
-      const data=cv.toDataURL('image/png').split(',')[1];
-      const name=fname();
-      const r=await Cap.Plugins.Filesystem.writeFile({path:name,data,directory:'CACHE'});
+      const r=await Cap.Plugins.Filesystem.writeFile({path:fname(),data:dataUrl.split(',')[1],directory:'CACHE'});
       await Cap.Plugins.Share.share({title:'Stretch export',files:[r.uri]});
       return;
     }
-    const blob=await new Promise(r=>cv.toBlob(r,'image/png'));
+    const blob=await (await fetch(dataUrl)).blob();
     const file=new File([blob],fname(),{type:'image/png'});
     if(navigator.canShare&&navigator.canShare({files:[file]})&&matchMedia('(pointer:coarse)').matches){
       await navigator.share({files:[file]});return;
@@ -306,6 +492,13 @@ $('export').onclick=async()=>{
     setTimeout(()=>URL.revokeObjectURL(a.href),3000);toast('Saved');
   }catch(err){if(err&&err.name!=='AbortError'&&!/cancel/i.test(err.message||''))toast('Couldn’t save: '+(err.message||err));}
 };
+
+/* fonts must be loaded before canvas can use them */
+Promise.all([
+  document.fonts.load('900 60px "TikTok Sans"'),
+  document.fonts.load('900 60px Montserrat'),
+  document.fonts.load('400 60px Anton')
+]).catch(()=>{}).then(draw);
 fit();
 </script>
 </body>

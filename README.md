@@ -1,6 +1,6 @@
 # Stretch
 
-9:16 TikTok image stretcher: stretch left/right, blur, blurred backdrop, pinch/drag, export PNG.
+9:16 TikTok image stretcher: stretch left/right, blur, blurred backdrop, stretchable text (TikTok yellow one-tap, TikTok Sans font), pinch/drag, export PNG.
 
 ## Run on localhost (PC)
 Double-click `start.bat`, which opens http://localhost:8080 (needs Python).
