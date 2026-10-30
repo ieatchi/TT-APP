@@ -17,6 +17,8 @@ jobs:
       - run: npm install
       - run: npx cap add android
       - run: npx cap sync android
+      - name: Generate app icon + splash from assets/
+        run: npx -y @capacitor/assets@4.0.0 generate --android --iconBackgroundColor '#f7ce46' --iconBackgroundColorDark '#f7ce46' --splashBackgroundColor '#000000' --splashBackgroundColorDark '#000000'
       - name: Use the repo's fixed signing key (so updates install over the old app)
         run: mkdir -p ~/.android && cp keystore/debug.keystore ~/.android/debug.keystore
       - name: Bump version so Android sees each build as an update
@@ -28,11 +30,11 @@ jobs:
         run: chmod +x gradlew && ./gradlew assembleDebug --no-daemon
       - uses: actions/upload-artifact@v5
         with:
-          name: Stretch-apk
+          name: Taffy-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
       - name: Publish release (phone download link)
         env: { GH_TOKEN: "${{ github.token }}" }
         run: |
-          cp android/app/build/outputs/apk/debug/app-debug.apk Stretch.apk
-          gh release create "build-${{ github.run_number }}" Stretch.apk \
-            --title "Stretch build ${{ github.run_number }}" --notes "Tap Stretch.apk to download, then open it to install." --latest
+          cp android/app/build/outputs/apk/debug/app-debug.apk Taffy.apk; cp Taffy.apk Stretch.apk
+          gh release create "build-${{ github.run_number }}" Taffy.apk Stretch.apk \
+            --title "Taffy build ${{ github.run_number }}" --notes "Tap Taffy.apk to download, then open it to install." --latest

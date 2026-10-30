@@ -1,7 +1,9 @@
 {
   "appId": "net.nexumc.stretch",
-  "appName": "Stretch",
+  "appName": "Taffy",
   "webDir": "www",
-  "backgroundColor": "#09090b",
-  "android": { "allowMixedContent": false }
+  "backgroundColor": "#000000",
+  "android": {
+    "allowMixedContent": false
+  }
 }

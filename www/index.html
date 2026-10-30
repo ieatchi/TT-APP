@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<title>Stretch</title>
+<title>Taffy</title>
+<link rel="icon" href="icon.png">
 <style>
 @font-face{font-family:"TikTok Sans";font-weight:400;font-display:block;src:url(fonts/tiktok-sans-latin-400-normal.woff2) format("woff2")}
 @font-face{font-family:"TikTok Sans";font-weight:600;font-display:block;src:url(fonts/tiktok-sans-latin-600-normal.woff2) format("woff2")}
@@ -38,8 +39,8 @@ input[type=file]{display:none}
 .home{overflow:auto;scrollbar-width:none;padding:calc(var(--sat) + 14px) max(16px,var(--sar)) calc(var(--sab) + 24px) max(16px,var(--sal))}
 .home::-webkit-scrollbar{display:none}
 .hbar{display:flex;align-items:center;justify-content:space-between;height:44px;margin-bottom:14px}
-.wordmark{font-size:24px;font-weight:900;letter-spacing:-.04em}
-.wordmark i{font-style:normal;color:var(--accent)}
+.wordmark{display:flex;align-items:center;gap:10px;font-size:24px;font-weight:900;letter-spacing:-.04em}
+.wordmark img{width:34px;height:34px;border-radius:9px}
 .create{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px;margin-bottom:28px}
 .ct{position:relative;height:104px;border-radius:12px;background:var(--s1);display:flex;flex-direction:column;justify-content:space-between;padding:12px;text-align:left;cursor:pointer;transition:transform .12s}
 .ct:active{transform:scale(.97)}
@@ -171,7 +172,7 @@ textarea:focus{outline:none;border-color:var(--fg2)}
 
 <!-- ================= HOME ================= -->
 <section class="screen home" id="home">
-  <div class="hbar"><div class="wordmark">Stretch<i>.</i></div></div>
+  <div class="hbar"><div class="wordmark"><img src="icon.png" alt="">Taffy</div></div>
 
   <div class="create">
     <label class="ct primary" for="newFile">
@@ -621,7 +622,7 @@ cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 /* ---------- export ---------- */
 function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),1500);}
 function vibe(){try{navigator.vibrate&&navigator.vibrate(6);}catch(_){}}
-const fname=()=>(proj?proj.name.replace(/[^\w-]+/g,'_'):'stretch')+'_'+Date.now()+'.png';
+const fname=()=>'taffy_'+(proj?proj.name.replace(/[^\w-]+/g,'_'):'export')+'_'+Date.now()+'.png';
 $('export').onclick=async()=>{
   vibe();exporting=true;draw();const dataUrl=cv.toDataURL('image/png');exporting=false;draw();saveNow();
   try{
