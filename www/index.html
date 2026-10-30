@@ -3,136 +3,168 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#09090b">
+<meta name="theme-color" content="#070708">
 <title>Stretch</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
 <style>
-/* Bundled caption fonts (work offline in the APK) */
-@font-face{font-family:"TikTok Sans";font-weight:900;font-display:block;src:url(fonts/tiktok-sans-latin-900-normal.woff2) format("woff2")}
+/* All fonts bundled: the app looks identical offline / in the APK */
+@font-face{font-family:"TikTok Sans";font-weight:400;font-display:block;src:url(fonts/tiktok-sans-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"TikTok Sans";font-weight:600;font-display:block;src:url(fonts/tiktok-sans-latin-600-normal.woff2) format("woff2")}
 @font-face{font-family:"TikTok Sans";font-weight:700;font-display:block;src:url(fonts/tiktok-sans-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"TikTok Sans";font-weight:900;font-display:block;src:url(fonts/tiktok-sans-latin-900-normal.woff2) format("woff2")}
 @font-face{font-family:"Montserrat";font-weight:900;font-display:block;src:url(fonts/montserrat-latin-900-normal.woff2) format("woff2")}
 @font-face{font-family:"Anton";font-weight:400;font-display:block;src:url(fonts/anton-latin-400-normal.woff2) format("woff2")}
 
-/* One deliberate dark look: full-bleed stage up top, control dock pinned to the bottom (side rail on wide screens) */
+/* Layout: editor shell — top bar with Save, canvas with ambient glow, tool sheet, icon toolbar (side rail on desktop) */
 :root{
-  --bg:#09090b; --surface:#131316; --surface2:#1b1b20; --line:#26262d;
-  --fg:#f4f4f6; --muted:#8a8a96;
+  --bg:#070708; --surface:#111114; --raised:#18181d; --raised2:#202027; --line:rgba(255,255,255,.07); --line2:rgba(255,255,255,.13);
+  --fg:#f5f5f7; --muted:#8b8b97; --faint:#55555f;
   --cyan:#25f4ee; --pink:#fe2c55; --yellow:#f7ce46;
-  --sans:"Sora",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  --mono:"JetBrains Mono",ui-monospace,monospace;
+  --ui:"TikTok Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
   --sal:env(safe-area-inset-left,0px); --sar:env(safe-area-inset-right,0px);
+  --ease:cubic-bezier(.22,.8,.24,1);
   color-scheme:dark;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);overflow:hidden;overscroll-behavior:none;user-select:none;-webkit-user-select:none}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:var(--ui);font-weight:400;overflow:hidden;overscroll-behavior:none;user-select:none;-webkit-user-select:none;-webkit-font-smoothing:antialiased}
 button,label,textarea{font:inherit;color:inherit}
-button{cursor:pointer}
+button{cursor:pointer;background:none;border:0;padding:0}
 :focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+svg{display:block}
+[hidden]{display:none!important}
 
-.app{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto;padding-top:var(--sat)}
-@media (min-width:860px){.app{grid-template-columns:minmax(0,1fr) 380px;grid-template-rows:auto minmax(0,1fr)}
-  .top{grid-column:1/-1}.dock{grid-row:2;grid-column:2;border-top:0;border-left:1px solid var(--line);border-radius:0;padding-top:20px;max-height:none!important}}
+.app{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;padding-top:var(--sat);opacity:0;animation:boot .5s var(--ease) .05s forwards}
+@keyframes boot{to{opacity:1}}
 
-/* top bar */
-.top{display:flex;align-items:center;gap:12px;padding:10px max(16px,var(--sar)) 10px max(16px,var(--sal))}
-.logo{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.02em;font-size:18px}
-.mark{width:22px;height:22px;border-radius:6px;background:var(--fg);position:relative;box-shadow:-2px -1px 0 var(--cyan),2px 1px 0 var(--pink)}
-.mark::after{content:"";position:absolute;inset:5px 9px 5px 5px;background:var(--bg);border-radius:2px}
-.dim{font-family:var(--mono);font-size:11px;color:var(--muted);padding:4px 8px;border:1px solid var(--line);border-radius:999px}
+/* ---------- top bar ---------- */
+.top{display:flex;align-items:center;gap:10px;padding:10px max(16px,var(--sar)) 6px max(16px,var(--sal));position:relative;z-index:2}
+.logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:19px;letter-spacing:-.03em}
+.mark{width:24px;height:24px;border-radius:7px;background:var(--fg);position:relative;box-shadow:-2px -1px 0 var(--cyan),2px 1px 0 var(--pink)}
+.mark::after{content:"";position:absolute;inset:6px 10px 6px 6px;background:var(--bg);border-radius:2px}
 .spacer{flex:1}
-.icon-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center}
-.icon-btn svg{width:18px;height:18px}
-.icon-btn:active{transform:scale(.94)}
+.ghost{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:var(--raised);border:1px solid var(--line);transition:transform .15s var(--ease),background .2s}
+.ghost svg{width:19px;height:19px}
+.ghost:active{transform:scale(.92);background:var(--raised2)}
+.save{height:40px;padding:0 18px 0 14px;border-radius:13px;display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;color:#fff;
+  background:linear-gradient(180deg,#ff4a6c,var(--pink));box-shadow:0 6px 20px -6px rgba(254,44,85,.7),inset 0 1px 0 rgba(255,255,255,.25);transition:transform .15s var(--ease)}
+.save svg{width:17px;height:17px}
+.save:active{transform:scale(.95)}
 
-/* stage */
-.stage{position:relative;display:grid;place-items:center;min-height:0;padding:6px 16px 14px}
-.frame{position:relative;border-radius:20px;overflow:hidden;background:#000;box-shadow:0 0 0 1px var(--line),0 30px 80px -20px rgba(0,0,0,.8)}
-canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
-canvas:active{cursor:grabbing}
+/* ---------- stage ---------- */
+.stage{position:relative;display:grid;place-items:center;min-height:0;padding:8px 20px 14px;isolation:isolate}
+#glow{position:absolute;z-index:-1;filter:blur(46px) saturate(1.5);opacity:.55;transition:opacity .6s;pointer-events:none;border-radius:40px}
+.frame{position:relative;border-radius:18px;overflow:hidden;background:#000;box-shadow:0 0 0 1px var(--line2),0 24px 60px -18px rgba(0,0,0,.9);transition:box-shadow .3s}
+canvas#cv{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+canvas#cv:active{cursor:grabbing}
 .guides{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .2s}
 .guides.on{opacity:1}
-.guides i{position:absolute;background:rgba(255,255,255,.35)}
+.guides i{position:absolute;background:rgba(37,244,238,.6)}
 .guides .v{left:50%;top:0;bottom:0;width:1px}.guides .h{top:50%;left:0;right:0;height:1px}
-.empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:10px;padding:22px;pointer-events:none}
+.empty{position:absolute;inset:auto 0 18px 0;display:flex;justify-content:center;pointer-events:none}
 .empty[hidden]{display:none}
-.pill{pointer-events:auto;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:999px;background:rgba(255,255,255,.95);color:#000;font-weight:600;font-size:14px;border:0;box-shadow:0 8px 30px rgba(0,0,0,.4)}
-.pill svg{width:16px;height:16px}
-.toast{position:absolute;left:50%;top:14px;transform:translate(-50%,-8px);opacity:0;padding:8px 14px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);font-size:13px;transition:.25s;pointer-events:none;white-space:nowrap}
-.toast.show{opacity:1;transform:translate(-50%,0)}
+.pill{pointer-events:auto;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:999px;background:rgba(18,18,22,.62);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.16);color:#fff;font-weight:600;font-size:13px;transition:transform .15s var(--ease)}
+.pill:active{transform:scale(.95)}
+.pill svg{width:15px;height:15px}
+.toast{position:absolute;left:50%;top:16px;transform:translate(-50%,-10px) scale(.96);opacity:0;padding:9px 15px;border-radius:999px;background:rgba(24,24,29,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line2);font-size:13px;font-weight:600;transition:.3s var(--ease);pointer-events:none;white-space:nowrap;z-index:3}
+.toast.show{opacity:1;transform:translate(-50%,0) scale(1)}
 
-/* dock */
-.dock{background:var(--surface);border-top:1px solid var(--line);border-radius:22px 22px 0 0;padding:14px max(16px,var(--sar)) calc(14px + var(--sab)) max(16px,var(--sal));display:flex;flex-direction:column;gap:14px;min-height:0;max-height:52vh;overflow:auto}
-.tabs{display:grid;grid-template-columns:repeat(4,1fr);background:var(--bg);border-radius:14px;padding:4px;position:relative;flex:none}
-.tabs button{border:0;background:none;padding:9px 0;font-size:13px;font-weight:600;color:var(--muted);border-radius:10px;position:relative;z-index:1;transition:color .2s}
-.tabs button[aria-selected="true"]{color:var(--fg)}
-.tabs .ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/4);background:var(--surface2);border-radius:10px;transition:transform .28s cubic-bezier(.3,.7,.2,1);box-shadow:inset 0 0 0 1px var(--line)}
-.panel{display:flex;flex-direction:column;gap:14px}
+/* ---------- tool sheet ---------- */
+.sheet{background:var(--surface);border-top:1px solid var(--line);border-radius:24px 24px 0 0;padding:16px max(18px,var(--sar)) 6px max(18px,var(--sal));max-height:40vh;overflow:auto;scrollbar-width:none;position:relative}
+.sheet::-webkit-scrollbar{display:none}
+.sheet::before{content:"";position:sticky;display:block;top:-16px;margin:-10px auto 10px;width:36px;height:4px;border-radius:4px;background:var(--line2)}
+.panel{display:flex;flex-direction:column;gap:14px;animation:rise .32s var(--ease)}
 .panel[hidden]{display:none}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.ptitle{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.link{font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--muted);padding:4px 8px;margin:-4px -8px;border-radius:8px}
+.link:active{background:var(--raised)}
 
-.ctl{display:flex;flex-direction:column;gap:8px}
-.ctl-head{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--muted)}
-.ctl-head output,.row output{font-family:var(--mono);font-size:12px;color:var(--fg);font-variant-numeric:tabular-nums}
-.row{display:grid;grid-template-columns:58px minmax(0,1fr) 46px;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
-.row output{text-align:right}
-input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;margin:0}
-input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:4px;background:linear-gradient(90deg,var(--fg) var(--p,50%),var(--line) var(--p,50%))}
-input[type=range]::-moz-range-track{height:4px;border-radius:4px;background:var(--line)}
-input[type=range]::-moz-range-progress{height:4px;border-radius:4px;background:var(--fg)}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--fg);margin-top:-9px;box-shadow:0 2px 8px rgba(0,0,0,.5);border:0}
-input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--fg);border:0}
+/* sliders */
+.row{display:grid;grid-template-columns:62px minmax(0,1fr) 48px;align-items:center;gap:12px;font-size:13px;font-weight:600;color:var(--muted)}
+.row output{font-size:12px;font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums;text-align:right}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:30px;background:transparent;margin:0;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:5px;background:linear-gradient(90deg,var(--fg) var(--p,50%),var(--raised2) var(--p,50%))}
+input[type=range]::-moz-range-track{height:5px;border-radius:5px;background:var(--raised2)}
+input[type=range]::-moz-range-progress{height:5px;border-radius:5px;background:var(--fg)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;margin-top:-7.5px;box-shadow:0 0 0 4px rgba(255,255,255,.1),0 3px 10px rgba(0,0,0,.6);border:0;transition:box-shadow .15s}
+input[type=range]:active::-webkit-slider-thumb{box-shadow:0 0 0 9px rgba(255,255,255,.12),0 3px 10px rgba(0,0,0,.6)}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:0}
 
-.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.chip{border:1px solid var(--line);background:var(--surface2);border-radius:12px;padding:11px 0;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;transition:.15s}
-.chip svg{width:15px;height:15px}
-.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.chip:active{transform:scale(.97)}
-.sub{font-size:13px;color:var(--muted);margin:0}
+/* segmented controls */
+.seg{display:grid;grid-template-columns:repeat(var(--n,3),1fr);gap:4px;padding:4px;background:var(--bg);border-radius:14px;border:1px solid var(--line)}
+.seg button{padding:10px 0;border-radius:10px;font-size:13px;font-weight:600;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px;transition:background .2s,color .2s,transform .12s}
+.seg button svg{width:15px;height:15px}
+.seg button[aria-pressed="true"]{background:var(--raised2);color:var(--fg);box-shadow:inset 0 0 0 1px var(--line2),0 2px 8px rgba(0,0,0,.35)}
+.seg button:active{transform:scale(.96)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{padding:12px 0;border-radius:13px;background:var(--raised);border:1px solid var(--line);font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:7px;transition:transform .12s,background .2s}
+.tile svg{width:15px;height:15px}
+.tile:active{transform:scale(.97);background:var(--raised2)}
+.sub{font-size:13px;color:var(--muted);margin:0;line-height:1.45}
 
-/* text panel */
-textarea{width:100%;min-height:52px;max-height:120px;resize:vertical;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.35;user-select:text;-webkit-user-select:text}
+/* text */
+.f-tiktok{font-family:"TikTok Sans",var(--ui)!important;font-weight:900!important}
+.f-bold{font-family:"Montserrat",var(--ui)!important;font-weight:900!important}
+.f-tall{font-family:"Anton",var(--ui)!important;font-weight:400!important;letter-spacing:.03em}
+.textbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+textarea{width:100%;min-height:50px;max-height:110px;resize:none;background:var(--bg);border:1px solid var(--line2);border-radius:14px;padding:13px 14px;font-size:15px;font-weight:600;line-height:1.35;user-select:text;-webkit-user-select:text;transition:border-color .2s}
 textarea:focus{outline:none;border-color:var(--fg)}
-.f-tiktok{font-family:"TikTok Sans",var(--sans);font-weight:900}
-.f-bold{font-family:"Montserrat",var(--sans);font-weight:900}
-.f-tall{font-family:"Anton",var(--sans);font-weight:400;letter-spacing:.02em}
-.swatches{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.sw{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);background:var(--c);padding:0;flex:none;position:relative}
-.sw[aria-pressed="true"]{border-color:var(--fg);box-shadow:0 0 0 2px var(--bg) inset}
+.tbtns{display:flex;flex-direction:column;gap:6px}
+.tbtns button{flex:1;width:46px;border-radius:12px;background:var(--raised);border:1px solid var(--line);display:grid;place-items:center;transition:transform .12s}
+.tbtns button svg{width:17px;height:17px}
+.tbtns button:active{transform:scale(.93)}
+.tbtns .del{color:var(--pink)}
+.yellow{display:flex;align-items:center;gap:12px;width:100%;border-radius:16px;padding:12px 16px;background:linear-gradient(180deg,#fbd95c,var(--yellow));color:#141414;font-weight:700;font-size:14px;box-shadow:0 8px 24px -10px rgba(247,206,70,.55),inset 0 1px 0 rgba(255,255,255,.4);transition:transform .15s var(--ease)}
+.yellow .demo{font-family:"TikTok Sans",var(--ui);font-weight:900;font-size:22px;line-height:1;color:var(--yellow);-webkit-text-stroke:5px #000;paint-order:stroke fill}
+.yellow small{margin-left:auto;font-weight:600;opacity:.6;font-size:12px}
+.yellow:active{transform:scale(.97)}
+.swatches{display:flex;gap:10px;overflow-x:auto;padding:3px;margin:-3px;scrollbar-width:none}
+.swatches::-webkit-scrollbar{display:none}
+.sw{width:32px;height:32px;border-radius:50%;background:var(--c);flex:none;position:relative;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);transition:transform .15s var(--ease)}
+.sw[aria-pressed="true"]{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--fg);transform:scale(.9)}
 .sw.custom{background:conic-gradient(#ff3b3b,#ffd400,#3bff7a,#25f4ee,#5b4bff,#fe2c55,#ff3b3b);overflow:hidden}
 .sw.custom input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
-.yellow{display:flex;align-items:center;gap:10px;width:100%;border:0;border-radius:14px;padding:12px 14px;background:var(--yellow);color:#111;font-weight:700;font-size:14px}
-.yellow .demo{font-family:"TikTok Sans",var(--sans);font-weight:900;font-size:20px;color:var(--yellow);-webkit-text-stroke:5px #000;paint-order:stroke fill;letter-spacing:.01em}
-.yellow small{margin-left:auto;font-weight:600;opacity:.65;font-size:12px}
-.yellow:active{transform:scale(.98)}
-.textbar{display:grid;grid-template-columns:1fr auto;gap:8px}
-.danger{color:var(--pink)}
+.empty-text{display:flex;flex-direction:column;gap:10px}
 
-.actions{display:grid;grid-template-columns:auto 1fr;gap:10px;margin-top:auto;flex:none}
-.btn{border:1px solid var(--line);background:var(--surface2);border-radius:14px;padding:14px 16px;font-weight:600;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px}
-.btn svg{width:18px;height:18px}
-.btn.go{border:0;color:#fff;background:linear-gradient(100deg,var(--pink),#ff4f6f);box-shadow:3px 0 0 var(--cyan) inset}
-.btn:active{transform:scale(.98)}
+/* ---------- toolbar ---------- */
+.toolbar{display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);padding:4px max(10px,var(--sar)) calc(8px + var(--sab)) max(10px,var(--sal))}
+.tool{display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 0 6px;color:var(--faint);font-size:11px;font-weight:600;transition:color .2s;position:relative}
+.tool .ic{width:46px;height:32px;border-radius:11px;display:grid;place-items:center;transition:background .25s var(--ease),transform .15s var(--ease)}
+.tool svg{width:21px;height:21px}
+.tool[aria-selected="true"]{color:var(--fg)}
+.tool[aria-selected="true"] .ic{background:var(--raised2)}
+.tool:active .ic{transform:scale(.9)}
+
+/* desktop: side rail */
+@media (min-width:860px){
+  .app{grid-template-columns:minmax(0,1fr) 380px;grid-template-rows:auto minmax(0,1fr) auto}
+  .top{grid-column:1/-1}
+  .stage{grid-row:2/4}
+  .sheet{grid-column:2;grid-row:2;max-height:none;border-radius:0;border-top:0;border-left:1px solid var(--line);padding-top:22px}
+  .sheet::before{display:none}
+  .toolbar{grid-column:2;grid-row:3;border-left:1px solid var(--line);border-top:1px solid var(--line)}
+}
 input[type=file]{display:none}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.app{opacity:1}}
 </style>
 </head>
 <body>
 <div class="app">
   <header class="top">
     <div class="logo"><span class="mark"></span>Stretch</div>
-    <span class="dim">9:16 · 1080×1920</span>
     <span class="spacer"></span>
-    <button class="icon-btn" id="quickText" aria-label="Add text" title="Add text">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6V4h16v2M12 4v16M9 20h6"/></svg>
-    </button>
-    <label class="icon-btn" for="file" aria-label="Choose image" title="Choose image">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>
+    <label class="ghost" for="file" aria-label="Choose image" title="Choose image">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>
     </label>
     <input id="file" type="file" accept="image/*">
+    <button class="save" id="export">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m-4.5-4.5L12 15l4.5-4.5M5 20h14"/></svg>
+      Save
+    </button>
   </header>
 
   <main class="stage" id="stage">
+    <canvas id="glow" width="27" height="48" aria-hidden="true"></canvas>
     <div class="frame" id="frame">
       <canvas id="cv" width="1080" height="1920" aria-label="9:16 preview"></canvas>
       <div class="guides" id="guides"><i class="v"></i><i class="h"></i></div>
@@ -146,43 +178,36 @@ input[type=file]{display:none}
     <div class="toast" id="toast"></div>
   </main>
 
-  <section class="dock" id="dock">
-    <div class="tabs" role="tablist">
-      <span class="ind" id="ind"></span>
-      <button role="tab" aria-selected="true" data-tab="0">Stretch</button>
-      <button role="tab" aria-selected="false" data-tab="1">Text</button>
-      <button role="tab" aria-selected="false" data-tab="2">Blur</button>
-      <button role="tab" aria-selected="false" data-tab="3">Backdrop</button>
-    </div>
-
-    <!-- Stretch (image) -->
+  <section class="sheet" id="sheet">
+    <!-- Stretch -->
     <div class="panel" data-panel="0">
-      <div class="ctl"><div class="ctl-head"><span>Width</span><output id="swo"></output></div><input id="sw" type="range" min="20" max="400" value="178"></div>
-      <div class="ctl"><div class="ctl-head"><span>Height</span><output id="sho"></output></div><input id="sh" type="range" min="20" max="400" value="100"></div>
-      <div class="chips" id="anchor">
-        <button class="chip" data-a="left" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m6-6-6 6 6 6"/></svg>Left</button>
-        <button class="chip" data-a="center" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4"/></svg>Both</button>
-        <button class="chip" data-a="right" aria-pressed="true">Right<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+      <div class="ptitle">Stretch image <button class="link" id="reset">Reset</button></div>
+      <div class="row"><span>Width</span><input id="sw" type="range" min="20" max="400" value="178"><output id="swo"></output></div>
+      <div class="row"><span>Height</span><input id="sh" type="range" min="20" max="400" value="100"><output id="sho"></output></div>
+      <div class="seg" id="anchor">
+        <button data-a="left" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m6-6-6 6 6 6"/></svg>Left</button>
+        <button data-a="center" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4"/></svg>Both</button>
+        <button data-a="right" aria-pressed="true">Right<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
       </div>
-      <div class="chips" style="grid-template-columns:1fr 1fr">
-        <button class="chip" id="fillH">Fill height</button>
-        <button class="chip" id="fillAll">Fill screen</button>
+      <div class="duo">
+        <button class="tile" id="fillH"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4"/></svg>Fill height</button>
+        <button class="tile" id="fillAll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>Fill screen</button>
       </div>
     </div>
 
     <!-- Text -->
     <div class="panel" data-panel="1" hidden>
-      <div id="tnone" class="panel">
+      <div id="tnone" class="empty-text">
         <button class="yellow" id="addYellow"><span class="demo">Aa</span>Add TikTok yellow text<small>1 tap</small></button>
-        <button class="chip" id="addText" style="padding:13px 0">+ Add plain text</button>
-        <p class="sub">Tap any text on the canvas to edit it. Drag to move it, pinch to resize it.</p>
+        <button class="tile" id="addText">+ Add plain text</button>
+        <p class="sub">Tap text on the canvas to edit it. Drag to move it and pinch to resize it.</p>
       </div>
-      <div id="tedit" class="panel" hidden>
+      <div id="tedit" class="panel" hidden style="animation:none">
         <div class="textbar">
           <textarea id="txt" rows="2" placeholder="Type your text" aria-label="Text"></textarea>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <button class="chip" id="addText2" style="padding:0 14px;flex:1" aria-label="Add another text">+ New</button>
-            <button class="chip danger" id="delText" style="padding:0 14px;flex:1" aria-label="Delete text">Delete</button>
+          <div class="tbtns">
+            <button id="addText2" aria-label="Add another text" title="New text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+            <button id="delText" class="del" aria-label="Delete text" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
           </div>
         </div>
         <button class="yellow" id="yellowNow"><span class="demo">Aa</span>TikTok yellow<small>tap to apply</small></button>
@@ -193,17 +218,18 @@ input[type=file]{display:none}
           <button class="sw" data-c="#fe2c55" style="--c:#fe2c55" aria-label="Pink" aria-pressed="false"></button>
           <button class="sw" data-c="#25f4ee" style="--c:#25f4ee" aria-label="Cyan" aria-pressed="false"></button>
           <button class="sw" data-c="#ff8a00" style="--c:#ff8a00" aria-label="Orange" aria-pressed="false"></button>
-          <label class="sw custom" aria-label="Custom colour"><input type="color" id="customColor" value="#7cff4f"></label>
+          <button class="sw" data-c="#7cff4f" style="--c:#7cff4f" aria-label="Green" aria-pressed="false"></button>
+          <label class="sw custom" aria-label="Custom colour"><input type="color" id="customColor" value="#a78bfa"></label>
         </div>
-        <div class="chips" id="fontPick">
-          <button class="chip f-tiktok" data-f="tiktok" aria-pressed="true">TikTok</button>
-          <button class="chip f-bold" data-f="bold" aria-pressed="false">Bold</button>
-          <button class="chip f-tall" data-f="tall" aria-pressed="false">TALL</button>
+        <div class="seg" id="fontPick">
+          <button class="f-tiktok" data-f="tiktok" aria-pressed="true">TikTok</button>
+          <button class="f-bold" data-f="bold" aria-pressed="false">Bold</button>
+          <button class="f-tall" data-f="tall" aria-pressed="false">TALL</button>
         </div>
-        <div class="chips" id="stylePick">
-          <button class="chip" data-s="outline" aria-pressed="true">Outline</button>
-          <button class="chip" data-s="box" aria-pressed="false">Box</button>
-          <button class="chip" data-s="plain" aria-pressed="false">Plain</button>
+        <div class="seg" id="stylePick">
+          <button data-s="outline" aria-pressed="true">Outline</button>
+          <button data-s="box" aria-pressed="false">Box</button>
+          <button data-s="plain" aria-pressed="false">Plain</button>
         </div>
         <div class="row"><span>Size</span><input id="tsz" type="range" min="30" max="400" value="120"><output id="tszo"></output></div>
         <div class="row"><span>Width</span><input id="tsw" type="range" min="20" max="500" value="100"><output id="tswo"></output></div>
@@ -213,31 +239,30 @@ input[type=file]{display:none}
 
     <!-- Blur -->
     <div class="panel" data-panel="2" hidden>
-      <div class="ctl"><div class="ctl-head"><span>Image blur</span><output id="bluro"></output></div><input id="blur" type="range" min="0" max="60" value="0"></div>
-      <div class="ctl"><div class="ctl-head"><span>Backdrop blur</span><output id="bgbluro"></output></div><input id="bgblur" type="range" min="0" max="120" value="50"></div>
-      <p class="sub">Backdrop blur applies when the backdrop is set to Blurred.</p>
+      <div class="ptitle">Blur</div>
+      <div class="row"><span>Image</span><input id="blur" type="range" min="0" max="60" value="0"><output id="bluro"></output></div>
+      <div class="row"><span>Backdrop</span><input id="bgblur" type="range" min="0" max="120" value="50"><output id="bgbluro"></output></div>
+      <p class="sub">Backdrop blur shows when the backdrop is set to Blurred.</p>
     </div>
 
     <!-- Backdrop -->
     <div class="panel" data-panel="3" hidden>
-      <div class="chips" id="bgmode">
-        <button class="chip" data-m="blur" aria-pressed="true">Blurred</button>
-        <button class="chip" data-m="black" aria-pressed="false">Black</button>
-        <button class="chip" data-m="white" aria-pressed="false">White</button>
+      <div class="ptitle">Backdrop</div>
+      <div class="seg" id="bgmode">
+        <button data-m="blur" aria-pressed="true">Blurred</button>
+        <button data-m="black" aria-pressed="false">Black</button>
+        <button data-m="white" aria-pressed="false">White</button>
       </div>
-      <div class="ctl"><div class="ctl-head"><span>Backdrop brightness</span><output id="bgbro"></output></div><input id="bgbr" type="range" min="20" max="120" value="80"></div>
-    </div>
-
-    <div class="actions">
-      <button class="btn" id="reset" aria-label="Reset image">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
-      </button>
-      <button class="btn go" id="export">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14"/></svg>
-        <span>Save image</span>
-      </button>
+      <div class="row"><span>Bright</span><input id="bgbr" type="range" min="20" max="120" value="80"><output id="bgbro"></output></div>
     </div>
   </section>
+
+  <nav class="toolbar" role="tablist" aria-label="Tools">
+    <button class="tool" role="tab" aria-selected="true" data-tab="0"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="5" width="10" height="14" rx="2"/><path d="M3 12h2M19 12h2M4 10l-1.5 2L4 14M20 10l1.5 2L20 14"/></svg></span>Stretch</button>
+    <button class="tool" role="tab" aria-selected="false" data-tab="1"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7V5h14v2M12 5v14M9 19h6"/></svg></span>Text</button>
+    <button class="tool" role="tab" aria-selected="false" data-tab="2"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/><path d="M9.5 15a2.5 2.5 0 0 0 2.5 2.5" opacity=".6"/></svg></span>Blur</button>
+    <button class="tool" role="tab" aria-selected="false" data-tab="3"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><rect x="8" y="7" width="8" height="10" rx="1.5"/></svg></span>Backdrop</button>
+  </nav>
 </div>
 
 <script>
@@ -250,6 +275,7 @@ const FONTS={
 };
 const $=id=>document.getElementById(id);
 const cv=$('cv'),ctx=cv.getContext('2d');
+const glow=$('glow'),gctx=glow.getContext('2d');
 const Cap=window.Capacitor, native=!!(Cap&&Cap.isNativePlatform&&Cap.isNativePlatform());
 let img=null,anchor='right',bgmode='blur',x=0,y=0,prevW=0,prevH=0;
 let texts=[], sel=null, exporting=false, curTab=0;
@@ -257,9 +283,11 @@ let texts=[], sel=null, exporting=false, curTab=0;
 /* ---------- layout: fit the 9:16 frame inside the stage ---------- */
 function fit(){
   const r=$('stage').getBoundingClientRect();
-  const aw=r.width-32, ah=r.height-20;
+  const aw=r.width-40, ah=r.height-22;
   let h=ah, w=h*9/16; if(w>aw){w=aw;h=w*16/9;}
-  $('frame').style.width=Math.max(0,Math.floor(w))+'px'; $('frame').style.height=Math.max(0,Math.floor(h))+'px';
+  w=Math.max(0,Math.floor(w));h=Math.max(0,Math.floor(h));
+  $('frame').style.width=w+'px';$('frame').style.height=h+'px';
+  glow.style.width=w*1.25+'px';glow.style.height=h*1.08+'px';
 }
 new ResizeObserver(fit).observe($('stage'));
 
@@ -316,15 +344,20 @@ function drawText(t){
 }
 function drawSelection(t){
   const b=bounds(t),p=14;
-  ctx.save();ctx.lineWidth=5;ctx.setLineDash([22,14]);
-  ctx.strokeStyle='rgba(0,0,0,.5)';ctx.strokeRect(b.x-p+2,b.y-p+2,b.w+p*2,b.h+p*2);
+  ctx.save();ctx.lineWidth=4;ctx.setLineDash([20,12]);
+  ctx.strokeStyle='rgba(0,0,0,.45)';ctx.strokeRect(b.x-p+2,b.y-p+2,b.w+p*2,b.h+p*2);
   ctx.strokeStyle='#fff';ctx.strokeRect(b.x-p,b.y-p,b.w+p*2,b.h+p*2);
-  ctx.setLineDash([]);ctx.fillStyle='#fff';
-  [[b.x-p,b.y-p],[b.x+b.w+p,b.y-p],[b.x-p,b.y+b.h+p],[b.x+b.w+p,b.y+b.h+p]].forEach(([cx,cy])=>{ctx.beginPath();ctx.arc(cx,cy,12,0,7);ctx.fill();});
+  ctx.setLineDash([]);
+  [[b.x-p,b.y-p],[b.x+b.w+p,b.y-p],[b.x-p,b.y+b.h+p],[b.x+b.w+p,b.y+b.h+p]].forEach(([cx,cy])=>{
+    ctx.beginPath();ctx.arc(cx,cy,13,0,7);ctx.fillStyle='#fff';ctx.fill();
+    ctx.beginPath();ctx.arc(cx,cy,6,0,7);ctx.fillStyle='#25f4ee';ctx.fill();
+  });
   ctx.restore();
 }
 
 /* ---------- main draw ---------- */
+let glowQueued=false;
+function updateGlow(){glowQueued=false;gctx.drawImage(cv,0,0,glow.width,glow.height);}
 function draw(){
   labels();
   ctx.filter='none';ctx.fillStyle=bgmode==='white'?'#fff':'#000';ctx.fillRect(0,0,W,H);
@@ -340,6 +373,7 @@ function draw(){
   }
   texts.forEach(drawText);
   if(sel&&!exporting)drawSelection(sel);
+  if(!glowQueued){glowQueued=true;requestAnimationFrame(updateGlow);}
 }
 
 /* ---------- sample image so the stage isn't empty ---------- */
@@ -352,14 +386,15 @@ function draw(){
   const i=new Image();i.onload=()=>{img=i;place();};i.src=c.toDataURL();
 })();
 
-/* ---------- tabs ---------- */
+/* ---------- tools ---------- */
 function showTab(n){
+  if(n===curTab&&!$('sheet').querySelector(`.panel[data-panel="${n}"]`).hidden)return;
   curTab=n;
-  document.querySelectorAll('[role=tab]').forEach(o=>o.setAttribute('aria-selected',+o.dataset.tab===n));
+  document.querySelectorAll('.tool').forEach(o=>o.setAttribute('aria-selected',+o.dataset.tab===n));
   document.querySelectorAll('.panel[data-panel]').forEach(p=>p.hidden=+p.dataset.panel!==n);
-  $('ind').style.transform=`translateX(${n*100}%)`;
+  $('sheet').scrollTop=0;
 }
-document.querySelectorAll('[role=tab]').forEach(t=>t.addEventListener('click',()=>showTab(+t.dataset.tab)));
+document.querySelectorAll('.tool').forEach(t=>t.addEventListener('click',()=>{showTab(+t.dataset.tab);vibe();}));
 
 /* ---------- image controls ---------- */
 ['sw','sh'].forEach(id=>$(id).addEventListener('input',()=>{
@@ -368,9 +403,8 @@ document.querySelectorAll('[role=tab]').forEach(t=>t.addEventListener('click',()
   y-=(h-prevH)/2;prevW=w;prevH=h;draw();
 }));
 ['blur','bgblur','bgbr'].forEach(id=>$(id).addEventListener('input',draw));
-function group(id,key,cb){$(id).querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
-  press(id,key,b.dataset[key]);cb(b.dataset[key]);vibe();}));}
 function press(id,key,val){$(id).querySelectorAll('button').forEach(o=>o.setAttribute('aria-pressed',o.dataset[key]===val));}
+function group(id,key,cb){$(id).querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{press(id,key,b.dataset[key]);cb(b.dataset[key]);vibe();}));}
 group('anchor','a',a=>{anchor=a;place();});
 group('bgmode','m',m=>{bgmode=m;draw();});
 $('fillH').onclick=()=>{if(!img)return;$('sh').value=Math.min(400,Math.round(H/(img.height*W/img.width)*100));place();vibe();};
@@ -388,18 +422,18 @@ function syncTextUI(){
   draw();
 }
 function addText(preset){
-  const t=Object.assign({text:'your text here',font:'tiktok',color:'#ffffff',style:'outline',size:120,sx:100,sy:100,x:W/2,y:H*.3+texts.length*170%(H*.5)},preset||{});
+  const t=Object.assign({text:'your text here',font:'tiktok',color:'#ffffff',style:'outline',size:120,sx:100,sy:100,x:W/2,y:H*.3+(texts.length*170)%(H*.5)},preset||{});
   texts.push(t);sel=t;showTab(1);syncTextUI();vibe();
-  setTimeout(()=>{$('txt').focus();$('txt').select();},60);
+  setTimeout(()=>{$('txt').focus();$('txt').select();},80);
 }
 const yellowPreset={color:TT_YELLOW,style:'outline',font:'tiktok'};
 $('addYellow').onclick=()=>addText(yellowPreset);
 $('addText').onclick=()=>addText();
 $('addText2').onclick=()=>addText(sel?{font:sel.font,color:sel.color,style:sel.style}:null);
-$('quickText').onclick=()=>addText(yellowPreset);
 $('yellowNow').onclick=()=>{if(!sel)return;sel.color=TT_YELLOW;if(sel.style==='plain')sel.style='outline';syncTextUI();vibe();toast('TikTok yellow');};
-$('delText').onclick=()=>{texts=texts.filter(t=>t!==sel);sel=null;syncTextUI();vibe();};
-$('txt').addEventListener('input',e=>{if(sel){sel.text=e.target.value;draw();}});
+$('delText').onclick=()=>{texts=texts.filter(t=>t!==sel);sel=null;syncTextUI();vibe();toast('Text deleted');};
+function autoFit(t){const b=bounds(t),max=W*.92;if(b.w>max){t.size=Math.max(30,t.size*max/b.w);$('tsz').value=Math.round(t.size);}}
+$('txt').addEventListener('input',e=>{if(sel){sel.text=e.target.value;autoFit(sel);draw();}});
 $('colors').querySelectorAll('.sw[data-c]').forEach(b=>b.addEventListener('click',()=>{if(!sel)return;sel.color=b.dataset.c;syncTextUI();vibe();}));
 $('customColor').addEventListener('input',e=>{if(!sel)return;sel.color=e.target.value;syncTextUI();});
 group('fontPick','f',f=>{if(sel){sel.font=f;syncTextUI();}});
@@ -429,7 +463,7 @@ cv.addEventListener('pointerdown',e=>{
   cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
   if(pts.size===1){
     const t=hit(toCanvas(e));
-    if(t!==sel){sel=t;if(t){texts=texts.filter(o=>o!==t);texts.push(t);showTab(1);}syncTextUI();}
+    if(t!==sel){sel=t;if(t){texts=texts.filter(o=>o!==t);texts.push(t);showTab(1);vibe();}syncTextUI();}
     const now=Date.now();
     if(now-lastTap<280){ if(sel){sel.x=W/2;draw();}else place(); vibe(); }
     lastTap=now;
@@ -443,6 +477,7 @@ function snap(){
     cx:p.reduce((a,b)=>a+b.x,0)/p.length,cy:p.reduce((a,b)=>a+b.y,0)/p.length,
     d:p.length>1?Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y):0};
 }
+let snapped=false;
 cv.addEventListener('pointermove',e=>{
   if(!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
   const p=[...pts.values()],s=k();
@@ -450,8 +485,9 @@ cv.addEventListener('pointermove',e=>{
   const f=p.length>1&&start.d?Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y)/start.d:1;
   if(sel){
     sel.x=start.tx+(cx-start.cx)*s;sel.y=start.ty+(cy-start.cy)*s;
-    if(Math.abs(sel.x-W/2)<18)sel.x=W/2; // snap to centre line
-    if(Math.abs(sel.y-H/2)<18)sel.y=H/2;
+    const sx=Math.abs(sel.x-W/2)<18, sy=Math.abs(sel.y-H/2)<18;
+    if(sx)sel.x=W/2; if(sy)sel.y=H/2;
+    if((sx||sy)&&!snapped)vibe(); snapped=sx||sy;
     if(f!==1){sel.size=Math.max(30,Math.min(400,start.tsize*f));$('tsz').value=Math.round(sel.size);}
   }else if(img){
     if(f!==1){
