@@ -98,7 +98,8 @@ input[type=file]{display:none}
 .ib svg{width:22px;height:22px}
 .ib:active:not(:disabled){background:var(--s1)}
 .pname{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--fg2);padding-right:6px}
-.hist{display:flex;gap:2px}
+.hist{display:flex;gap:0}
+#compare:active{background:var(--s2);color:var(--accent)}
 .export{height:34px;padding:0 16px;border-radius:8px;background:var(--accent);color:var(--on-accent);font-size:14px;font-weight:700}
 .export:active{opacity:.8}
 
@@ -122,8 +123,26 @@ canvas#cv{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
 .pbody::-webkit-scrollbar{display:none}
 .panel{display:flex;flex-direction:column;gap:14px}
 
-.row{display:grid;grid-template-columns:72px minmax(0,1fr) 44px;align-items:center;gap:10px;font-size:14px;color:var(--fg2)}
-.row output{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;text-align:right}
+.row{display:grid;grid-template-columns:84px minmax(0,1fr) 48px;align-items:center;gap:10px;font-size:14px;color:var(--fg2)}
+.row output{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;text-align:right;cursor:pointer;border-radius:6px;padding:4px 0}
+.row output:active{color:var(--fg)}
+input[type=range][data-bi]::-webkit-slider-runnable-track,input[type=range][data-zero]::-webkit-slider-runnable-track{background:linear-gradient(90deg,var(--s3) var(--a,50%),var(--fg) var(--a,50%),var(--fg) var(--b,50%),var(--s3) var(--b,50%))}
+.tabs3{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:3px;border-radius:10px;background:var(--bg)}
+.tabs3 button{height:34px;border-radius:8px;font-size:13px;font-weight:700;color:var(--muted)}
+.tabs3 button[aria-pressed="true"]{background:var(--s3);color:var(--fg)}
+.adjg{display:flex;flex-direction:column;gap:6px}
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tg{display:flex;flex-direction:column;align-items:center;gap:7px;padding:13px 0 10px;border-radius:12px;background:var(--s2);font-size:12px;font-weight:600;color:var(--fg2);cursor:pointer}
+.tg svg{width:24px;height:24px;color:var(--fg)}
+.tg:active{opacity:.7}
+.phl{display:flex;align-items:center;gap:2px;min-width:0}
+.pback{width:34px;height:40px;display:grid;place-items:center;margin-left:-10px;color:var(--fg2)}
+.pback svg{width:22px;height:22px}
+.emogrid{display:grid;grid-template-columns:repeat(8,1fr);gap:2px}
+.emo{height:44px;border-radius:8px;font-size:26px;line-height:1;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif}
+.emo:active{background:var(--s2)}
+#tedit.emoji .noemo{display:none!important}
+.th img{object-fit:contain;background:#000}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:32px;background:transparent;margin:0;cursor:pointer}
 input[type=range]::-webkit-slider-runnable-track{height:3px;border-radius:3px;background:linear-gradient(90deg,var(--fg) var(--p,50%),var(--s3) var(--p,50%))}
 input[type=range]::-moz-range-track{height:3px;background:var(--s3)}
@@ -461,6 +480,7 @@ textarea:focus{outline:none;border-color:var(--fg2)}
       <span class="pname" id="projName"></span>
     </div>
     <div class="hist">
+      <button class="ib" id="compare" aria-label="Hold to see the original" title="Hold to see the original"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M12 4v16"/><path d="M12 4h6.5A2.5 2.5 0 0 1 21 6.5v11a2.5 2.5 0 0 1-2.5 2.5H12z" fill="currentColor" stroke="none" opacity=".4"/></svg></button>
       <button class="ib" id="undo" aria-label="Undo" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
       <button class="ib" id="redo" aria-label="Redo" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
     </div>
@@ -477,7 +497,7 @@ textarea:focus{outline:none;border-color:var(--fg2)}
   <input id="file" type="file" accept="image/*">
 
   <section class="panelwrap" id="panelwrap" hidden>
-    <div class="phead"><b id="ptitle"></b><button class="done" id="done" aria-label="Done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></button></div>
+    <div class="phead"><div class="phl"><button class="pback" id="pback" aria-label="All tools" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><b id="ptitle"></b></div><button class="done" id="done" aria-label="Done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></button></div>
     <div class="pbody" id="pbody">
 
       <div class="panel" data-panel="0">
@@ -509,7 +529,7 @@ textarea:focus{outline:none;border-color:var(--fg2)}
             <button class="sq" id="addText2" aria-label="New text layer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
             <button class="sq red" id="delText" aria-label="Delete text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
           </div>
-          <div class="swatches" id="colors">
+          <div class="swatches noemo" id="colors">
             <button class="sw yl" data-c="#f7ce46" style="--c:#f7ce46" aria-label="TikTok yellow" aria-pressed="false">TikTok yellow</button>
             <button class="sw" data-c="#ffffff" style="--c:#ffffff" aria-label="White" aria-pressed="false"></button>
             <button class="sw" data-c="#000000" style="--c:#000000" aria-label="Black" aria-pressed="false"></button>
@@ -519,13 +539,13 @@ textarea:focus{outline:none;border-color:var(--fg2)}
             <button class="sw" data-c="#7cff4f" style="--c:#7cff4f" aria-label="Green" aria-pressed="false"></button>
             <label class="sw custom" aria-label="Custom colour"><input type="color" id="customColor" value="#a78bfa"></label>
           </div>
-          <div class="opts"><button class="opt" id="evenLines"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 7h14M7 12h10M5 17h14"/></svg>Even out lines</button><button class="opt" id="swapQuote"><span style="color:var(--accent);font-size:20px;font-weight:900;line-height:1;margin-top:7px">&ldquo;</span>Pick a quote</button></div>
-          <div class="opts" id="fontPick">
+          <div class="opts noemo"><button class="opt" id="evenLines"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 7h14M7 12h10M5 17h14"/></svg>Even out lines</button><button class="opt" id="swapQuote"><span style="color:var(--accent);font-size:20px;font-weight:900;line-height:1;margin-top:7px">&ldquo;</span>Pick a quote</button></div>
+          <div class="opts noemo" id="fontPick">
             <button class="opt f-tiktok" data-f="tiktok" aria-pressed="true">TikTok</button>
             <button class="opt f-bold" data-f="bold" aria-pressed="false">Bold</button>
             <button class="opt f-tall" data-f="tall" aria-pressed="false">TALL</button>
           </div>
-          <div class="opts" id="stylePick">
+          <div class="opts noemo" id="stylePick">
             <button class="opt" data-s="outline" aria-pressed="true">Outline</button>
             <button class="opt" data-s="box" aria-pressed="false">Box</button>
             <button class="opt" data-s="plain" aria-pressed="false">Shadow</button>
@@ -537,11 +557,30 @@ textarea:focus{outline:none;border-color:var(--fg2)}
       </div>
 
       <div class="panel" data-panel="2" hidden>
-        <div class="row"><span>Brightness</span><input id="bri" type="range" min="40" max="160" value="100"><output id="brio"></output></div>
-        <div class="row"><span>Contrast</span><input id="con" type="range" min="40" max="180" value="100"><output id="cono"></output></div>
-        <div class="row"><span>Saturation</span><input id="sat" type="range" min="0" max="250" value="100"><output id="sato"></output></div>
-        <div class="row"><span>Blur</span><input id="blur" type="range" min="0" max="60" value="0"><output id="bluro"></output></div>
+        <div class="tabs3" id="adjTabs"><button data-g="light" aria-pressed="true">Light</button><button data-g="color" aria-pressed="false">Colour</button><button data-g="detail" aria-pressed="false">Details</button></div>
+        <div class="adjg" data-g="light">
+          <div class="row"><span>Brightness</span><input id="bri" type="range" min="40" max="160" value="100" data-zero="100" data-u="%"><output id="brio"></output></div>
+          <div class="row"><span>Contrast</span><input id="con" type="range" min="40" max="180" value="100" data-zero="100" data-u="%"><output id="cono"></output></div>
+          <div class="row"><span>Highlights</span><input id="hi" type="range" min="-100" max="100" value="0" data-bi="1"><output id="hio"></output></div>
+          <div class="row"><span>Shadows</span><input id="shd" type="range" min="-100" max="100" value="0" data-bi="1"><output id="shdo"></output></div>
+          <div class="row"><span>Whites</span><input id="wht" type="range" min="-100" max="100" value="0" data-bi="1"><output id="whto"></output></div>
+          <div class="row"><span>Blacks</span><input id="blk" type="range" min="-100" max="100" value="0" data-bi="1"><output id="blko"></output></div>
+          <div class="row"><span>Fade</span><input id="fade" type="range" min="0" max="100" value="0"><output id="fadeo"></output></div>
+        </div>
+        <div class="adjg" data-g="color" hidden>
+          <div class="row"><span>Warmth</span><input id="temp" type="range" min="-100" max="100" value="0" data-bi="1"><output id="tempo"></output></div>
+          <div class="row"><span>Tint</span><input id="tint" type="range" min="-100" max="100" value="0" data-bi="1"><output id="tinto"></output></div>
+          <div class="row"><span>Saturation</span><input id="sat" type="range" min="0" max="250" value="100" data-zero="100" data-u="%"><output id="sato"></output></div>
+          <div class="row"><span>Vibrance</span><input id="vib" type="range" min="-100" max="100" value="0" data-bi="1"><output id="vibo"></output></div>
+          <div class="row"><span>Hue</span><input id="hue" type="range" min="-180" max="180" value="0" data-bi="1" data-u="°"><output id="hueo"></output></div>
+        </div>
+        <div class="adjg" data-g="detail" hidden>
+          <div class="row"><span>Sharpen</span><input id="sharp" type="range" min="0" max="100" value="0"><output id="sharpo"></output></div>
+          <div class="row"><span>Clarity</span><input id="clar" type="range" min="-100" max="100" value="0" data-bi="1"><output id="claro"></output></div>
+          <div class="row"><span>Blur</span><input id="blur" type="range" min="0" max="60" value="0"><output id="bluro"></output></div>
+        </div>
         <div class="opts"><button class="opt" id="adjReset">Reset adjustments</button></div>
+        <p class="hint">Tap a number to reset that slider.</p>
       </div>
 
       <div class="panel" data-panel="4" hidden>
@@ -553,6 +592,113 @@ textarea:focus{outline:none;border-color:var(--fg2)}
         <div class="row"><span>Blur</span><input id="bgblur" type="range" min="0" max="120" value="50"><output id="bgbluro"></output></div>
         <div class="row"><span>Brightness</span><input id="bgbr" type="range" min="20" max="120" value="80"><output id="bgbro"></output></div>
         <div class="opts"><label class="opt" for="file">Replace photo</label></div>
+      </div>
+
+      <div class="panel" data-panel="7" hidden>
+        <div class="tgrid"><button class="tg" data-open="8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg><span>Crop</span></button><button class="tg" data-open="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Adjust</span></button><button class="tg" data-open="9"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/></svg><span>Focus</span></button><button class="tg" data-open="10"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5 13.8 11.3 12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Effects</span></button><button class="tg" data-open="11"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 4-1.5 5-3.5S10 14 12 14"/><path d="m14.5 4.5 5 5L12 17l-5-5z"/><path d="m17 2 5 5-2.5 2.5-5-5z"/></svg><span>Draw</span></button><button class="tg" data-open="12"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5a4.5 4.5 0 0 0 7 0"/><path d="M9 9.5h.01M15 9.5h.01"/></svg><span>Stickers</span></button><button class="tg" data-open="13"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg><span>Frame</span></button><button class="tg" data-open="14"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="1.5"/><path d="M2 8h3M2 16h3M19 8h3M19 16h3"/></svg><span>Canvas</span></button><button class="tg" data-open="5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M15.5 9.5a3.5 3.5 0 1 0 0 5"/><path d="M15.5 9v4.2c0 1 .7 1.6 1.5 1.6"/></svg><span>Watermark</span></button><label class="tg" for="file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12a4 4 0 0 1 7-2.6M16 12a4 4 0 0 1-7 2.6"/><path d="M15 6.5v3h-3M9 17.5v-3h3"/></svg><span>Replace</span></label><button class="tg" data-open="flip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M8 7 3 12l5 5V7zM16 7l5 5-5 5V7z"/></svg><span>Flip</span></button><button class="tg" data-open="resetall"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg><span>Reset all</span></button></div>
+      </div>
+
+      <div class="panel" data-panel="8" hidden>
+        <div class="opts" id="cropRatio">
+          <button class="opt" data-r="free" aria-pressed="true">Free</button>
+          <button class="opt" data-r="orig" aria-pressed="false">Original</button>
+          <button class="opt" data-r="1:1" aria-pressed="false">1:1</button>
+          <button class="opt" data-r="4:5" aria-pressed="false">4:5</button>
+          <button class="opt" data-r="3:4" aria-pressed="false">3:4</button>
+          <button class="opt" data-r="9:16" aria-pressed="false">9:16</button>
+          <button class="opt" data-r="16:9" aria-pressed="false">16:9</button>
+        </div>
+        <div class="row"><span>Straighten</span><input id="str" type="range" min="-45" max="45" value="0" data-bi="1" data-u="°"><output id="stro"></output></div>
+        <div class="opts">
+          <button class="opt" id="rotL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Rotate</button>
+          <button class="opt" id="flipH2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M8 7 3 12l5 5V7zM16 7l5 5-5 5V7z"/></svg>Flip</button>
+          <button class="opt" id="flipV"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M7 8l5-5 5 5H7zM7 16l5 5 5-5H7z"/></svg>Flip</button>
+          <button class="opt" id="cropReset">Reset</button>
+        </div>
+        <p class="hint">Drag the corners to crop, drag inside to move it.</p>
+      </div>
+
+      <div class="panel" data-panel="9" hidden>
+        <div class="opts" id="focusMode">
+          <button class="opt" data-m2="off" aria-pressed="true">Off</button>
+          <button class="opt" data-m2="radial" aria-pressed="false">Round</button>
+          <button class="opt" data-m2="linear" aria-pressed="false">Band</button>
+        </div>
+        <div class="row"><span>Blur</span><input id="fblur" type="range" min="0" max="40" value="14"><output id="fbluro"></output></div>
+        <div class="row"><span>Size</span><input id="fsize" type="range" min="10" max="90" value="40"><output id="fsizeo"></output></div>
+        <div class="row"><span>Across</span><input id="fx" type="range" min="0" max="100" value="50"><output id="fxo"></output></div>
+        <div class="row"><span>Up/down</span><input id="fy" type="range" min="0" max="100" value="50"><output id="fyo"></output></div>
+        <p class="hint">Keeps one spot sharp and blurs the rest, like portrait mode. Tap the photo to move the focus point.</p>
+      </div>
+
+      <div class="panel" data-panel="10" hidden>
+        <div class="row"><span>Grain</span><input id="grain" type="range" min="0" max="100" value="0"><output id="graino"></output></div>
+        <div class="row"><span>Vignette</span><input id="vig" type="range" min="-100" max="100" value="0" data-bi="1"><output id="vigo"></output></div>
+        <div class="blabel" style="margin:2px 0 0">Light leak</div>
+        <div class="opts" id="leakPick">
+          <button class="opt" data-l="none" aria-pressed="true">None</button>
+          <button class="opt" data-l="warm" aria-pressed="false">Warm</button>
+          <button class="opt" data-l="rose" aria-pressed="false">Rose</button>
+          <button class="opt" data-l="gold" aria-pressed="false">Gold</button>
+          <button class="opt" data-l="blue" aria-pressed="false">Blue</button>
+        </div>
+        <div class="row"><span>Strength</span><input id="leak" type="range" min="0" max="100" value="60"><output id="leako"></output></div>
+      </div>
+
+      <div class="panel" data-panel="11" hidden>
+        <div class="opts" id="brushPick">
+          <button class="opt" data-b="pen" aria-pressed="true">Pen</button>
+          <button class="opt" data-b="marker" aria-pressed="false">Marker</button>
+          <button class="opt" data-b="neon" aria-pressed="false">Neon</button>
+        </div>
+        <div class="swatches" id="brushCol">
+          <button class="sw" data-c="#f7ce46" style="--c:#f7ce46" aria-label="Yellow" aria-pressed="true"></button>
+          <button class="sw" data-c="#ffffff" style="--c:#ffffff" aria-label="White" aria-pressed="false"></button>
+          <button class="sw" data-c="#000000" style="--c:#000000" aria-label="Black" aria-pressed="false"></button>
+          <button class="sw" data-c="#fe2c55" style="--c:#fe2c55" aria-label="Red" aria-pressed="false"></button>
+          <button class="sw" data-c="#25f4ee" style="--c:#25f4ee" aria-label="Cyan" aria-pressed="false"></button>
+          <button class="sw" data-c="#7cff4f" style="--c:#7cff4f" aria-label="Green" aria-pressed="false"></button>
+          <button class="sw" data-c="#b388ff" style="--c:#b388ff" aria-label="Purple" aria-pressed="false"></button>
+          <label class="sw custom" aria-label="Custom colour"><input type="color" id="brushCustom" value="#ff8a00"></label>
+        </div>
+        <div class="row"><span>Size</span><input id="bsz" type="range" min="2" max="60" value="8"><output id="bszo"></output></div>
+        <div class="opts"><button class="opt" id="strokeUndo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Undo line</button><button class="opt" id="strokeClear">Clear drawing</button></div>
+        <p class="hint">Draw on the photo with your finger. Close this panel to move things again.</p>
+      </div>
+
+      <div class="panel" data-panel="12" hidden>
+        <div class="emogrid" id="emoGrid"><button class="emo" data-e="❤️">❤️</button><button class="emo" data-e="🔥">🔥</button><button class="emo" data-e="✨">✨</button><button class="emo" data-e="🌅">🌅</button><button class="emo" data-e="🌙">🌙</button><button class="emo" data-e="⭐">⭐</button><button class="emo" data-e="💫">💫</button><button class="emo" data-e="🌸">🌸</button><button class="emo" data-e="🌊">🌊</button><button class="emo" data-e="🍃">🍃</button><button class="emo" data-e="🌿">🌿</button><button class="emo" data-e="🌻">🌻</button><button class="emo" data-e="🦋">🦋</button><button class="emo" data-e="☁️">☁️</button><button class="emo" data-e="☀️">☀️</button><button class="emo" data-e="🌈">🌈</button><button class="emo" data-e="💛">💛</button><button class="emo" data-e="🤍">🤍</button><button class="emo" data-e="🖤">🖤</button><button class="emo" data-e="💔">💔</button><button class="emo" data-e="🥀">🥀</button><button class="emo" data-e="😭">😭</button><button class="emo" data-e="😂">😂</button><button class="emo" data-e="🥹">🥹</button><button class="emo" data-e="😍">😍</button><button class="emo" data-e="🤩">🤩</button><button class="emo" data-e="😎">😎</button><button class="emo" data-e="🙃">🙃</button><button class="emo" data-e="😌">😌</button><button class="emo" data-e="🫶">🫶</button><button class="emo" data-e="🙏">🙏</button><button class="emo" data-e="👀">👀</button><button class="emo" data-e="💯">💯</button><button class="emo" data-e="✅">✅</button><button class="emo" data-e="❌">❌</button><button class="emo" data-e="⚡">⚡</button><button class="emo" data-e="🎧">🎧</button><button class="emo" data-e="📸">📸</button><button class="emo" data-e="🎮">🎮</button><button class="emo" data-e="🏀">🏀</button><button class="emo" data-e="⚽">⚽</button><button class="emo" data-e="🚗">🚗</button><button class="emo" data-e="✈️">✈️</button><button class="emo" data-e="🏔️">🏔️</button><button class="emo" data-e="🌴">🌴</button><button class="emo" data-e="🍕">🍕</button><button class="emo" data-e="☕">☕</button><button class="emo" data-e="🎂">🎂</button><button class="emo" data-e="🎉">🎉</button><button class="emo" data-e="🎁">🎁</button><button class="emo" data-e="💐">💐</button><button class="emo" data-e="🐶">🐶</button><button class="emo" data-e="🐱">🐱</button><button class="emo" data-e="👑">👑</button><button class="emo" data-e="💎">💎</button><button class="emo" data-e="🔒">🔒</button><button class="emo" data-e="📍">📍</button><button class="emo" data-e="⏳">⏳</button><button class="emo" data-e="💭">💭</button><button class="emo" data-e="💤">💤</button><button class="emo" data-e="🕊️">🕊️</button><button class="emo" data-e="🍂">🍂</button><button class="emo" data-e="🌹">🌹</button><button class="emo" data-e="🌍">🌍</button></div>
+        <p class="hint">Tap to add. Drag to move, pinch to resize, and stretch it with the Width and Height sliders.</p>
+      </div>
+
+      <div class="panel" data-panel="13" hidden>
+        <div class="opts" id="frameStyle">
+          <button class="opt" data-fs="none" aria-pressed="true">None</button>
+          <button class="opt" data-fs="border" aria-pressed="false">Border</button>
+          <button class="opt" data-fs="polaroid" aria-pressed="false">Polaroid</button>
+        </div>
+        <div class="row"><span>Thickness</span><input id="frw" type="range" min="0" max="160" value="40"><output id="frwo"></output></div>
+        <div class="row"><span>Corners</span><input id="frr" type="range" min="0" max="140" value="0"><output id="frro"></output></div>
+        <div class="swatches" id="frameCol">
+          <button class="sw" data-c="#ffffff" style="--c:#ffffff" aria-label="White" aria-pressed="true"></button>
+          <button class="sw" data-c="#f3ede2" style="--c:#f3ede2" aria-label="Cream" aria-pressed="false"></button>
+          <button class="sw" data-c="#000000" style="--c:#000000" aria-label="Black" aria-pressed="false"></button>
+          <button class="sw" data-c="#f7ce46" style="--c:#f7ce46" aria-label="Yellow" aria-pressed="false"></button>
+          <button class="sw" data-c="#ffc8dd" style="--c:#ffc8dd" aria-label="Pink" aria-pressed="false"></button>
+          <button class="sw" data-c="#9ad1d4" style="--c:#9ad1d4" aria-label="Sea" aria-pressed="false"></button>
+          <label class="sw custom" aria-label="Custom colour"><input type="color" id="frameCustom" value="#c8b6a6"></label>
+        </div>
+      </div>
+
+      <div class="panel" data-panel="14" hidden>
+        <div class="opts" id="ratioPick">
+          <button class="opt" data-k="9:16" aria-pressed="true">9:16 TikTok</button>
+          <button class="opt" data-k="4:5" aria-pressed="false">4:5 Insta</button>
+          <button class="opt" data-k="1:1" aria-pressed="false">1:1</button>
+          <button class="opt" data-k="3:4" aria-pressed="false">3:4</button>
+          <button class="opt" data-k="16:9" aria-pressed="false">16:9 YouTube</button>
+        </div>
+        <p class="hint" id="canvasHint">Exports at 1080 × 1920</p>
       </div>
 
       <div class="panel" data-panel="6" hidden>
@@ -593,10 +739,10 @@ textarea:focus{outline:none;border-color:var(--fg2)}
   <nav class="toolbar" role="tablist" aria-label="Tools">
     <button class="tool" role="tab" data-tab="0" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="5" width="8" height="14" rx="1.5"/><path d="M2 12h4m-2-2 2 2-2 2M22 12h-4m2-2-2 2 2 2"/></svg>Stretch</button>
     <button class="tool" role="tab" data-tab="1" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7V5h14v2M12 5v14M9 19h6"/></svg>Text</button>
+    <button class="tool" id="toolQuotes" aria-label="Quotes"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6.2C6.6 7.3 4.6 10 4.6 13.6V18h5.2v-5.2H7.2c.2-2 1.3-3.4 3.2-4.2zM19.4 6.2c-3.4 1.1-5.4 3.8-5.4 7.4V18h5.2v-5.2h-2.6c.2-2 1.3-3.4 3.2-4.2z"/></svg>Quotes</button>
     <button class="tool" role="tab" data-tab="6" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9.5" r="5.5"/><circle cx="15" cy="9.5" r="5.5"/><circle cx="12" cy="14.5" r="5.5"/></svg>Filters</button>
-    <button class="tool" role="tab" data-tab="2" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Adjust</button>
     <button class="tool" role="tab" data-tab="4" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5z"/><path d="m3 13 9 5 9-5"/></svg>Backdrop</button>
-    <button class="tool" role="tab" data-tab="5" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M15.5 9.5a3.5 3.5 0 1 0 0 5"/><path d="M15.5 9v4.2c0 1 .7 1.6 1.5 1.6"/></svg>Mark</button>
+    <button class="tool" role="tab" data-tab="7" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>Tools</button>
   </nav>
 </div>
 
@@ -683,16 +829,22 @@ textarea:focus{outline:none;border-color:var(--fg2)}
 
 <script src="quotes.js"></script>
 <script>
-const W=1080,H=1920;
+const W=1080;let H=1920;
 const TT_YELLOW='#f7ce46';
 const FONTS={tiktok:{family:'"TikTok Sans"',weight:900},bold:{family:'Montserrat',weight:900},tall:{family:'Anton',weight:400}};
-const TOOLS={0:'Stretch',1:'Text',2:'Adjust',4:'Backdrop',5:'Watermark',6:'Filters'};
-const DEF={sw:178,sh:100,blur:0,bgblur:50,bgbr:80,bri:100,con:100,sat:100,fint:100,anchor:'right',bgmode:'blur',flip:false,filter:'none'};
-const SLIDERS=['sw','sh','blur','bgblur','bgbr','bri','con','sat','fint'];
+const TOOLS={0:'Stretch',1:'Text',2:'Adjust',4:'Backdrop',5:'Watermark',6:'Filters',7:'Tools',8:'Crop & rotate',9:'Focus blur',10:'Effects',11:'Draw',12:'Stickers',13:'Frame',14:'Canvas size'};
+const GRID=new Set([2,5,8,9,10,11,12,13,14]);
+const DEF={sw:178,sh:100,blur:0,bgblur:50,bgbr:80,bri:100,con:100,sat:100,fint:100,anchor:'right',bgmode:'blur',flip:false,filter:'none',
+  hi:0,shd:0,wht:0,blk:0,fade:0,temp:0,tint:0,vib:0,hue:0,sharp:0,clar:0,grain:0,vig:0,leak:60,fblur:14,fsize:40,fx:50,fy:50,frw:40,frr:0,str:0,
+  rot:0,flipV:false,crop:null,cropR:'free',ratio:'9:16',focus:'off',leakS:'none',frameS:'none',frameC:'#ffffff',strokes:[]};
+const SLIDERS=['sw','sh','blur','bgblur','bgbr','bri','con','sat','fint','hi','shd','wht','blk','fade','temp','tint','vib','hue','sharp','clar','grain','vig','leak','fblur','fsize','fx','fy','frw','frr','str'];
 const $=id=>document.getElementById(id);
 const cv=$('cv'),ctx=cv.getContext('2d');
 const thumbCv=Object.assign(document.createElement('canvas'),{width:216,height:384}),tctx=thumbCv.getContext('2d');
 const Cap=window.Capacitor, native=!!(Cap&&Cap.isNativePlatform&&Cap.isNativePlatform());
+let rot=0,flipV=false,crop=null,cropR='free',ratio='9:16',focusMode='off',leakS='none',frameS='none',frameC='#ffffff',strokes=[];
+let cropMode=false,drawMode=false,compareHold=false,fastPreview=false;
+const sv=k=>+$(k).value;
 let curFilter='none',img=null,imgBlob=null,anchor='right',bgmode='blur',flip=false,x=0,y=0,prevW=0,prevH=0;
 let texts=[],sel=null,exporting=false,tab=-1;
 let proj=null,loading=false,saving=false,saveT=null;
@@ -762,9 +914,14 @@ $('mRename').addEventListener('submit',async e=>{e.preventDefault();const p=menu
 function setControls(s){
   s={...DEF,...(s||{})};SLIDERS.forEach(k=>$(k).value=s[k]);
   anchor=s.anchor;bgmode=s.bgmode;flip=!!s.flip;curFilter=FILTERS[s.filter]?s.filter:'none';
+  rot=s.rot||0;flipV=!!s.flipV;crop=s.crop?{...s.crop}:null;cropR=s.cropR||'free';focusMode=s.focus||'off';leakS=s.leakS||'none';
+  frameS=s.frameS||'none';frameC=s.frameC||'#ffffff';strokes=(s.strokes||[]).map(t=>({...t,pts:t.pts.slice()}));
+  setCanvasRatio(s.ratio||'9:16',false);
   press('anchor','a',anchor);press('bgmode','m',bgmode);$('flip').setAttribute('aria-pressed',flip);syncFx();
+  press('cropRatio','r',cropR);press('focusMode','m2',focusMode);press('leakPick','l',leakS);press('frameStyle','fs',frameS);
+  $('frameCol').querySelectorAll('.sw[data-c]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.c===frameC));
 }
-function snapshot(){const s={anchor,bgmode,flip,filter:curFilter,x,y,texts:texts.map(t=>({...t}))};SLIDERS.forEach(k=>s[k]=+$(k).value);return s;}
+function snapshot(){const s={anchor,bgmode,flip,filter:curFilter,rot,flipV,crop:crop?{...crop}:null,cropR,ratio,focus:focusMode,leakS,frameS,frameC,strokes:strokes.map(t=>({...t,pts:t.pts.slice()})),x,y,texts:texts.map(t=>({...t}))};SLIDERS.forEach(k=>s[k]=+$(k).value);return s;}
 function showScreen(ed){$('editor').hidden=!ed;$('home').hidden=ed;if(ed)requestAnimationFrame(fit);syncChrome();}
 function loadImage(blob){
   if(imgCache.has(blob))return Promise.resolve(imgCache.get(blob));
@@ -783,7 +940,7 @@ async function openProject(p){
 function touch(){if(!proj||loading||saving)return;clearTimeout(saveT);saveT=setTimeout(saveNow,600);clearTimeout(histT);histT=setTimeout(pushHist,350);}
 async function saveNow(){
   if(!proj)return;clearTimeout(saveT);
-  saving=true;exporting=true;draw();tctx.drawImage(cv,0,0,thumbCv.width,thumbCv.height);exporting=false;draw();saving=false;
+  saving=true;exporting=true;draw();thumbCv.height=Math.round(216*H/W);tctx.drawImage(cv,0,0,thumbCv.width,thumbCv.height);exporting=false;draw();saving=false;
   Object.assign(proj,{state:snapshot(),thumb:thumbCv.toDataURL('image/jpeg',.75),updated:Date.now(),img:imgBlob});
   try{await dbPut(proj);}catch(e){toast('Couldn’t save draft');}
 }
@@ -827,20 +984,28 @@ document.addEventListener('keydown',e=>{if($('editor').hidden||e.target.tagName=
 /* ---------- layout ---------- */
 function fit(){
   const r=$('stage').getBoundingClientRect();if(!r.width)return;
-  const aw=r.width-28,ah=r.height-28;let h=ah,w=h*9/16;if(w>aw){w=aw;h=w*16/9;}
+  const aw=r.width-28,ah=r.height-28;let h=ah,w=h*W/H;if(w>aw){w=aw;h=w*H/W;}
   $('frame').style.width=Math.max(0,Math.floor(w))+'px';$('frame').style.height=Math.max(0,Math.floor(h))+'px';
 }
 new ResizeObserver(fit).observe($('stage'));
 
 /* ---------- drawing ---------- */
-function size(){const b=W/img.width;return{w:img.width*b*$('sw').value/100,h:img.height*b*$('sh').value/100};}
+function geoAspect(){if(!img)return 1;const r90=rot%2===1;let gw=r90?img.height:img.width,gh=r90?img.width:img.height;if(crop){gw*=crop.w;gh*=crop.h;}return gh/gw;}
+function size(){return{w:W*sv('sw')/100,h:W*geoAspect()*sv('sh')/100};}
 function place(){if(!img)return;const{w,h}=size();x=anchor==='left'?W-w:anchor==='right'?0:(W-w)/2;y=(H-h)/2;prevW=w;prevH=h;draw();}
+const UNITS={sw:'%',sh:'%',bgbr:'%',tsw:'%',tsh:'%',wmOp:'%',wmSize:'%',fint:'%'};
 function labels(){
-  [['sw','%'],['sh','%'],['blur',''],['bgblur',''],['bgbr','%'],['bri','%'],['con','%'],['sat','%'],['tsz',''],['tsw','%'],['tsh','%'],['wmOp','%'],['wmSize','%'],['fint','%']].forEach(([k,u])=>$(k+'o').textContent=$(k).value+u);
-  document.querySelectorAll('input[type=range]').forEach(el=>el.style.setProperty('--p',(el.value-el.min)/(el.max-el.min)*100+'%'));
+  document.querySelectorAll('input[type=range]').forEach(el=>{
+    const v=+el.value,o=$(el.id+'o'),u=el.dataset.u||UNITS[el.id]||'';
+    if(o)o.textContent=(el.dataset.bi&&v>0?'+':'')+v+u;
+    const span=el.max-el.min,p=(v-el.min)/span*100;
+    if(el.dataset.bi||el.dataset.zero!=null){const z=((el.dataset.zero!=null?+el.dataset.zero:0)-el.min)/span*100;el.style.setProperty('--a',Math.min(z,p)+'%');el.style.setProperty('--b',Math.max(z,p)+'%');}
+    else el.style.setProperty('--p',p+'%');
+  });
 }
 function isLight(hex){const n=parseInt(hex.slice(1),16);return((n>>16)*299+(n>>8&255)*587+(n&255)*114)/1000>150;}
-function setFont(t){const f=FONTS[t.font];ctx.font=`${f.weight} ${t.size}px ${f.family}, sans-serif`;}
+const EMOFONT='"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif';
+function setFont(t){if(t.kind==='emoji'){ctx.font=`${t.size}px ${EMOFONT}`;return;}const f=FONTS[t.font]||FONTS.tiktok;ctx.font=`${f.weight} ${t.size}px ${f.family}, sans-serif`;}
 function metrics(t){setFont(t);const lines=(t.text||' ').split('\n'),lh=t.size*1.12,widths=lines.map(l=>ctx.measureText(l||' ').width);
   const pad=t.style==='box'?t.size*.28:t.style==='outline'?t.size*.12:t.size*.04;return{lines,lh,widths,pad,maxw:Math.max(...widths)};}
 function bounds(t){const m=metrics(t),w=(m.maxw+m.pad*2)*t.sx/100,h=(m.lines.length*m.lh+m.pad*.8)*t.sy/100;return{x:t.x-w/2,y:t.y-h/2,w,h};}
@@ -851,7 +1016,8 @@ function drawText(t){
   const total=m.lines.length*m.lh;
   if(t.style==='box'){ctx.fillStyle=t.color;m.lines.forEach((ln,i)=>{const ly=-total/2+m.lh*i,w=m.widths[i]+m.pad*2;rr(-w/2,ly-m.pad*.15,w,m.lh+m.pad*.3,t.size*.2);ctx.fill();});}
   m.lines.forEach((ln,i)=>{const ly=-total/2+m.lh*(i+.5)+t.size*.04;
-    if(t.style==='outline'){ctx.lineWidth=t.size*.17;ctx.strokeStyle=isLight(t.color)?'#000':'#fff';ctx.strokeText(ln,0,ly);ctx.fillStyle=t.color;ctx.fillText(ln,0,ly);}
+    if(t.kind==='emoji'){ctx.fillText(ln,0,ly);}
+    else if(t.style==='outline'){ctx.lineWidth=t.size*.17;ctx.strokeStyle=isLight(t.color)?'#000':'#fff';ctx.strokeText(ln,0,ly);ctx.fillStyle=t.color;ctx.fillText(ln,0,ly);}
     else if(t.style==='box'){ctx.fillStyle=isLight(t.color)?'#000':'#fff';ctx.fillText(ln,0,ly);}
     else{ctx.shadowColor='rgba(0,0,0,.6)';ctx.shadowBlur=t.size*.18;ctx.shadowOffsetY=t.size*.04;ctx.fillStyle=t.color;ctx.fillText(ln,0,ly);ctx.shadowColor='transparent';}});
   ctx.restore();
@@ -864,16 +1030,19 @@ function drawSelection(t){
 }
 function draw(){
   labels();
+  if(cropMode&&img&&!exporting){drawCropView();return;}
   ctx.filter='none';ctx.fillStyle=bgmode==='white'?'#fff':'#000';ctx.fillRect(0,0,W,H);
   if(img){
     const src=processed();
-    if(bgmode==='blur'){const s=Math.max(W/img.width,H/img.height)*1.15,bw=img.width*s,bh=img.height*s;
+    if(bgmode==='blur'){const s=Math.max(W/src.width,H/src.height)*1.15,bw=src.width*s,bh=src.height*s;
       ctx.filter=`blur(${$('bgblur').value}px) brightness(${$('bgbr').value/100})`;ctx.drawImage(src,(W-bw)/2,(H-bh)/2,bw,bh);}
     const{w,h}=size();
     ctx.filter=+$('blur').value?`blur(${$('blur').value}px)`:'none';
     if(flip){ctx.save();ctx.translate(x+w,y);ctx.scale(-1,1);ctx.drawImage(src,0,0,w,h);ctx.restore();}else ctx.drawImage(src,x,y,w,h);
     ctx.filter='none';
   }
+  strokes.forEach(paintStroke);
+  drawFrame();
   texts.forEach(drawText);
   drawWatermark();
   if(sel&&!exporting)drawSelection(sel);
@@ -914,26 +1083,180 @@ function bake(g,src,w,h,fk,inten,adj){
   g.globalCompositeOperation='source-over';g.globalAlpha=1;
 }
 const imgIds=new WeakMap();let imgN=0;const iid=o=>o?(imgIds.get(o)||(imgIds.set(o,++imgN),imgN)):0;
+/* ----- geometry: rotate, flip, straighten, crop ----- */
+const geoC={key:'',cv:null},fgC={key:'',cv:null};
+function geoBase(){return[iid(img),rot,flipV?1:0,sv('str')].join('|');}
+function fullGeo(cap){
+  const r90=rot%2===1,iw=img.width,ih=img.height,gw0=r90?ih:iw,gh0=r90?iw:ih;
+  const sc=Math.min(1,cap/Math.max(gw0,gh0)),gw=Math.round(gw0*sc),gh=Math.round(gh0*sc);
+  const a=sv('str')*Math.PI/180,ca=Math.abs(Math.cos(a)),sa=Math.abs(Math.sin(a));
+  const kk=a?Math.max((gw*ca+gh*sa)/gw,(gw*sa+gh*ca)/gh):1;
+  const c=document.createElement('canvas');c.width=gw;c.height=gh;const g=c.getContext('2d');
+  g.translate(gw/2,gh/2);if(flipV)g.scale(1,-1);g.rotate(rot*Math.PI/2+a);g.scale(kk,kk);
+  g.drawImage(img,-iw*sc/2,-ih*sc/2,iw*sc,ih*sc);return c;
+}
+function fullGeoC(){const key=geoBase();if(fgC.key!==key){fgC.cv=fullGeo(1400);fgC.key=key;}return fgC.cv;}
+function geoSrc(cap){
+  if(!rot&&!flipV&&!sv('str')&&!crop)return img;
+  const key=geoBase()+'|'+(crop?[crop.x,crop.y,crop.w,crop.h].map(v=>v.toFixed(4)).join(','):'full')+'|'+cap;
+  if(geoC.key===key)return geoC.cv;
+  const f=fullGeo(cap);let out=f;
+  if(crop){const cx=Math.round(crop.x*f.width),cy=Math.round(crop.y*f.height),cw=Math.max(1,Math.round(crop.w*f.width)),ch=Math.max(1,Math.round(crop.h*f.height));
+    out=document.createElement('canvas');out.width=cw;out.height=ch;out.getContext('2d').drawImage(f,cx,cy,cw,ch,0,0,cw,ch);}
+  geoC.key=key;geoC.cv=out;return out;
+}
+/* ----- tone, colour, detail, effects, focus ----- */
+function toneLUT(){
+  const hi=sv('hi')/100,sh=sv('shd')/100,wh=sv('wht')/100,bl=sv('blk')/100,fa=sv('fade')/100,L=new Uint8ClampedArray(256);
+  for(let i=0;i<256;i++){let t=i/255;
+    t+=sh*1.2*t*(1-t)*(1-t);t+=hi*1.2*t*t*(1-t);t+=wh*.25*t*t*t;t+=bl*.25*(1-t)*(1-t)*(1-t);
+    t=t*(1-fa*.22)+fa*.14;L[i]=Math.round(Math.min(1,Math.max(0,t))*255);}
+  return L;
+}
+function tonePass(g,w,h){
+  const d=g.getImageData(0,0,w,h),p=d.data,L=toneLUT(),te=sv('temp')/100*28,ti=sv('tint')/100*22,vb=sv('vib')/100;
+  for(let i=0;i<p.length;i+=4){
+    let r=L[p[i]],gg=L[p[i+1]],b=L[p[i+2]];
+    if(te){r+=te;b-=te;}
+    if(ti){gg-=ti;r+=ti*.35;b+=ti*.35;}
+    if(vb){const mx=Math.max(r,gg,b),mn=Math.min(r,gg,b),a=vb*(1-(mx-mn)/255)*1.1,avg=(r+gg+b)/3;r+=(r-avg)*a;gg+=(gg-avg)*a;b+=(b-avg)*a;}
+    p[i]=r;p[i+1]=gg;p[i+2]=b;
+  }
+  g.putImageData(d,0,0);
+}
+function padBlur(src,w,h,r){
+  const m=Math.ceil(r*2)+2,W2=w+2*m,H2=h+2*m,pc=document.createElement('canvas');pc.width=W2;pc.height=H2;const g=pc.getContext('2d');
+  g.drawImage(src,m,m,w,h);g.drawImage(src,0,0,1,src.height,0,m,m,h);g.drawImage(src,src.width-1,0,1,src.height,m+w,m,m,h);
+  g.drawImage(pc,0,m,W2,1,0,0,W2,m);g.drawImage(pc,0,m+h-1,W2,1,0,m+h,W2,m);
+  const o=document.createElement('canvas');o.width=w;o.height=h;const og=o.getContext('2d');og.filter=`blur(${r}px)`;og.drawImage(pc,-m,-m);og.filter='none';return o;
+}
+function detailPass(g,c,w,h){
+  const sharp=sv('sharp')/100,clar=sv('clar')/100,d=g.getImageData(0,0,w,h),p=d.data;
+  const b1=sharp?padBlur(c,w,h,Math.max(1,w/900)).getContext('2d').getImageData(0,0,w,h).data:null;
+  const b2=clar?padBlur(c,w,h,Math.max(6,w/60)).getContext('2d').getImageData(0,0,w,h).data:null;
+  for(let i=0;i<p.length;i+=4){
+    const r0=p[i],g0=p[i+1],bb0=p[i+2];let r=r0,gg=g0,b=bb0;
+    if(b1){const a=sharp*1.6;r+=(r0-b1[i])*a;gg+=(g0-b1[i+1])*a;b+=(bb0-b1[i+2])*a;}
+    if(b2){const l=(r0*.3+g0*.59+bb0*.11)/255,m=4*l*(1-l)*clar*.9;r+=(r0-b2[i])*m;gg+=(g0-b2[i+1])*m;b+=(bb0-b2[i+2])*m;}
+    p[i]=r;p[i+1]=gg;p[i+2]=b;
+  }
+  g.putImageData(d,0,0);
+}
+const LEAKS={warm:[['#ff7a18',0,0],['#ffd166',1,.2]],rose:[['#ff5fa2',0,.1],['#ffb199',1,0]],gold:[['#ffb703',.1,0],['#fb8500',1,.35]],blue:[['#4cc9f0',0,0],['#7b61ff',1,.25]]};
+function effectsPass(g,w,h){
+  const gr=sv('grain')/100,vg=sv('vig')/100,lk=sv('leak')/100;
+  if(leakS!=='none'&&lk){g.globalCompositeOperation='screen';
+    LEAKS[leakS].forEach(([col,fx,fy])=>{const rad=Math.max(w,h)*.8,x2=g.createRadialGradient(fx*w,fy*h,0,fx*w,fy*h,rad);x2.addColorStop(0,col);x2.addColorStop(1,'rgba(0,0,0,0)');g.globalAlpha=.7*lk;g.fillStyle=x2;g.fillRect(0,0,w,h);});}
+  if(gr){g.globalCompositeOperation='overlay';g.globalAlpha=gr*.55;g.fillStyle=g.createPattern(grainTex(),'repeat');g.fillRect(0,0,w,h);}
+  if(vg){g.globalCompositeOperation='source-over';g.globalAlpha=1;const r=Math.hypot(w,h)/2,x2=g.createRadialGradient(w/2,h/2,r*.35,w/2,h/2,r),col=vg>0?'0,0,0':'255,255,255';
+    x2.addColorStop(0,`rgba(${col},0)`);x2.addColorStop(1,`rgba(${col},${Math.abs(vg)*.85})`);g.fillStyle=x2;g.fillRect(0,0,w,h);}
+  g.globalCompositeOperation='source-over';g.globalAlpha=1;
+}
+function focusPass(c,g,w,h){
+  const amt=sv('fblur')*(Math.max(w,h)/1600),size=sv('fsize')/100,fx=sv('fx')/100,fy=sv('fy')/100;
+  const sh=document.createElement('canvas');sh.width=w;sh.height=h;const sg=sh.getContext('2d');sg.drawImage(c,0,0);
+  sg.globalCompositeOperation='destination-in';let m;
+  if(focusMode==='radial'){const R=Math.max(w,h)*size*.55;m=sg.createRadialGradient(fx*w,fy*h,R*.45,fx*w,fy*h,R*1.2);m.addColorStop(0,'#000');m.addColorStop(1,'rgba(0,0,0,0)');}
+  else{const band=h*size*.45,y0=fy*h-band*1.7,y1=fy*h+band*1.7;m=sg.createLinearGradient(0,y0,0,y1);m.addColorStop(0,'rgba(0,0,0,0)');m.addColorStop(.2,'#000');m.addColorStop(.8,'#000');m.addColorStop(1,'rgba(0,0,0,0)');}
+  sg.fillStyle=m;sg.fillRect(0,0,w,h);
+  const bl=padBlur(c,w,h,Math.max(1,amt));g.drawImage(bl,0,0);g.drawImage(sh,0,0);
+}
 const proc={key:'',cv:null};
 function processed(){
-  const bri=+$('bri').value,con=+$('con').value,sat=+$('sat').value,inten=+$('fint').value/100;
-  const plainAdj=bri===100&&con===100&&sat===100;
-  if((curFilter==='none'||inten===0)&&plainAdj)return img;
-  const key=iid(img)+'|'+curFilter+'|'+inten+'|'+bri+'|'+con+'|'+sat;
+  const cap=(fastPreview&&!exporting)?900:1600,g0=geoSrc(cap);
+  if(compareHold&&!exporting)return g0;
+  const inten=sv('fint')/100,bri=sv('bri'),con=sv('con'),sat=sv('sat'),hue=sv('hue');
+  const cssAdj=(bri!==100||con!==100||sat!==100||hue!==0)?`brightness(${bri/100}) contrast(${con/100}) saturate(${sat/100})${hue?` hue-rotate(${hue}deg)`:''}`:'';
+  const tone=sv('hi')||sv('shd')||sv('wht')||sv('blk')||sv('fade')||sv('temp')||sv('tint')||sv('vib');
+  const det=sv('sharp')||sv('clar'),eff=sv('grain')||sv('vig')||(leakS!=='none'&&sv('leak')),foc=focusMode!=='off'&&sv('fblur')>0,fil=curFilter!=='none'&&inten>0;
+  if(!cssAdj&&!tone&&!det&&!eff&&!foc&&!fil)return g0;
+  const key=iid(g0)+'|'+cap+'|'+curFilter+'|'+leakS+'|'+focusMode+'|'+['bri','con','sat','hue','hi','shd','wht','blk','fade','temp','tint','vib','sharp','clar','grain','vig','leak','fblur','fsize','fx','fy','fint'].map(sv).join(',');
   if(proc.key===key&&proc.cv)return proc.cv;
-  const sc=Math.min(1,1600/Math.max(img.width,img.height)),w=Math.round(img.width*sc),h=Math.round(img.height*sc);
-  const c=proc.cv||document.createElement('canvas');c.width=w;c.height=h;
-  bake(c.getContext('2d'),img,w,h,curFilter,inten,plainAdj?'':`brightness(${bri/100}) contrast(${con/100}) saturate(${sat/100})`);
+  const sc=Math.min(1,cap/Math.max(g0.width,g0.height)),w=Math.round(g0.width*sc),h=Math.round(g0.height*sc);
+  const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d',{willReadFrequently:true});
+  bake(g,g0,w,h,curFilter,fil?inten:0,cssAdj);
+  if(tone)tonePass(g,w,h);
+  if(det)detailPass(g,c,w,h);
+  if(eff)effectsPass(g,w,h);
+  if(foc)focusPass(c,g,w,h);
   proc.key=key;proc.cv=c;return c;
+}
+/* ----- crop view ----- */
+let cropDrag=null,cropStart='';
+const CROPR={'1:1':1,'4:5':.8,'3:4':.75,'9:16':9/16,'16:9':16/9};
+function cropRatioVal(){if(cropR==='orig'){const f=fullGeoC();return f.width/f.height;}return CROPR[cropR]||0;}
+function cropLayout(){const f=fullGeoC(),m=70,s=Math.min((W-2*m)/f.width,(H-2*m)/f.height),dw=f.width*s,dh=f.height*s;return{f,dw,dh,ox:(W-dw)/2,oy:(H-dh)/2};}
+function drawCropView(){
+  const L=cropLayout(),c=crop||{x:0,y:0,w:1,h:1};
+  ctx.filter='none';ctx.fillStyle='#0b0b0c';ctx.fillRect(0,0,W,H);ctx.drawImage(L.f,L.ox,L.oy,L.dw,L.dh);
+  const rx=L.ox+c.x*L.dw,ry=L.oy+c.y*L.dh,rw=c.w*L.dw,rh=c.h*L.dh;
+  ctx.save();ctx.fillStyle='rgba(0,0,0,.62)';ctx.beginPath();ctx.rect(L.ox,L.oy,L.dw,L.dh);ctx.rect(rx,ry,rw,rh);ctx.fill('evenodd');
+  ctx.strokeStyle='rgba(255,255,255,.45)';ctx.lineWidth=2;ctx.beginPath();
+  for(let i=1;i<3;i++){ctx.moveTo(rx+rw*i/3,ry);ctx.lineTo(rx+rw*i/3,ry+rh);ctx.moveTo(rx,ry+rh*i/3);ctx.lineTo(rx+rw,ry+rh*i/3);}ctx.stroke();
+  ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.strokeRect(rx,ry,rw,rh);ctx.lineWidth=10;ctx.lineCap='square';const k2=48;
+  [[rx,ry,1,1],[rx+rw,ry,-1,1],[rx,ry+rh,1,-1],[rx+rw,ry+rh,-1,-1]].forEach(([px,py,dx,dy])=>{ctx.beginPath();ctx.moveTo(px,py+dy*k2);ctx.lineTo(px,py);ctx.lineTo(px+dx*k2,py);ctx.stroke();});
+  ctx.restore();
+}
+function cropDown(e){
+  const p=toCanvas(e),L=cropLayout(),c=crop||{x:0,y:0,w:1,h:1},rx=L.ox+c.x*L.dw,ry=L.oy+c.y*L.dh,rw=c.w*L.dw,rh=c.h*L.dh,T=80;
+  const C={tl:[rx,ry],tr:[rx+rw,ry],bl:[rx,ry+rh],br:[rx+rw,ry+rh]};let mode=null;
+  for(const k2 in C){if(Math.abs(p.x-C[k2][0])<T&&Math.abs(p.y-C[k2][1])<T){mode=k2;break;}}
+  if(!mode&&p.x>rx&&p.x<rx+rw&&p.y>ry&&p.y<ry+rh)mode='move';
+  if(mode)cropDrag={mode,p0:p,c0:{...c},L};
+}
+function cropMove(e){
+  const p=toCanvas(e),{mode,p0,c0,L}=cropDrag,dx=(p.x-p0.x)/L.dw,dy=(p.y-p0.y)/L.dh;let c={...c0};
+  if(mode==='move'){c.x=Math.min(1-c.w,Math.max(0,c0.x+dx));c.y=Math.min(1-c.h,Math.max(0,c0.y+dy));}
+  else{
+    let x0=c0.x,y0=c0.y,x1=c0.x+c0.w,y1=c0.y+c0.h;
+    if(mode[1]==='l')x0=Math.min(x1-.06,Math.max(0,x0+dx));else x1=Math.max(x0+.06,Math.min(1,x1+dx));
+    if(mode[0]==='t')y0=Math.min(y1-.06,Math.max(0,y0+dy));else y1=Math.max(y0+.06,Math.min(1,y1+dy));
+    c={x:x0,y:y0,w:x1-x0,h:y1-y0};
+    const Rt=cropRatioVal();
+    if(Rt){const fw=L.f.width,fh=L.f.height;let pw=c.w*fw,ph=pw/Rt;const maxH=(mode[0]==='t'?y1:1-y0)*fh;if(ph>maxH){ph=maxH;pw=ph*Rt;}
+      c.w=pw/fw;c.h=ph/fh;if(mode[1]==='l')c.x=x1-c.w;if(mode[0]==='t')c.y=y1-c.h;}
+  }
+  crop=c;draw();
+}
+function applyCropRatio(){
+  const Rt=cropRatioVal();if(!Rt||cropR==='orig'){if(cropR==='orig')crop=null;draw();return;}
+  const f=fullGeoC(),fa=f.width/f.height;let w=1,h=1;if(Rt>fa)h=fa/Rt;else w=Rt/fa;crop={x:(1-w)/2,y:(1-h)/2,w,h};draw();
+}
+function geoSig(){return geoBase()+'|'+(crop?JSON.stringify(crop):'')+'|'+flip;}
+function enterCrop(){cropMode=true;cropStart=geoSig();}
+function leaveCrop(){cropMode=false;cropDrag=null;if(crop&&crop.w>.995&&crop.h>.995&&crop.x<.005&&crop.y<.005)crop=null;if(img&&geoSig()!==cropStart)place();}
+/* ----- frame ----- */
+function drawFrame(){
+  if(frameS==='none')return;const fw=sv('frw'),r=sv('frr');if(!fw&&!r)return;
+  const fb=frameS==='polaroid'?fw*3+70:fw;ctx.save();ctx.fillStyle=frameC;ctx.beginPath();ctx.rect(0,0,W,H);
+  const iw=W-fw*2,ih=H-fw-fb;if(ctx.roundRect)ctx.roundRect(fw,fw,iw,ih,Math.min(r,iw/2,ih/2));else ctx.rect(fw,fw,iw,ih);
+  ctx.fill('evenodd');ctx.restore();
+}
+/* ----- drawing ----- */
+let brush={type:'pen',c:'#f7ce46'},curStroke=null;
+function paintStroke(st){
+  const p=st.pts;if(p.length<2)return;ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
+  const path=()=>{ctx.beginPath();ctx.moveTo(p[0],p[1]);for(let i=2;i<p.length-2;i+=2){ctx.quadraticCurveTo(p[i],p[i+1],(p[i]+p[i+2])/2,(p[i+1]+p[i+3])/2);}ctx.lineTo(p[p.length-2],p[p.length-1]);};
+  if(st.t==='neon'){ctx.shadowColor=st.c;ctx.shadowBlur=st.w*1.8;ctx.strokeStyle=st.c;ctx.lineWidth=st.w;path();ctx.stroke();ctx.stroke();ctx.shadowBlur=0;ctx.strokeStyle='rgba(255,255,255,.92)';ctx.lineWidth=st.w*.35;path();ctx.stroke();}
+  else if(st.t==='marker'){ctx.globalAlpha=.45;ctx.lineCap='butt';ctx.strokeStyle=st.c;ctx.lineWidth=st.w*1.9;path();ctx.stroke();}
+  else{ctx.strokeStyle=st.c;ctx.lineWidth=st.w;path();ctx.stroke();}
+  ctx.restore();
+}
+/* ----- canvas size ----- */
+const RATIOS={'9:16':[9,16],'4:5':[4,5],'1:1':[1,1],'3:4':[3,4],'16:9':[16,9]};
+function setCanvasRatio(r,rescale){
+  if(!RATIOS[r])r='9:16';const[a,b]=RATIOS[r],nh=Math.round(W*b/a);
+  if(rescale&&nh!==H){const k3=nh/H;texts.forEach(t=>t.y*=k3);strokes.forEach(st=>{for(let i=1;i<st.pts.length;i+=2)st.pts[i]*=k3;});}
+  ratio=r;H=nh;if(cv.height!==H)cv.height=H;press('ratioPick','k',r);$('canvasHint').textContent=`Exports at ${W} × ${H}`;requestAnimationFrame(fit);
 }
 let fxFor=0;
 function renderFx(){
   const strip=$('fxStrip');$('fxHint').hidden=!!img;strip.hidden=!img;
   if(!img){$('fxIntRow').hidden=true;return;}
-  const id=iid(img);
+  const src=geoSrc(900),id=iid(src)+'|'+geoSig();
   if(fxFor!==id){
     const tw=132,th=184,base=document.createElement('canvas');base.width=tw;base.height=th;const bg=base.getContext('2d');
-    const sc=Math.max(tw/img.width,th/img.height),dw=img.width*sc,dh=img.height*sc;bg.drawImage(img,(tw-dw)/2,(th-dh)/2,dw,dh);
+    const sc=Math.max(tw/src.width,th/src.height),dw=src.width*sc,dh=src.height*sc;bg.drawImage(src,(tw-dw)/2,(th-dh)/2,dw,dh);
     const t=document.createElement('canvas');t.width=tw;t.height=th;const tg=t.getContext('2d');
     strip.innerHTML=FXORDER.map(k=>{tg.clearRect(0,0,tw,th);bake(tg,base,tw,th,k,1,'');
       return `<button class="fx" data-fx="${k}" aria-pressed="false"><img src="${t.toDataURL('image/jpeg',.82)}" alt=""><span>${FILTERS[k].n}</span></button>`;}).join('');
@@ -1008,14 +1331,32 @@ syncWMUI();
 
 /* ---------- tool panel ---------- */
 function openPanel(n){
+  if(tab===8&&n!==8)leaveCrop();
   tab=n;$('panelwrap').hidden=false;$('ptitle').textContent=TOOLS[n];if(n===6)renderFx();
-  document.querySelectorAll('.tool').forEach(o=>o.setAttribute('aria-selected',+o.dataset.tab===n));
+  drawMode=n===11;if(n===8)enterCrop();$('pback').hidden=!GRID.has(n);
+  if(drawMode||cropMode){if(sel){sel=null;syncTextUI();}}
+  document.querySelectorAll('.tool[data-tab]').forEach(o=>o.setAttribute('aria-selected',+o.dataset.tab===n||(o.dataset.tab==='7'&&GRID.has(n))));
   document.querySelectorAll('.panel[data-panel]').forEach(p=>p.hidden=+p.dataset.panel!==n);
-  $('pbody').scrollTop=0;
+  $('pbody').scrollTop=0;draw();
 }
-function closePanel(){tab=-1;$('panelwrap').hidden=true;document.querySelectorAll('.tool').forEach(o=>o.setAttribute('aria-selected',false));
-  if(sel){sel=null;syncTextUI();}if(document.activeElement)document.activeElement.blur();}
-document.querySelectorAll('.tool').forEach(t=>t.addEventListener('click',()=>{const n=+t.dataset.tab;vibe();if(tab===n)closePanel();else openPanel(n);}));
+function closePanel(){if(tab===8)leaveCrop();tab=-1;drawMode=false;$('panelwrap').hidden=true;document.querySelectorAll('.tool').forEach(o=>o.setAttribute('aria-selected',false));
+  if(sel){sel=null;syncTextUI();}else draw();if(document.activeElement)document.activeElement.blur();}
+document.querySelectorAll('.tool[data-tab]').forEach(t=>t.addEventListener('click',()=>{const n=+t.dataset.tab;vibe();if(tab===n||(n===7&&GRID.has(tab)))closePanel();else openPanel(n);}));
+$('toolQuotes').onclick=()=>{vibe();openQuotes('editor');};
+$('pback').onclick=()=>{vibe();openPanel(7);};
+document.querySelectorAll('.tg[data-open]').forEach(b=>b.addEventListener('click',()=>{
+  const k=b.dataset.open;vibe();
+  if(k==='flip'){flip=!flip;$('flip').setAttribute('aria-pressed',flip);draw();toast(flip?'Flipped':'Unflipped');return;}
+  if(k==='resetall'){resetEdits();return;}
+  openPanel(+k);
+}));
+function resetEdits(){
+  const keep=['sw','sh','bgblur','bgbr','fint'];
+  SLIDERS.forEach(k=>{if(!keep.includes(k))$(k).value=DEF[k];});
+  curFilter='none';rot=0;flipV=false;crop=null;cropR='free';focusMode='off';leakS='none';frameS='none';
+  press('cropRatio','r',cropR);press('focusMode','m2',focusMode);press('leakPick','l',leakS);press('frameStyle','fs',frameS);syncFx();
+  if(img)place();draw();toast('Edits reset');
+}
 $('done').onclick=()=>{vibe();closePanel();};
 
 /* ---------- controls ---------- */
@@ -1023,19 +1364,52 @@ function press(id,key,val){$(id).querySelectorAll('button').forEach(o=>o.setAttr
 function group(id,key,cb){$(id).querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{press(id,key,b.dataset[key]);cb(b.dataset[key]);vibe();}));}
 ['sw','sh'].forEach(id=>$(id).addEventListener('input',()=>{if(!img)return;const{w,h}=size();
   if(anchor==='left')x-=w-prevW;else if(anchor==='center')x-=(w-prevW)/2;y-=(h-prevH)/2;prevW=w;prevH=h;draw();}));
-['blur','bgblur','bgbr','bri','con','sat','fint'].forEach(id=>$(id).addEventListener('input',draw));
+['bgblur','bgbr','frw','frr','bsz'].forEach(id=>$(id).addEventListener('input',draw));
+let drawQ=false;function drawSoon(){if(drawQ)return;drawQ=true;requestAnimationFrame(()=>{drawQ=false;draw();});}
+['blur','bri','con','sat','hue','hi','shd','wht','blk','fade','temp','tint','vib','sharp','clar','grain','vig','leak','fblur','fsize','fx','fy','fint','str'].forEach(id=>{
+  $(id).addEventListener('input',()=>{fastPreview=true;drawSoon();});
+  $(id).addEventListener('change',()=>{fastPreview=false;draw();});
+});
+document.querySelectorAll('.row output').forEach(o=>o.addEventListener('click',()=>{const el=$(o.id.slice(0,-1));if(!el)return;
+  const d=DEF[el.id]!=null?DEF[el.id]:el.defaultValue;el.value=d;el.dispatchEvent(new Event('input'));el.dispatchEvent(new Event('change'));vibe();}));
+$('adjTabs').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{press('adjTabs','g',b.dataset.g);document.querySelectorAll('.adjg').forEach(g=>g.hidden=g.dataset.g!==b.dataset.g);vibe();}));
+group('cropRatio','r',r=>{cropR=r;applyCropRatio();});
+$('rotL').onclick=()=>{rot=(rot+3)%4;crop=null;cropR='free';press('cropRatio','r',cropR);draw();vibe();};
+$('flipH2').onclick=()=>{flip=!flip;$('flip').setAttribute('aria-pressed',flip);draw();vibe();};
+$('flipV').onclick=()=>{flipV=!flipV;draw();vibe();};
+$('cropReset').onclick=()=>{rot=0;flipV=false;crop=null;cropR='free';$('str').value=0;press('cropRatio','r',cropR);draw();vibe();};
+group('focusMode','m2',m=>{focusMode=m;draw();});
+group('leakPick','l',l=>{leakS=l;draw();});
+group('frameStyle','fs',f=>{frameS=f;if(f!=='none'&&!sv('frw'))$('frw').value=40;draw();});
+$('frameCol').querySelectorAll('.sw[data-c]').forEach(b=>b.addEventListener('click',()=>{frameC=b.dataset.c;if(frameS==='none'){frameS='border';press('frameStyle','fs',frameS);}
+  $('frameCol').querySelectorAll('.sw[data-c]').forEach(o=>o.setAttribute('aria-pressed',o===b));draw();vibe();}));
+$('frameCustom').addEventListener('input',e=>{frameC=e.target.value;if(frameS==='none'){frameS='border';press('frameStyle','fs',frameS);}$('frameCol').querySelectorAll('.sw[data-c]').forEach(o=>o.setAttribute('aria-pressed',false));draw();});
+group('ratioPick','k',k=>{setCanvasRatio(k,true);if(img)place();draw();});
+group('brushPick','b',b=>{brush.type=b;});
+$('brushCol').querySelectorAll('.sw[data-c]').forEach(b=>b.addEventListener('click',()=>{brush.c=b.dataset.c;$('brushCol').querySelectorAll('.sw[data-c]').forEach(o=>o.setAttribute('aria-pressed',o===b));vibe();}));
+$('brushCustom').addEventListener('input',e=>{brush.c=e.target.value;$('brushCol').querySelectorAll('.sw[data-c]').forEach(o=>o.setAttribute('aria-pressed',false));});
+$('strokeUndo').onclick=()=>{if(strokes.length){strokes.pop();draw();vibe();}};
+$('strokeClear').onclick=()=>{if(strokes.length){strokes=[];draw();vibe();toast('Drawing cleared');}};
+$('emoGrid').querySelectorAll('.emo').forEach(b=>b.addEventListener('click',()=>{
+  const t={text:b.dataset.e,kind:'emoji',font:'tiktok',color:'#ffffff',style:'emoji',size:240,sx:100,sy:100,x:W/2+(Math.random()-.5)*200,y:H/2+(Math.random()-.5)*300};
+  texts.push(t);sel=t;syncTextUI();vibe();
+}));
+const cmp=$('compare');
+const cmpOn=e=>{if(!img)return;e.preventDefault();compareHold=true;draw();},cmpOff=()=>{if(compareHold){compareHold=false;draw();}};
+cmp.addEventListener('pointerdown',cmpOn);['pointerup','pointerleave','pointercancel'].forEach(ev=>cmp.addEventListener(ev,cmpOff));
+cmp.addEventListener('contextmenu',e=>e.preventDefault());
 group('anchor','a',a=>{anchor=a;place();});
 group('bgmode','m',m=>{bgmode=m;draw();});
-const fillPct=()=>Math.min(400,Math.round(H/(img.height*W/img.width)*100));
+const fillPct=()=>Math.min(400,Math.round(H/(W*geoAspect())*100));
 $('fillH').onclick=()=>{if(!img)return;$('sh').value=fillPct();place();vibe();};
 $('fillAll').onclick=()=>{if(!img)return;$('sw').value=100;$('sh').value=fillPct();place();vibe();};
 $('flip').onclick=()=>{flip=!flip;$('flip').setAttribute('aria-pressed',flip);draw();vibe();};
 $('reset').onclick=()=>{['sw','sh'].forEach(k=>$(k).value=DEF[k]);anchor=DEF.anchor;press('anchor','a',anchor);flip=false;$('flip').setAttribute('aria-pressed',false);place();draw();vibe();};
-$('adjReset').onclick=()=>{['bri','con','sat'].forEach(k=>$(k).value=100);draw();vibe();};
+$('adjReset').onclick=()=>{['bri','con','sat','hue','hi','shd','wht','blk','fade','temp','tint','vib','sharp','clar','blur'].forEach(k=>$(k).value=DEF[k]);fastPreview=false;draw();vibe();toast('Adjustments reset');};
 
 /* ---------- text ---------- */
 function syncTextUI(){
-  $('tnone').hidden=!!sel;$('tedit').hidden=!sel;
+  $('tnone').hidden=!!sel;$('tedit').hidden=!sel;$('tedit').classList.toggle('emoji',!!(sel&&sel.kind==='emoji'));
   if(sel){if(document.activeElement!==$('txt'))$('txt').value=sel.text;
     $('tsz').value=Math.round(sel.size);$('tsw').value=Math.round(sel.sx);$('tsh').value=Math.round(sel.sy);
     press('fontPick','f',sel.font);press('stylePick','s',sel.style);
@@ -1055,7 +1429,7 @@ $('addText').onclick=()=>addText();
 $('addText2').onclick=()=>addText(sel?{font:sel.font,color:sel.color,style:sel.style}:myStyle());
 $('delText').onclick=()=>{texts=texts.filter(t=>t!==sel);sel=null;syncTextUI();vibe();};
 function autoFit(t){const b=bounds(t),max=W*.92;if(b.w>max){t.size=Math.max(30,t.size*max/b.w);$('tsz').value=Math.round(t.size);}}
-$('txt').addEventListener('input',e=>{if(sel){sel.text=e.target.value;delete sel.cat;autoFit(sel);draw();}});
+$('txt').addEventListener('input',e=>{if(sel){sel.text=e.target.value;delete sel.cat;if(sel.kind!=='emoji')autoFit(sel);draw();}});
 $('colors').querySelectorAll('.sw[data-c]').forEach(b=>b.addEventListener('click',()=>{if(!sel)return;sel.color=b.dataset.c;rememberStyle(sel);syncTextUI();vibe();}));
 $('customColor').addEventListener('input',e=>{if(sel){sel.color=e.target.value;syncTextUI();}});
 group('fontPick','f',f=>{if(sel){sel.font=f;autoFit(sel);rememberStyle(sel);syncTextUI();}});
@@ -1081,8 +1455,16 @@ const pts=new Map();let start=null,lastTap=0,snapped=false;
 const k=()=>W/cv.getBoundingClientRect().width;
 function toCanvas(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)*k(),y:(e.clientY-r.top)*k()};}
 function hit(p){for(let i=texts.length-1;i>=0;i--){const b=bounds(texts[i]),m=24;if(p.x>=b.x-m&&p.x<=b.x+b.w+m&&p.y>=b.y-m&&p.y<=b.y+b.h+m)return texts[i];}return null;}
+function focusAt(e){
+  const p=toCanvas(e),{w,h}=size();let fxv=(p.x-x)/w;if(flip)fxv=1-fxv;const fyv=(p.y-y)/h;
+  $('fx').value=Math.round(Math.min(1,Math.max(0,fxv))*100);$('fy').value=Math.round(Math.min(1,Math.max(0,fyv))*100);fastPreview=true;drawSoon();
+}
 cv.addEventListener('pointerdown',e=>{
-  cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  cv.setPointerCapture(e.pointerId);
+  if(cropMode&&img){cropDown(e);return;}
+  if(drawMode){const p=toCanvas(e);curStroke={t:brush.type,c:brush.c,w:sv('bsz')*2,pts:[Math.round(p.x),Math.round(p.y)]};strokes.push(curStroke);draw();return;}
+  if(tab===9&&focusMode!=='off'&&img){focusAt(e);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});start={focus:true};return;}
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
   if(pts.size===1){
     const t=hit(toCanvas(e));
     if(t!==sel){sel=t;if(t){texts=texts.filter(o=>o!==t);texts.push(t);openPanel(1);vibe();}syncTextUI();}
@@ -1093,7 +1475,10 @@ cv.addEventListener('pointerdown',e=>{
 function snap(){const p=[...pts.values()];start={x,y,sw:+$('sw').value,sh:+$('sh').value,tx:sel?.x,ty:sel?.y,tsize:sel?.size,
   cx:p.reduce((a,b)=>a+b.x,0)/p.length,cy:p.reduce((a,b)=>a+b.y,0)/p.length,d:p.length>1?Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y):0};}
 cv.addEventListener('pointermove',e=>{
+  if(cropDrag){cropMove(e);return;}
+  if(curStroke){const p=toCanvas(e),L=curStroke.pts,dx=p.x-L[L.length-2],dy=p.y-L[L.length-1];if(dx*dx+dy*dy>16){L.push(Math.round(p.x),Math.round(p.y));draw();}return;}
   if(!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(start&&start.focus){focusAt(e);return;}
   const p=[...pts.values()],s=k(),cx=p.reduce((a,b)=>a+b.x,0)/p.length,cy=p.reduce((a,b)=>a+b.y,0)/p.length;
   const f=p.length>1&&start.d?Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y)/start.d:1;
   let gx=false,gy=false;
@@ -1103,8 +1488,8 @@ cv.addEventListener('pointermove',e=>{
     if((gx||gy)&&!snapped)vibe();snapped=gx||gy;
     if(f!==1){sel.size=Math.max(30,Math.min(400,start.tsize*f));$('tsz').value=Math.round(sel.size);}
   }else if(img){
-    if(f!==1){const nsw=Math.max(20,Math.min(400,start.sw*f)),nsh=Math.max(20,Math.min(400,start.sh*f)),b=W/img.width;
-      const ow=img.width*b*start.sw/100,oh=img.height*b*start.sh/100,nw=img.width*b*nsw/100,nh=img.height*b*nsh/100;
+    if(f!==1){const nsw=Math.max(20,Math.min(400,start.sw*f)),nsh=Math.max(20,Math.min(400,start.sh*f)),A=geoAspect();
+      const ow=W*start.sw/100,oh=W*A*start.sh/100,nw=W*nsw/100,nh=W*A*nsh/100;
       $('sw').value=Math.round(nsw);$('sh').value=Math.round(nsh);x=start.x-(nw-ow)/2+(cx-start.cx)*s;y=start.y-(nh-oh)/2+(cy-start.cy)*s;prevW=nw;prevH=nh;}
     else{x=start.x+(cx-start.cx)*s;y=start.y+(cy-start.cy)*s;}
   }
@@ -1112,7 +1497,11 @@ cv.addEventListener('pointermove',e=>{
   $('guides').querySelector('.v').style.display=gx?'':'none';$('guides').querySelector('.h').style.display=gy?'':'none';
   draw();
 });
-function up(e){pts.delete(e.pointerId);if(pts.size)snap();else{$('guides').classList.remove('on');snapped=false;}}
+function up(e){
+  if(cropDrag){cropDrag=null;return;}
+  if(curStroke){curStroke=null;draw();return;}
+  if(start&&start.focus){pts.delete(e.pointerId);start=null;fastPreview=false;draw();return;}
+  pts.delete(e.pointerId);if(pts.size)snap();else{$('guides').classList.remove('on');snapped=false;}}
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 
 /* ---------- export ---------- */
