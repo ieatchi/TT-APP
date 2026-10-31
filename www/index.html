@@ -198,6 +198,55 @@ textarea:focus{outline:none;border-color:var(--fg2)}
 .q .qa button svg{width:18px;height:18px}
 .q .qa button[aria-pressed="true"]{color:var(--accent)}
 .qnone{text-align:center;color:var(--muted);font-size:14px;padding:40px 10px;line-height:1.5}
+.statsbtn{display:flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:8px;background:var(--s1);font-size:13px;font-weight:700}
+.statsbtn svg{width:16px;height:16px;color:var(--accent)}
+.sbody{flex:1;overflow:auto;scrollbar-width:none;padding:0 max(16px,var(--sar)) calc(var(--sab) + 24px) max(16px,var(--sal))}
+.sbody::-webkit-scrollbar{display:none}
+.range{display:flex;gap:8px;margin-bottom:14px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.tile2{background:var(--s1);border-radius:10px;padding:12px 14px}
+.tile2 small{display:block;font-size:12px;color:var(--muted)}
+.tile2 b{display:block;font-size:26px;font-weight:900;letter-spacing:-.02em;margin-top:2px;font-variant-numeric:tabular-nums}
+.card2{background:var(--s1);border-radius:10px;padding:14px 16px 10px;margin-top:8px}
+.card2 svg{display:block;max-width:100%;margin:6px auto 0}
+.card2 .hit{cursor:pointer}
+.ch{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.ch b{font-size:15px;font-weight:700;flex:none}
+.ch .tip{font-size:12px;color:var(--muted);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.hbars{display:flex;flex-direction:column;gap:10px;margin:12px 0 6px}
+.hb{display:grid;grid-template-columns:92px minmax(0,1fr) 44px;align-items:center;gap:10px;font-size:13px}
+.hb span{color:var(--fg2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hbt{height:10px}
+.hbt i{display:block;height:100%;border-radius:0 4px 4px 0}
+.hb b{text-align:right;font-variant-numeric:tabular-nums;font-size:13px}
+.snote{font-size:13px;color:var(--muted);margin:14px 2px;line-height:1.45}
+.plist{display:flex;flex-direction:column;gap:6px}
+.prow{display:flex;align-items:center;gap:12px;width:100%;padding:8px 12px 8px 8px;border-radius:10px;background:var(--s1);text-align:left}
+.prow:active{opacity:.75}
+.prow img,.prow .ph{width:36px;aspect-ratio:9/16;border-radius:4px;object-fit:cover;background:var(--s2);flex:none}
+.pc{flex:1;min-width:0}
+.pc b{display:block;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.pv{text-align:right;flex:none}
+.pv b{display:block;font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+.pv small{display:block;font-size:11px;color:var(--muted)}
+.addst{flex:none;font-size:13px;font-weight:700;color:var(--accent)}
+.sempty{text-align:center;padding:40px 16px;color:var(--muted);font-size:14px;line-height:1.5;display:flex;flex-direction:column;align-items:center;gap:6px}
+.sempty svg{width:40px;height:40px;color:var(--dim)}
+.sempty b{color:var(--fg);font-size:16px}
+.sempty p{margin:0 0 12px;max-width:300px}
+.sempty .bigbtn{padding:0 18px}
+.pe{display:flex;flex-direction:column;gap:10px;padding-left:max(16px,var(--sal));padding-right:max(16px,var(--sar))}
+.pe .ahead{padding:10px 0 12px}
+.clamp{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pf{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted);font-weight:600}
+.pf input{height:46px;border-radius:8px;background:var(--bg);border:1px solid var(--line);padding:0 12px;font-size:17px;font-weight:700;color:var(--fg);user-select:text;-webkit-user-select:text;font-variant-numeric:tabular-nums;min-width:0}
+.pf input:focus{outline:none;border-color:var(--fg2)}
+.pf input[type=date]{font-size:15px;font-weight:600}
+.pbtns{display:grid;grid-template-columns:1fr 2fr;gap:8px;margin-top:4px}
+.bigbtn.red{color:var(--danger)}
+.bigbtn.red.armed{background:var(--danger);color:#fff}
 .toast{position:fixed;left:50%;bottom:calc(var(--sab) + 140px);transform:translateX(-50%);padding:9px 14px;border-radius:8px;background:var(--s3);font-size:13px;font-weight:600;white-space:nowrap;z-index:30;pointer-events:none;opacity:0;transition:opacity .2s}
 .toast.show{opacity:1}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -207,7 +256,8 @@ textarea:focus{outline:none;border-color:var(--fg2)}
 
 <!-- ================= HOME ================= -->
 <section class="screen home" id="home">
-  <div class="hbar"><div class="wordmark"><img src="icon.png" alt="">Taffy</div></div>
+  <div class="hbar"><div class="wordmark"><img src="icon.png" alt="">Taffy</div>
+    <button class="statsbtn" id="homeStats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>Stats</button></div>
 
   <div class="create">
     <label class="ct primary" for="newFile">
@@ -380,6 +430,32 @@ textarea:focus{outline:none;border-color:var(--fg2)}
   </div>
 </div>
 
+<div class="qp" id="stats" hidden>
+  <div class="qp-in">
+    <div class="qtop">
+      <button class="ib" id="sClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      <h2>Stats</h2>
+      <button class="shuf" id="sAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add post</button>
+    </div>
+    <div class="sbody" id="sBody"></div>
+  </div>
+</div>
+
+<div class="scrim" id="pScrim" hidden style="z-index:40">
+  <form class="asheet pe" id="peForm" role="dialog" aria-label="Post stats">
+    <div class="ahead"><img id="peThumb" alt=""><div style="min-width:0"><b id="peTitle" class="clamp"></b><small>Type the numbers from TikTok. 12.5k works.</small></div></div>
+    <label class="pf full" id="peCapRow"><span>Caption</span><input id="peCap" placeholder="What was the post?"></label>
+    <div class="pgrid">
+      <label class="pf"><span>Views</span><input id="pe_views" inputmode="decimal" placeholder="0" autocomplete="off"></label>
+      <label class="pf"><span>Likes</span><input id="pe_likes" inputmode="decimal" placeholder="0" autocomplete="off"></label>
+      <label class="pf"><span>Comments</span><input id="pe_comments" inputmode="decimal" placeholder="0" autocomplete="off"></label>
+      <label class="pf"><span>Shares</span><input id="pe_shares" inputmode="decimal" placeholder="0" autocomplete="off"></label>
+    </div>
+    <label class="pf full"><span>Posted on</span><input id="peDate" type="date"></label>
+    <div class="pbtns"><button type="button" class="bigbtn red" id="peDel">Delete</button><button type="submit" class="bigbtn acc">Save</button></div>
+  </form>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="quotes.js"></script>
@@ -401,11 +477,13 @@ const imgCache=new Map();
 
 /* ================= STORAGE ================= */
 let dbp=null;
-function db(){return dbp||(dbp=new Promise((res,rej)=>{const r=indexedDB.open('stretch',1);
-  r.onupgradeneeded=()=>r.result.createObjectStore('projects',{keyPath:'id'});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}));}
-async function tx(mode,fn){const d=await db();return new Promise((res,rej)=>{const t=d.transaction('projects',mode);const r=fn(t.objectStore('projects'));
+function db(){return dbp||(dbp=new Promise((res,rej)=>{const r=indexedDB.open('stretch',2);
+  r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('projects'))d.createObjectStore('projects',{keyPath:'id'});
+    if(!d.objectStoreNames.contains('posts'))d.createObjectStore('posts',{keyPath:'id'});};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}));}
+async function tx(mode,fn,store='projects'){const d=await db();return new Promise((res,rej)=>{const t=d.transaction(store,mode);const r=fn(t.objectStore(store));
   t.oncomplete=()=>res(r&&r.result);t.onerror=()=>rej(t.error);});}
 const dbAll=()=>tx('readonly',s=>s.getAll()),dbPut=p=>tx('readwrite',s=>s.put(p)),dbDel=id=>tx('readwrite',s=>s.delete(id));
+const postsAll=()=>tx('readonly',s=>s.getAll(),'posts'),postPut=p=>tx('readwrite',s=>s.put(p),'posts'),postDel=id=>tx('readwrite',s=>s.delete(id),'posts');
 const uid=()=>(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2));
 
 /* ================= HOME ================= */
@@ -433,7 +511,7 @@ function nextName(){const names=new Set(projects.map(p=>p.name));let n=projects.
 async function newProject(file,opts={}){
   const now=Date.now();
   await openProject({id:uid(),name:nextName(),created:now,updated:now,img:file||null,state:null,thumb:null});
-  if(opts.quote)addText({...yellowPreset,text:wrapQuote(opts.quote),y:H*.42},true);
+  if(opts.quote)addText({...yellowPreset,text:wrapQuote(opts.quote),cat:opts.cat,y:H*.42},true);
   else if(opts.text)addText(yellowPreset);
   saveNow();
 }
@@ -488,7 +566,7 @@ async function saveNow(){
 }
 async function closeEditor(){if(proj){clearTimeout(histT);await saveNow();}proj=null;img=null;imgBlob=null;texts=[];sel=null;showScreen(false);renderHome();}
 $('back').onclick=()=>{if(location.hash==='#edit')history.back();else closeEditor();};
-window.addEventListener('popstate',()=>{if(!$('qp').hidden){closeQuotesNow();return;}if(!$('scrim').hidden){closeMenu();return;}if(!$('editor').hidden)closeEditor();});
+window.addEventListener('popstate',()=>{if(!$('pScrim').hidden){closePostNow();return;}if(!$('stats').hidden){closeStatsNow();return;}if(!$('qp').hidden){closeQuotesNow();return;}if(!$('scrim').hidden){closeMenu();return;}if(!$('editor').hidden)closeEditor();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&proj)saveNow();});
 
 /* ---------- undo / redo ---------- */
@@ -617,7 +695,7 @@ $('addText').onclick=()=>addText();
 $('addText2').onclick=()=>addText(sel?{font:sel.font,color:sel.color,style:sel.style}:yellowPreset);
 $('delText').onclick=()=>{texts=texts.filter(t=>t!==sel);sel=null;syncTextUI();vibe();};
 function autoFit(t){const b=bounds(t),max=W*.92;if(b.w>max){t.size=Math.max(30,t.size*max/b.w);$('tsz').value=Math.round(t.size);}}
-$('txt').addEventListener('input',e=>{if(sel){sel.text=e.target.value;autoFit(sel);draw();}});
+$('txt').addEventListener('input',e=>{if(sel){sel.text=e.target.value;delete sel.cat;autoFit(sel);draw();}});
 $('colors').querySelectorAll('.sw[data-c]').forEach(b=>b.addEventListener('click',()=>{if(!sel)return;sel.color=b.dataset.c;syncTextUI();vibe();}));
 $('customColor').addEventListener('input',e=>{if(sel){sel.color=e.target.value;syncTextUI();}});
 group('fontPick','f',f=>{if(sel){sel.font=f;autoFit(sel);syncTextUI();}});
@@ -682,7 +760,7 @@ function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');
 function vibe(){try{navigator.vibrate&&navigator.vibrate(6);}catch(_){}}
 const fname=()=>'taffy_'+(proj?proj.name.replace(/[^\w-]+/g,'_'):'export')+'_'+Date.now()+'.png';
 $('export').onclick=async()=>{
-  vibe();exporting=true;draw();const dataUrl=cv.toDataURL('image/png');exporting=false;draw();saveNow();
+  vibe();exporting=true;draw();const dataUrl=cv.toDataURL('image/png');exporting=false;draw();await saveNow();logPost();
   try{
     if(native&&Cap.Plugins.Filesystem&&Cap.Plugins.Share){
       const r=await Cap.Plugins.Filesystem.writeFile({path:fname(),data:dataUrl.split(',')[1],directory:'CACHE'});
@@ -723,7 +801,7 @@ function renderQuotes(){
     <button class="fav" aria-label="Save" aria-pressed="${f.has(q.t)}"><svg viewBox="0 0 24 24" fill="${f.has(q.t)?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></button>
     <button class="cp" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg></button></div></div>`).join('');
   $('qList').querySelectorAll('.q').forEach(el=>{const q=list[+el.dataset.i];
-    el.querySelector('.qt').onclick=()=>pickQuote(q.t);
+    el.querySelector('.qt').onclick=()=>pickQuote(q.t,q.c);
     el.querySelector('.fav').onclick=()=>{const a=favs(),k=a.indexOf(q.t);if(k>=0)a.splice(k,1);else a.unshift(q.t);setFavs(a);vibe();renderQuotes();};
     el.querySelector('.cp').onclick=()=>copyText(q.t);
   });
@@ -740,12 +818,12 @@ function openQuotes(mode){
 }
 function closeQuotesNow(){$('qp').hidden=true;const p=qPending;qPending=null;if(p)p();}
 function closeQuotes(){if(history.state&&history.state.q)history.back();else closeQuotesNow();}
-function pickQuote(t){
+function pickQuote(t,c){
   vibe();
-  if(qMode==='home'){qPending=()=>newProject(null,{quote:t});}
+  if(qMode==='home'){qPending=()=>newProject(null,{quote:t,cat:c});}
   else qPending=()=>{
-    if(sel){sel.text=wrapQuote(t);autoFit(sel);if(sel.color==='#ffffff'&&sel.style==='outline')sel.color=TT_YELLOW;syncTextUI();}
-    else addText({...yellowPreset,text:wrapQuote(t),y:H*.42},true);
+    if(sel){sel.text=wrapQuote(t);sel.cat=c;autoFit(sel);if(sel.color==='#ffffff'&&sel.style==='outline')sel.color=TT_YELLOW;syncTextUI();}
+    else addText({...yellowPreset,text:wrapQuote(t),cat:c,y:H*.42},true);
   };
   closeQuotes();
 }
@@ -756,6 +834,126 @@ $('homeQuotes').onclick=()=>openQuotes('home');
 $('openQuotes').onclick=()=>openQuotes('editor');
 $('swapQuote').onclick=()=>openQuotes('editor');
 $('qcountHome').textContent=QALL.length+' captions in '+Object.keys(QDATA).length+' categories';
+
+/* ================= STATS ================= */
+async function logPost(){
+  if(!proj)return;
+  let all=[];try{all=await postsAll();}catch(e){return;}
+  let p=all.find(x=>x.projId===proj.id);
+  if(!p)p={id:uid(),projId:proj.id,created:Date.now(),posted:Date.now(),views:null,likes:null,comments:null,shares:null};
+  const cap=(texts[0]?.text||'').replace(/\n/g,' ').trim();
+  Object.assign(p,{thumb:proj.thumb,caption:cap||proj.name,cat:(texts.find(t=>t.cat)||{}).cat||p.cat||null,name:proj.name});
+  try{await postPut(p);setTimeout(()=>toast('Added to Stats'),900);}catch(e){}
+}
+const fmt=n=>n==null?'–':n>=1e6?(n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'M':n>=1e3?(n/1e3).toFixed(n>=1e4?0:1).replace(/\.0$/,'')+'K':String(Math.round(n));
+function parseNum(v){v=String(v||'').trim().toLowerCase().replace(/,/g,'');if(!v)return null;const m=v.match(/^([\d.]+)\s*([km]?)$/);if(!m)return null;
+  return Math.round(parseFloat(m[1])*(m[2]==='k'?1e3:m[2]==='m'?1e6:1));}
+const DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const dayIdx=t=>(new Date(t).getDay()+6)%7;
+const dstr=t=>new Date(t).toLocaleDateString(undefined,{day:'numeric',month:'short'});
+let sRange='30',statsPosts=[];
+
+function barsV(items,w,h=150){
+  const n=items.length,gap=Math.max(3,Math.min(10,w/n*.25)),bw=Math.min(40,(w-gap*(n-1))/n),tw=bw*n+gap*(n-1),x0=(w-tw)/2;
+  const max=Math.max(1,...items.map(i=>i.v||0)),top=18,base=h-22;
+  let svg=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img">`;
+  svg+=`<line x1="0" x2="${w}" y1="${base+.5}" y2="${base+.5}" stroke="var(--line)"/>`;
+  items.forEach((it,i)=>{
+    const x=x0+i*(bw+gap),bh=it.v?Math.max(3,(base-top)*it.v/max):0,y=base-bh,r=Math.min(4,bw/2,bh);
+    const fill=it.hi?'var(--accent)':it.v==null?'var(--s3)':'var(--fg2)';
+    if(it.v==null)svg+=`<rect x="${x}" y="${base-3}" width="${bw}" height="3" rx="1.5" fill="var(--s3)"/>`;
+    else svg+=`<path d="M${x},${base}V${y+r}Q${x},${y} ${x+r},${y}H${x+bw-r}Q${x+bw},${y} ${x+bw},${y+r}V${base}Z" fill="${fill}"/>`;
+    if(it.hi&&it.v)svg+=`<text x="${x+bw/2}" y="${y-6}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--fg)">${fmt(it.v)}</text>`;
+    const showLab=n<=8||i%Math.ceil(n/7)===0||i===n-1;
+    if(showLab)svg+=`<text x="${x+bw/2}" y="${h-6}" text-anchor="middle" font-size="10" fill="var(--muted)">${esc(it.l)}</text>`;
+    svg+=`<rect class="hit" data-tip="${esc(it.tip)}" x="${x-gap/2}" y="0" width="${bw+gap}" height="${h}" fill="transparent"/>`;
+  });
+  return svg+'</svg>';
+}
+function barsH(items){
+  const max=Math.max(1,...items.map(i=>i.v));
+  return `<div class="hbars">`+items.map(it=>`<div class="hb"><span>${esc(it.l)}</span><div class="hbt"><i style="width:${Math.max(2,it.v/max*100)}%;background:${it.hi?'var(--accent)':'var(--fg2)'}"></i></div><b>${fmt(it.v)}</b></div>`).join('')+`</div>`;
+}
+async function renderStats(){
+  let all=[];try{all=await postsAll();}catch(e){}
+  all.sort((a,b)=>a.posted-b.posted);statsPosts=all;
+  const cut=sRange==='all'?0:Date.now()-(+sRange)*864e5;
+  const posts=all.filter(p=>p.posted>=cut),wv=posts.filter(p=>p.views!=null);
+  const sum=k=>wv.reduce((a,p)=>a+(p[k]||0),0);
+  const V=sum('views'),L=sum('likes'),C=sum('comments'),S=sum('shares');
+  const avg=wv.length?V/wv.length:null,eng=V?((L+C+S)/V*100):null;
+  const W=Math.min(528,$('sBody').clientWidth-32);
+  let h=`<div class="range" role="group" aria-label="Time range">${[['7','7 days'],['30','30 days'],['all','All time']].map(([k,l])=>`<button class="chip" data-r="${k}" aria-pressed="${sRange===k}">${l}</button>`).join('')}</div>`;
+  if(!all.length){
+    $('sBody').innerHTML=h+`<div class="sempty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+      <b>No posts yet</b><p>Every time you export, the post shows up here. Then add its views and likes from TikTok and you'll see what works best.</p>
+      <button class="bigbtn acc" id="sAdd2">Add a post manually</button></div>`;
+    bindStats();return;
+  }
+  h+=`<div class="tiles">
+    <div class="tile2"><small>Views</small><b>${fmt(V)}</b></div>
+    <div class="tile2"><small>Likes</small><b>${fmt(L)}</b></div>
+    <div class="tile2"><small>Avg views / post</small><b>${fmt(avg)}</b></div>
+    <div class="tile2"><small>Engagement</small><b>${eng==null?'–':eng.toFixed(1)+'%'}</b></div></div>`;
+  const recent=posts.slice(-14);
+  if(recent.length){
+    const best=recent.reduce((a,p)=>(p.views||0)>(a?.views||0)?p:a,null);
+    h+=`<section class="card2"><div class="ch"><b>Views per post</b><span class="tip" id="tip1">Tap a bar</span></div>
+      ${barsV(recent.map(p=>({v:p.views,l:dstr(p.posted),hi:p===best&&p.views,tip:(p.caption||p.name).slice(0,60)+' · '+(p.views==null?'no stats yet':fmt(p.views)+' views')})),W)}</section>`;
+  }
+  if(wv.length>=2){
+    const d=DAYS.map((l,i)=>{const ps=wv.filter(p=>dayIdx(p.posted)===i);return{l,v:ps.length?ps.reduce((a,p)=>a+p.views,0)/ps.length:null,n:ps.length};});
+    const bi=d.reduce((a,x,i)=>(x.v||0)>(d[a].v||0)?i:a,0);
+    h+=`<section class="card2"><div class="ch"><b>Best day to post</b><span class="tip" id="tip2">${d[bi].v?DAYS[bi]+' · '+fmt(d[bi].v)+' avg views':''}</span></div>
+      ${barsV(d.map((x,i)=>({v:x.v,l:x.l,hi:i===bi&&x.v,tip:x.l+' · '+(x.v==null?'no posts':fmt(x.v)+' avg views ('+x.n+' post'+(x.n>1?'s':'')+')')})),W,130)}</section>`;
+    const cats={};wv.forEach(p=>{const c=p.cat||'Own text';(cats[c]=cats[c]||[]).push(p.views);});
+    const ci=Object.entries(cats).map(([l,a])=>({l,v:a.reduce((x,y)=>x+y,0)/a.length})).sort((a,b)=>b.v-a.v).slice(0,6);
+    if(ci.length>1){ci[0].hi=true;h+=`<section class="card2"><div class="ch"><b>Best caption type</b><span class="tip">avg views</span></div>${barsH(ci)}</section>`;}
+  }else{
+    h+=`<p class="snote">Add views to at least 2 posts to see your best day and best caption type.</p>`;
+  }
+  h+=`<div class="ch" style="margin:22px 2px 10px"><b>Posts</b><span class="tip">${posts.length}</span></div><div class="plist">`+
+    [...posts].reverse().map(p=>`<button class="prow" data-id="${p.id}">${p.thumb?`<img src="${p.thumb}" alt="">`:'<span class="ph"></span>'}
+      <span class="pc"><b>${esc(p.caption||p.name||'Post')}</b><small>${dstr(p.posted)}${p.cat?' · '+esc(p.cat):''}</small></span>
+      ${p.views==null?'<span class="addst">Add stats</span>':`<span class="pv"><b>${fmt(p.views)}</b><small>${fmt(p.likes)} likes</small></span>`}</button>`).join('')+`</div>`;
+  if(!posts.length)h+=`<p class="snote">No posts in this time range.</p>`;
+  $('sBody').innerHTML=h;bindStats();
+}
+function bindStats(){
+  $('sBody').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{sRange=b.dataset.r;vibe();renderStats();});
+  $('sBody').querySelectorAll('.card2').forEach(c=>{const tip=c.querySelector('.tip');c.querySelectorAll('.hit').forEach(r=>r.addEventListener('click',()=>{if(tip)tip.textContent=r.dataset.tip;vibe();}));});
+  $('sBody').querySelectorAll('.prow').forEach(b=>b.onclick=()=>openPost(statsPosts.find(p=>p.id===b.dataset.id)));
+  const a2=$('sAdd2');if(a2)a2.onclick=()=>openPost(null);
+}
+let editP=null;
+function openPost(p){
+  editP=p;const isNew=!p;
+  $('peThumb').src=p?.thumb||'';$('peThumb').hidden=!p?.thumb;
+  $('peTitle').textContent=isNew?'Add a post':(p.caption||p.name||'Post');
+  $('peCapRow').hidden=!isNew;$('peCap').value='';
+  ['views','likes','comments','shares'].forEach(k=>$('pe_'+k).value=p&&p[k]!=null?p[k]:'');
+  const d=new Date(p?p.posted:Date.now());$('peDate').value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  $('peDel').hidden=isNew;$('peDel').classList.remove('armed');$('peDel').textContent='Delete';
+  $('pScrim').hidden=false;history.pushState({pe:1},'',location.href);
+}
+function closePostNow(){$('pScrim').hidden=true;editP=null;}
+function closePost(){if(history.state&&history.state.pe)history.back();else closePostNow();}
+$('pScrim').addEventListener('click',e=>{if(e.target===$('pScrim'))closePost();});
+$('peForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const p=editP||{id:uid(),projId:null,created:Date.now(),thumb:null,cat:null,caption:$('peCap').value.trim()||'Post'};
+  ['views','likes','comments','shares'].forEach(k=>p[k]=parseNum($('pe_'+k).value));
+  const dv=$('peDate').value;if(dv){const [y,m,d]=dv.split('-').map(Number);const old=new Date(p.posted||Date.now());p.posted=new Date(y,m-1,d,old.getHours(),old.getMinutes()).getTime();}else p.posted=p.posted||Date.now();
+  try{await postPut(p);}catch(err){toast('Couldn’t save');return;}
+  vibe();closePost();renderStats();toast('Saved');
+});
+$('peDel').onclick=async()=>{const b=$('peDel');if(!b.classList.contains('armed')){b.classList.add('armed');b.textContent='Tap again to delete';return;}
+  await postDel(editP.id);closePost();renderStats();toast('Deleted');};
+function openStats(){$('stats').hidden=false;history.pushState({st:1},'',location.href);requestAnimationFrame(renderStats);}
+function closeStatsNow(){$('stats').hidden=true;}
+$('sClose').onclick=()=>{if(history.state&&history.state.st)history.back();else closeStatsNow();};
+$('sAdd').onclick=()=>openPost(null);
+$('homeStats').onclick=()=>{vibe();openStats();};
 
 /* ---------- boot ---------- */
 if(location.hash==='#edit')history.replaceState(null,'',location.pathname);

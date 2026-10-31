@@ -7,34 +7,95 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-24.04   # has the Android SDK preinstalled (ANDROID_HOME)
+    env:
+      HAS_RELEASE_KEY: ${{ secrets.RELEASE_KEYSTORE_B64 != '' }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with: { node-version: 22 }
       - uses: actions/setup-java@v5
         with: { distribution: temurin, java-version: 21 }
-      - run: echo "sdk.dir=$ANDROID_HOME" && ls "$ANDROID_HOME/platforms" | tail -3
       - run: npm install
       - run: npx cap add android
       - run: npx cap sync android
       - name: Generate app icon + splash from assets/
         run: npx -y @capacitor/assets@4.0.0 generate --android --iconBackgroundColor '#f7ce46' --iconBackgroundColorDark '#f7ce46' --splashBackgroundColor '#000000' --splashBackgroundColorDark '#000000'
-      - name: Use the repo's fixed signing key (so updates install over the old app)
-        run: mkdir -p ~/.android && cp keystore/debug.keystore ~/.android/debug.keystore
       - name: Bump version so Android sees each build as an update
         run: |
           sed -i "s/versionCode 1$/versionCode ${{ github.run_number }}/; s/versionName \"1.0\"/versionName \"1.${{ github.run_number }}\"/" android/app/build.gradle
           grep -E "versionCode|versionName" android/app/build.gradle
-      - name: Build debug APK
-        working-directory: android
-        run: chmod +x gradlew && ./gradlew assembleDebug --no-daemon
+
+      # ---------- Release build (no Play Protect "unsafe" debug flags) ----------
+      # Signed with Taffy's own key. The key is linked to the old key (APK key rotation),
+      # so it still installs over earlier builds and keeps your drafts.
+      - name: Build + sign release APK
+        if: env.HAS_RELEASE_KEY == 'true'
+        env:
+          KS_B64: ${{ secrets.RELEASE_KEYSTORE_B64 }}
+          KS_PASS: ${{ secrets.RELEASE_KEYSTORE_PASS }}
+        run: |
+          set -e
+          echo "$KS_B64" | base64 -d > release.jks
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1); echo "build-tools: $BT"
+          (cd android && chmod +x gradlew && ./gradlew assembleRelease --no-daemon)
+          UNSIGNED=$(ls android/app/build/outputs/apk/release/*.apk | head -1)
+          "$BT/zipalign" -p -f 4 "$UNSIGNED" aligned.apk
+          "$BT/apksigner" rotate --out lineage.bin \
+            --old-signer --ks keystore/debug.keystore --ks-key-alias androiddebugkey --ks-pass pass:android --key-pass pass:android \
+            --new-signer --ks release.jks --ks-key-alias taffy --ks-pass env:KS_PASS --key-pass env:KS_PASS
+          "$BT/apksigner" sign \
+            --ks keystore/debug.keystore --ks-key-alias androiddebugkey --ks-pass pass:android --key-pass pass:android \
+            --next-signer --ks release.jks --ks-key-alias taffy --ks-pass env:KS_PASS --key-pass env:KS_PASS \
+            --lineage lineage.bin --rotation-min-sdk-version 28 \
+            --out Taffy.apk aligned.apk
+          "$BT/apksigner" verify --print-certs Taffy.apk | grep -E "Signer|DN" | head -8
+          rm -f release.jks
+
+      # ---------- Fallback: debug build (until the release key secrets are added) ----------
+      - name: Build debug APK (fallback)
+        if: env.HAS_RELEASE_KEY != 'true'
+        run: |
+          mkdir -p ~/.android && cp keystore/debug.keystore ~/.android/debug.keystore
+          (cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon)
+          cp android/app/build/outputs/apk/debug/app-debug.apk Taffy.apk
+
       - uses: actions/upload-artifact@v5
         with:
           name: Taffy-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: Taffy.apk
       - name: Publish release (phone download link)
         env: { GH_TOKEN: "${{ github.token }}" }
         run: |
-          cp android/app/build/outputs/apk/debug/app-debug.apk Taffy.apk; cp Taffy.apk Stretch.apk
+          cp Taffy.apk Stretch.apk
           gh release create "build-${{ github.run_number }}" Taffy.apk Stretch.apk \
             --title "Taffy build ${{ github.run_number }}" --notes "Tap Taffy.apk to download, then open it to install." --latest
+
+  # Temporary self-test of the release signing steps with a throwaway key (publishes nothing)
+  signing-selftest:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - uses: actions/setup-java@v5
+        with: { distribution: temurin, java-version: 21 }
+      - run: npm install && npx cap add android && npx cap sync android
+      - name: Release build + rotate-sign with throwaway key
+        run: |
+          set -e
+          export KS_PASS=testpass123
+          keytool -genkeypair -keystore release.jks -storetype PKCS12 -storepass $KS_PASS -keypass $KS_PASS -alias taffy -keyalg RSA -keysize 2048 -validity 100 -dname "CN=Test" 
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1); echo "build-tools: $BT"
+          (cd android && chmod +x gradlew && ./gradlew assembleRelease --no-daemon -q)
+          UNSIGNED=$(ls android/app/build/outputs/apk/release/*.apk | head -1); echo "$UNSIGNED"
+          "$BT/zipalign" -p -f 4 "$UNSIGNED" aligned.apk
+          "$BT/apksigner" rotate --out lineage.bin \
+            --old-signer --ks keystore/debug.keystore --ks-key-alias androiddebugkey --ks-pass pass:android --key-pass pass:android \
+            --new-signer --ks release.jks --ks-key-alias taffy --ks-pass env:KS_PASS --key-pass env:KS_PASS
+          "$BT/apksigner" sign \
+            --ks keystore/debug.keystore --ks-key-alias androiddebugkey --ks-pass pass:android --key-pass pass:android \
+            --next-signer --ks release.jks --ks-key-alias taffy --ks-pass env:KS_PASS --key-pass env:KS_PASS \
+            --lineage lineage.bin --rotation-min-sdk-version 28 \
+            --out out.apk aligned.apk
+          "$BT/apksigner" verify -v --print-certs out.apk | grep -Ei "verified using|Signer|DN|rotation" | head -20
+          "$BT/aapt2" dump badging out.apk | grep -Ei "debuggable|sdkVersion|targetSdk" || true
