@@ -157,7 +157,7 @@ textarea:focus{outline:none;border-color:var(--fg2)}
 .bigbtn:active{opacity:.8}
 
 /* toolbar */
-.toolbar{flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--bg);border-top:1px solid var(--line);padding:6px max(4px,var(--sar)) calc(6px + var(--sab)) max(4px,var(--sal))}
+.toolbar{flex:none;display:grid;grid-template-columns:repeat(6,1fr);background:var(--bg);border-top:1px solid var(--line);padding:6px max(4px,var(--sar)) calc(6px + var(--sab)) max(4px,var(--sal))}
 .tool{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;font-size:11px;color:var(--muted)}
 .tool svg{width:24px;height:24px;color:var(--fg)}
 .tool[aria-selected="true"],.tool[aria-selected="true"] svg{color:var(--accent)}
@@ -208,6 +208,8 @@ textarea:focus{outline:none;border-color:var(--fg2)}
 .bcheck small{display:block;font-size:12px;color:var(--muted);margin-top:1px}
 .usedtag{display:inline-block;margin-left:6px;padding:1px 6px;border-radius:4px;background:var(--s3);color:var(--fg2);font-size:10px;letter-spacing:.04em}
 .q .qt small .usedtag:first-child{margin-left:0}
+.wmin{height:46px;border-radius:8px;background:var(--bg);border:1px solid var(--line);padding:0 12px;font-size:16px;font-weight:700;user-select:text;-webkit-user-select:text;width:100%}
+.wmin:focus{outline:none;border-color:var(--fg2)}
 .statsbtn{display:flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:8px;background:var(--s1);font-size:13px;font-weight:700}
 .statsbtn svg{width:16px;height:16px;color:var(--accent)}
 .sbody{flex:1;overflow:auto;scrollbar-width:none;padding:0 max(16px,var(--sar)) calc(var(--sab) + 24px) max(16px,var(--sal))}
@@ -421,6 +423,33 @@ textarea:focus{outline:none;border-color:var(--fg2)}
         <div class="row"><span>Brightness</span><input id="bgbr" type="range" min="20" max="120" value="80"><output id="bgbro"></output></div>
         <div class="opts"><label class="opt" for="file">Replace photo</label></div>
       </div>
+
+      <div class="panel" data-panel="5" hidden>
+        <label class="bcheck" style="margin:0"><input type="checkbox" id="wmOn"><span><b>Watermark every post</b><small>Applies to all drafts, exports and batch posts</small></span></label>
+        <input class="wmin" id="wmHandle" placeholder="@yourname" maxlength="30" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Your handle">
+        <div class="blabel" style="margin:4px 0 0">Style</div>
+        <div class="opts" id="wmStyle">
+          <button class="opt" data-w="plain" aria-pressed="true">Plain</button>
+          <button class="opt" data-w="outline" aria-pressed="false">Outline</button>
+          <button class="opt" data-w="tiled" aria-pressed="false">Tiled</button>
+          <button class="opt" data-w="edge" aria-pressed="false">Edge</button>
+          <button class="opt" data-w="pill" aria-pressed="false">Tag</button>
+          <button class="opt" data-w="blend" aria-pressed="false">Ghost</button>
+        </div>
+        <p class="hint" id="wmHint"></p>
+        <div id="wmPosWrap">
+          <div class="blabel" style="margin:0 0 8px">Position</div>
+          <div class="opts" id="wmPos">
+            <button class="opt" data-q="tl" aria-pressed="true">Top left</button>
+            <button class="opt" data-q="tr" aria-pressed="false">Top right</button>
+            <button class="opt" data-q="mid" aria-pressed="false">Middle</button>
+            <button class="opt" data-q="bl" aria-pressed="false">Bottom left</button>
+            <button class="opt" data-q="br" aria-pressed="false">Bottom right</button>
+          </div>
+        </div>
+        <div class="row"><span>Visibility</span><input id="wmOp" type="range" min="4" max="70" value="22"><output id="wmOpo"></output></div>
+        <div class="row"><span>Size</span><input id="wmSize" type="range" min="50" max="220" value="100"><output id="wmSizeo"></output></div>
+      </div>
     </div>
   </section>
 
@@ -430,6 +459,7 @@ textarea:focus{outline:none;border-color:var(--fg2)}
     <button class="tool" role="tab" data-tab="2" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Adjust</button>
     <button class="tool" role="tab" data-tab="3" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg>Blur</button>
     <button class="tool" role="tab" data-tab="4" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5z"/><path d="m3 13 9 5 9-5"/></svg>Backdrop</button>
+    <button class="tool" role="tab" data-tab="5" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M15.5 9.5a3.5 3.5 0 1 0 0 5M16 16.5"/><path d="M15.5 9v4.2c0 1 .7 1.6 1.5 1.6"/></svg>Mark</button>
   </nav>
 </div>
 
@@ -470,6 +500,7 @@ textarea:focus{outline:none;border-color:var(--fg2)}
       </div>
       <label class="bcheck"><input type="checkbox" id="bSave" checked><span><b>Save all to my gallery</b><small>Also adds them to Stats</small></span></label>
       <label class="bcheck"><input type="checkbox" id="bFresh" checked><span><b>Skip quotes I've already used</b><small>So you never post the same one twice</small></span></label>
+      <p class="hint" id="bWm" style="margin-top:12px"></p>
       <button class="bigbtn acc" id="bGo" style="width:100%;margin-top:14px"></button>
       <p class="hint" style="margin-top:10px">Each photo becomes its own draft, so you can still tweak any of them after.</p>
     </div>
@@ -509,7 +540,7 @@ textarea:focus{outline:none;border-color:var(--fg2)}
 const W=1080,H=1920;
 const TT_YELLOW='#f7ce46';
 const FONTS={tiktok:{family:'"TikTok Sans"',weight:900},bold:{family:'Montserrat',weight:900},tall:{family:'Anton',weight:400}};
-const TOOLS=['Stretch','Text','Adjust','Blur','Backdrop'];
+const TOOLS=['Stretch','Text','Adjust','Blur','Backdrop','Watermark'];
 const DEF={sw:178,sh:100,blur:0,bgblur:50,bgbr:80,bri:100,con:100,sat:100,anchor:'right',bgmode:'blur',flip:false};
 const SLIDERS=['sw','sh','blur','bgblur','bgbr','bri','con','sat'];
 const $=id=>document.getElementById(id);
@@ -651,7 +682,7 @@ new ResizeObserver(fit).observe($('stage'));
 function size(){const b=W/img.width;return{w:img.width*b*$('sw').value/100,h:img.height*b*$('sh').value/100};}
 function place(){if(!img)return;const{w,h}=size();x=anchor==='left'?W-w:anchor==='right'?0:(W-w)/2;y=(H-h)/2;prevW=w;prevH=h;draw();}
 function labels(){
-  [['sw','%'],['sh','%'],['blur',''],['bgblur',''],['bgbr','%'],['bri','%'],['con','%'],['sat','%'],['tsz',''],['tsw','%'],['tsh','%']].forEach(([k,u])=>$(k+'o').textContent=$(k).value+u);
+  [['sw','%'],['sh','%'],['blur',''],['bgblur',''],['bgbr','%'],['bri','%'],['con','%'],['sat','%'],['tsz',''],['tsw','%'],['tsh','%'],['wmOp','%'],['wmSize','%']].forEach(([k,u])=>$(k+'o').textContent=$(k).value+u);
   document.querySelectorAll('input[type=range]').forEach(el=>el.style.setProperty('--p',(el.value-el.min)/(el.max-el.min)*100+'%'));
 }
 function isLight(hex){const n=parseInt(hex.slice(1),16);return((n>>16)*299+(n>>8&255)*587+(n&255)*114)/1000>150;}
@@ -690,9 +721,72 @@ function draw(){
     ctx.filter='none';
   }
   texts.forEach(drawText);
+  drawWatermark();
   if(sel&&!exporting)drawSelection(sel);
   if(!exporting)touch();
 }
+
+/* ---------- watermark ---------- */
+const WMDEF={on:false,handle:'',style:'plain',op:22,pos:'tl',size:100};
+let WM=(()=>{try{return{...WMDEF,...JSON.parse(localStorage.getItem('taffy-wm')||'{}')};}catch(e){return{...WMDEF};}})();
+const WMHINT={plain:'Small text in a corner. Clean and simple.',outline:'Hollow letters. Very hard to notice, still readable when zoomed.',
+  tiled:'Faint diagonal pattern over the whole post. Best protection against reposts and crops.',edge:'Runs up the side of the post in small spaced-out letters.',
+  pill:'Tiny frosted tag, like a credit.',blend:'Blends into the photo itself. Almost invisible, shows on light and dark areas.'};
+function wmText(){let h=(WM.handle||'').trim();if(!h)return'';return h.startsWith('@')?h:'@'+h;}
+function drawWatermark(){
+  const h=wmText();if(!WM.on||!h)return;
+  const a=WM.op/100,sc=WM.size/100,fs=Math.round(36*sc),m=60;
+  ctx.save();ctx.filter='none';ctx.textBaseline='middle';
+  const setF=(w,size)=>{ctx.font=`${w} ${size}px "TikTok Sans", sans-serif`;};
+  const ls=v=>{if('letterSpacing' in ctx)ctx.letterSpacing=v;};
+  const spot=(tw,th)=>{const P={tl:[m,H*.115,'left'],tr:[W-m,H*.115,'right'],mid:[W/2,H*.64,'center'],bl:[m,H*.9,'left'],br:[W-m,H*.9,'right']}[WM.pos]||[m,H*.115,'left'];return P;};
+  if(WM.style==='tiled'){
+    setF(700,Math.round(30*sc));ls('2px');const tw=ctx.measureText(h).width;
+    ctx.globalAlpha=Math.min(1,a*.55);ctx.fillStyle='#fff';ctx.translate(W/2,H/2);ctx.rotate(-Math.PI/7);
+    const gx=tw+150*sc,gy=230*sc;let row=0;
+    for(let yy=-H;yy<H;yy+=gy,row++)for(let xx=-W*1.2+(row%2?gx/2:0);xx<W*1.2;xx+=gx)ctx.fillText(h,xx,yy);
+  }else if(WM.style==='edge'){
+    setF(700,Math.round(26*sc));ls(Math.round(10*sc)+'px');
+    const right=WM.pos==='tr'||WM.pos==='br'||WM.pos==='mid';
+    ctx.translate(right?W-m*.75:m*.75,H*.5);ctx.rotate(right?Math.PI/2:-Math.PI/2);
+    ctx.textAlign='center';ctx.globalAlpha=a;ctx.fillStyle='#fff';ctx.shadowColor='rgba(0,0,0,.35)';ctx.shadowBlur=6;
+    ctx.fillText(h.toUpperCase(),0,0);
+  }else if(WM.style==='pill'){
+    setF(700,fs);const tw=ctx.measureText(h).width,ph=fs*1.7,pw=tw+fs*1.4;const[x,y,al]=spot();
+    const x0=al==='left'?x:al==='right'?x-pw:x-pw/2;
+    ctx.globalAlpha=a*1.4>1?1:a*1.4;ctx.fillStyle='rgba(0,0,0,.45)';rr(x0,y-ph/2,pw,ph,ph/2);ctx.fill();
+    ctx.globalAlpha=Math.min(1,a*2.2);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.fillText(h,x0+pw/2,y+1);
+  }else if(WM.style==='blend'){
+    setF(900,Math.round(fs*1.5));const[x,y,al]=spot();ctx.textAlign=al;
+    ctx.globalCompositeOperation='overlay';ctx.globalAlpha=Math.min(1,a*2.4);ctx.fillStyle='#fff';ctx.fillText(h,x,y);
+    ctx.globalCompositeOperation='soft-light';ctx.fillStyle='#000';ctx.globalAlpha=Math.min(1,a*1.2);ctx.fillText(h,x+2,y+2);
+  }else if(WM.style==='outline'){
+    setF(900,Math.round(fs*1.25));const[x,y,al]=spot();ctx.textAlign=al;
+    ctx.globalAlpha=Math.min(1,a*1.5);ctx.lineWidth=Math.max(1.5,2.2*sc);ctx.strokeStyle='#fff';ctx.lineJoin='round';ctx.strokeText(h,x,y);
+  }else{
+    setF(700,fs);const[x,y,al]=spot();ctx.textAlign=al;
+    ctx.globalAlpha=a;ctx.fillStyle='#fff';ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=8;ctx.fillText(h,x,y);
+  }
+  ctx.restore();
+}
+function saveWM(){try{localStorage.setItem('taffy-wm',JSON.stringify(WM));}catch(e){}}
+function syncWMUI(){
+  $('wmOn').checked=WM.on;$('wmHandle').value=WM.handle;$('wmOp').value=WM.op;$('wmSize').value=WM.size;
+  press('wmStyle','w',WM.style);press('wmPos','q',WM.pos);
+  $('wmHint').textContent=WMHINT[WM.style]||'';
+  $('wmPos').querySelectorAll('button').forEach(b=>b.hidden=WM.style==='tiled'||(WM.style==='edge'&&b.dataset.q!=='tl'&&b.dataset.q!=='tr'));
+  $('wmPosWrap').hidden=WM.style==='tiled';
+  if(WM.style==='edge'){const l=$('wmPos').querySelector('[data-q=tl]'),r=$('wmPos').querySelector('[data-q=tr]');l.textContent='Left side';r.textContent='Right side';}
+  else{$('wmPos').querySelector('[data-q=tl]').textContent='Top left';$('wmPos').querySelector('[data-q=tr]').textContent='Top right';}
+}
+function wmChanged(){saveWM();syncWMUI();draw();}
+$('wmOn').onchange=e=>{WM.on=e.target.checked;if(WM.on&&!wmText())setTimeout(()=>$('wmHandle').focus(),50);wmChanged();vibe();};
+$('wmHandle').addEventListener('input',e=>{WM.handle=e.target.value.replace(/\s+/g,'');if(WM.handle&&!WM.on){WM.on=true;}saveWM();$('wmOn').checked=WM.on;draw();});
+group('wmStyle','w',v=>{WM.style=v;if(v==='edge'&&!['tl','tr'].includes(WM.pos))WM.pos='tr';wmChanged();});
+group('wmPos','q',v=>{WM.pos=v;wmChanged();});
+$('wmOp').addEventListener('input',e=>{WM.op=+e.target.value;saveWM();draw();});
+$('wmSize').addEventListener('input',e=>{WM.size=+e.target.value;saveWM();draw();});
+syncWMUI();
 
 /* ---------- tool panel ---------- */
 function openPanel(n){
@@ -912,6 +1006,7 @@ function openBatch(files){
   const cats=['Viral','Mix',...Object.keys(QDATA).filter(c=>c!=='Viral')];
   $('bCats').innerHTML=cats.map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===bCat}">${c==='Viral'?'&#128293; Viral':c==='Mix'?'Mix of everything':esc(c)}</button>`).join('');
   $('bCats').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{bCat=b.dataset.c;$('bCats').querySelectorAll('.chip').forEach(o=>o.setAttribute('aria-pressed',o===b));vibe();});
+  $('bWm').textContent=WM.on&&wmText()?'Watermark '+wmText()+' will be added to every post.':'Tip: set a watermark in the editor (Mark tool) and it gets added to batch posts too.';
   $('bGo').textContent='Make '+bFiles.length+' post'+(bFiles.length>1?'s':'');$('bGo').disabled=false;
   $('batch').hidden=false;history.pushState({bt:1},'',location.href);
 }
