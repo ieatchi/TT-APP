@@ -41,7 +41,7 @@ input[type=file]{display:none}
 .hbar{display:flex;align-items:center;justify-content:space-between;height:44px;margin-bottom:14px}
 .wordmark{display:flex;align-items:center;gap:10px;font-size:24px;font-weight:900;letter-spacing:-.04em}
 .wordmark img{width:34px;height:34px;border-radius:9px}
-.create{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px;margin-bottom:28px}
+.create{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px;margin-bottom:10px}
 .ct{position:relative;height:104px;border-radius:12px;background:var(--s1);display:flex;flex-direction:column;justify-content:space-between;padding:12px;text-align:left;cursor:pointer;transition:transform .12s}
 .ct:active{transform:scale(.97)}
 .ct svg{width:26px;height:26px}
@@ -163,7 +163,7 @@ textarea:focus{outline:none;border-color:var(--fg2)}
 .tool[aria-selected="true"],.tool[aria-selected="true"] svg{color:var(--accent)}
 .tool:active svg{transform:scale(.9)}
 
-.qwide{display:flex;align-items:center;gap:12px;width:100%;margin:-18px 0 28px;padding:14px;border-radius:12px;background:var(--s1);text-align:left}
+.qwide{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 28px;cursor:pointer;padding:14px;border-radius:12px;background:var(--s1);text-align:left}
 .qwide:active{opacity:.8}
 .qwide .qi{width:40px;height:40px;border-radius:10px;background:var(--s2);display:grid;place-items:center;color:var(--accent);font-size:28px;font-weight:900;line-height:1;padding-top:10px}
 .qwide b{display:block;font-size:14px;font-weight:700}
@@ -198,6 +198,16 @@ textarea:focus{outline:none;border-color:var(--fg2)}
 .q .qa button svg{width:18px;height:18px}
 .q .qa button[aria-pressed="true"]{color:var(--accent)}
 .qnone{text-align:center;color:var(--muted);font-size:14px;padding:40px 10px;line-height:1.5}
+.bstrip{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:4px 0 6px}
+.bstrip::-webkit-scrollbar{display:none}
+.bstrip img{height:96px;aspect-ratio:3/4;object-fit:cover;border-radius:6px;flex:none;background:var(--s1)}
+.blabel{font-size:13px;font-weight:700;color:var(--muted);margin:16px 0 8px}
+.bcheck{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-top:10px;background:var(--s1);border-radius:10px;cursor:pointer}
+.bcheck input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.bcheck b{display:block;font-size:14px;font-weight:600}
+.bcheck small{display:block;font-size:12px;color:var(--muted);margin-top:1px}
+.usedtag{display:inline-block;margin-left:6px;padding:1px 6px;border-radius:4px;background:var(--s3);color:var(--fg2);font-size:10px;letter-spacing:.04em}
+.q .qt small .usedtag:first-child{margin-left:0}
 .statsbtn{display:flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:8px;background:var(--s1);font-size:13px;font-weight:700}
 .statsbtn svg{width:16px;height:16px;color:var(--accent)}
 .sbody{flex:1;overflow:auto;scrollbar-width:none;padding:0 max(16px,var(--sar)) calc(var(--sab) + 24px) max(16px,var(--sal))}
@@ -274,6 +284,12 @@ textarea:focus{outline:none;border-color:var(--fg2)}
     </button>
   </div>
   <input id="newFile" type="file" accept="image/*">
+  <label class="qwide" for="batchFiles" style="margin-bottom:8px">
+    <span class="qi" style="padding-top:0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;margin:0;color:var(--accent)"><rect x="7" y="3" width="12" height="16" rx="2"/><path d="M4 7v12a2 2 0 0 0 2 2h9"/></svg></span>
+    <span><b>Batch mode</b><small>Pick photos, get a week of posts in a minute</small></span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+  </label>
+  <input id="batchFiles" type="file" accept="image/*" multiple>
   <button class="qwide" id="homeQuotes">
     <span class="qi">&ldquo;</span>
     <span><b>Quote library</b><small id="qcountHome">Captions for your next post</small></span>
@@ -430,6 +446,36 @@ textarea:focus{outline:none;border-color:var(--fg2)}
   </div>
 </div>
 
+<div class="qp" id="batch" hidden>
+  <div class="qp-in">
+    <div class="qtop">
+      <button class="ib" id="bClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      <h2>Batch<small id="bCount"></small></h2>
+    </div>
+    <div class="sbody">
+      <div class="bstrip" id="bStrip"></div>
+      <div class="blabel">Quotes from</div>
+      <div class="chips" id="bCats" style="padding:0 0 4px;margin:0 -2px"></div>
+      <div class="blabel">Text position</div>
+      <div class="opts" id="bPos">
+        <button class="opt" data-p="top" aria-pressed="false">Top</button>
+        <button class="opt" data-p="mid" aria-pressed="true">Middle</button>
+        <button class="opt" data-p="low" aria-pressed="false">Lower</button>
+      </div>
+      <div class="blabel">Photo</div>
+      <div class="opts" id="bFit">
+        <button class="opt" data-f="stretch" aria-pressed="true">Stretched</button>
+        <button class="opt" data-f="fit" aria-pressed="false">Normal</button>
+        <button class="opt" data-f="fill" aria-pressed="false">Fill screen</button>
+      </div>
+      <label class="bcheck"><input type="checkbox" id="bSave" checked><span><b>Save all to my gallery</b><small>Also adds them to Stats</small></span></label>
+      <label class="bcheck"><input type="checkbox" id="bFresh" checked><span><b>Skip quotes I've already used</b><small>So you never post the same one twice</small></span></label>
+      <button class="bigbtn acc" id="bGo" style="width:100%;margin-top:14px"></button>
+      <p class="hint" style="margin-top:10px">Each photo becomes its own draft, so you can still tweak any of them after.</p>
+    </div>
+  </div>
+</div>
+
 <div class="qp" id="stats" hidden>
   <div class="qp-in">
     <div class="qtop">
@@ -566,7 +612,7 @@ async function saveNow(){
 }
 async function closeEditor(){if(proj){clearTimeout(histT);await saveNow();}proj=null;img=null;imgBlob=null;texts=[];sel=null;showScreen(false);renderHome();}
 $('back').onclick=()=>{if(location.hash==='#edit')history.back();else closeEditor();};
-window.addEventListener('popstate',()=>{if(!$('pScrim').hidden){closePostNow();return;}if(!$('stats').hidden){closeStatsNow();return;}if(!$('qp').hidden){closeQuotesNow();return;}if(!$('scrim').hidden){closeMenu();return;}if(!$('editor').hidden)closeEditor();});
+window.addEventListener('popstate',()=>{if(!$('batch').hidden){if(bBusy){history.pushState({bt:1},'',location.href);return;}closeBatchNow();return;}if(!$('pScrim').hidden){closePostNow();return;}if(!$('stats').hidden){closeStatsNow();return;}if(!$('qp').hidden){closeQuotesNow();return;}if(!$('scrim').hidden){closeMenu();return;}if(!$('editor').hidden)closeEditor();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&proj)saveNow();});
 
 /* ---------- undo / redo ---------- */
@@ -758,18 +804,38 @@ cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 /* ---------- export ---------- */
 function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),1500);}
 function vibe(){try{navigator.vibrate&&navigator.vibrate(6);}catch(_){}}
-const fname=()=>'taffy_'+(proj?proj.name.replace(/[^\w-]+/g,'_'):'export')+'_'+Date.now()+'.png';
+const fname_unused=()=>'taffy_'+(proj?proj.name.replace(/[^\w-]+/g,'_'):'export')+'_'+Date.now()+'.png';
+async function saveToGallery(dataUrl,name){
+  const M=Cap&&Cap.Plugins&&Cap.Plugins.Media;
+  if(native&&M){
+    try{if(M.requestPermissions)await M.requestPermissions();}catch(e){}
+    if(!saveToGallery.album){
+      let base='';try{base=(await M.getAlbumsPath()).path||'';}catch(e){}
+      const find=async()=>{const {albums}=await M.getAlbums();return albums.find(a=>a.name==='Taffy'&&(!base||a.identifier.startsWith(base)))||albums.find(a=>a.name==='Taffy');};
+      let a=await find();if(!a){await M.createAlbum({name:'Taffy'});a=await find();}
+      if(!a)throw new Error('no album');saveToGallery.album=a.identifier;
+    }
+    await M.savePhoto({path:dataUrl,albumIdentifier:saveToGallery.album,fileName:name});
+    return 'gallery';
+  }
+  const blob=await(await fetch(dataUrl)).blob(),file=new File([blob],name+'.png',{type:'image/png'});
+  if(navigator.canShare&&navigator.canShare({files:[file]})&&matchMedia('(pointer:coarse)').matches){await navigator.share({files:[file]});return 'shared';}
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),3000);return 'download';
+}
+async function shareFallback(dataUrl,name){
+  const r=await Cap.Plugins.Filesystem.writeFile({path:name+'.png',data:dataUrl.split(',')[1],directory:'CACHE'});
+  await Cap.Plugins.Share.share({title:'Export',files:[r.uri]});
+}
+const fbase=()=>'taffy_'+(proj?proj.name.replace(/[^\w-]+/g,'_'):'export')+'_'+Date.now();
 $('export').onclick=async()=>{
   vibe();exporting=true;draw();const dataUrl=cv.toDataURL('image/png');exporting=false;draw();await saveNow();logPost();
-  try{
-    if(native&&Cap.Plugins.Filesystem&&Cap.Plugins.Share){
-      const r=await Cap.Plugins.Filesystem.writeFile({path:fname(),data:dataUrl.split(',')[1],directory:'CACHE'});
-      await Cap.Plugins.Share.share({title:'Export',files:[r.uri]});return;
-    }
-    const blob=await(await fetch(dataUrl)).blob(),file=new File([blob],fname(),{type:'image/png'});
-    if(navigator.canShare&&navigator.canShare({files:[file]})&&matchMedia('(pointer:coarse)').matches){await navigator.share({files:[file]});return;}
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),3000);toast('Exported');
-  }catch(err){if(err&&err.name!=='AbortError'&&!/cancel/i.test(err.message||''))toast('Export failed: '+(err.message||err));}
+  const name=fbase();
+  try{const r=await saveToGallery(dataUrl,name);toast(r==='gallery'?'Saved to your gallery':r==='download'?'Downloaded':'Shared');}
+  catch(err){
+    if(err&&(err.name==='AbortError'||/cancel/i.test(err.message||'')))return;
+    if(native&&Cap.Plugins.Share){try{await shareFallback(dataUrl,name);}catch(e){}}
+    else toast('Export failed: '+(err.message||err));
+  }
 };
 
 /* ---------- quote library ---------- */
@@ -791,13 +857,13 @@ function renderChips(){
   $('qChips').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{qCat=b.dataset.c;qOrder=null;renderChips();renderQuotes();$('qList').scrollTop=0;vibe();});
 }
 function renderQuotes(){
-  const f=new Set(favs()),term=$('qSearch').value.trim().toLowerCase();
+  const f=new Set(favs()),used=usedSet(),term=$('qSearch').value.trim().toLowerCase();
   let list=qCat==='All'?QALL:qCat==='Saved'?QALL.filter(q=>f.has(q.t)):QALL.filter(q=>q.c===qCat);
   if(term)list=(qCat==='Saved'?list:QALL).filter(q=>q.t.toLowerCase().includes(term)||q.c.toLowerCase().includes(term));
   if(qOrder)list=[...list].sort((a,b)=>(qOrder.get(a.t)||0)-(qOrder.get(b.t)||0));
   $('qCount').textContent=list.length;
   if(!list.length){$('qList').innerHTML=`<div class="qnone">${qCat==='Saved'&&!term?'Tap the star on any quote to save it here.':'No quotes match that search.'}</div>`;return;}
-  $('qList').innerHTML=list.map((q,i)=>`<div class="q" data-i="${i}"><button class="qt">${esc(q.t)}${qCat==='All'||term?`<small>${esc(q.c)}</small>`:''}</button><div class="qa">
+  $('qList').innerHTML=list.map((q,i)=>`<div class="q" data-i="${i}"><button class="qt">${esc(q.t)}${qCat==='All'||term||used.has(q.t)?`<small>${qCat==='All'||term?esc(q.c):''}${used.has(q.t)?`<span class="usedtag">Used</span>`:''}</small>`:''}</button><div class="qa">
     <button class="fav" aria-label="Save" aria-pressed="${f.has(q.t)}"><svg viewBox="0 0 24 24" fill="${f.has(q.t)?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></button>
     <button class="cp" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg></button></div></div>`).join('');
   $('qList').querySelectorAll('.q').forEach(el=>{const q=list[+el.dataset.i];
@@ -835,9 +901,69 @@ $('openQuotes').onclick=()=>openQuotes('editor');
 $('swapQuote').onclick=()=>openQuotes('editor');
 $('qcountHome').textContent=QALL.length+' captions in '+Object.keys(QDATA).length+' categories';
 
+/* ================= BATCH ================= */
+let bFiles=[],bCat='Viral',bPos='mid',bFitMode='stretch',bBusy=false;
+const POS={top:.24,mid:.5,low:.68};
+function openBatch(files){
+  bFiles=files.filter(f=>f.type.startsWith('image/')).slice(0,40);if(!bFiles.length)return;
+  if(files.length>40)toast('Using the first 40 photos');
+  $('bCount').textContent=bFiles.length+' photo'+(bFiles.length>1?'s':'');
+  $('bStrip').innerHTML='';bFiles.forEach(f=>{const im=document.createElement('img');im.src=URL.createObjectURL(f);im.alt='';$('bStrip').appendChild(im);});
+  const cats=['Viral','Mix',...Object.keys(QDATA).filter(c=>c!=='Viral')];
+  $('bCats').innerHTML=cats.map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===bCat}">${c==='Viral'?'&#128293; Viral':c==='Mix'?'Mix of everything':esc(c)}</button>`).join('');
+  $('bCats').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{bCat=b.dataset.c;$('bCats').querySelectorAll('.chip').forEach(o=>o.setAttribute('aria-pressed',o===b));vibe();});
+  $('bGo').textContent='Make '+bFiles.length+' post'+(bFiles.length>1?'s':'');$('bGo').disabled=false;
+  $('batch').hidden=false;history.pushState({bt:1},'',location.href);
+}
+function closeBatchNow(){if(bBusy)return;$('batch').hidden=true;}
+$('bClose').onclick=()=>{if(bBusy)return;if(history.state&&history.state.bt)history.back();else closeBatchNow();};
+$('batchFiles').onchange=e=>{const f=[...e.target.files];e.target.value='';if(f.length)openBatch(f);};
+group('bPos','p',v=>bPos=v);group('bFit','f',v=>bFitMode=v);
+function pickQuotes(n,cat,fresh){
+  const used=fresh?usedSet():new Set();
+  let pool=(cat==='Mix'?QALL:QALL.filter(q=>q.c===cat));
+  let fr=pool.filter(q=>!used.has(q.t));if(fr.length<n)fr=fr.concat(pool.filter(q=>used.has(q.t)));
+  if(cat!=='Mix'&&fr.length<n){const extra=QALL.filter(q=>!used.has(q.t)&&q.c!==cat);fr=fr.concat(extra);}
+  for(let i=fr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[fr[i],fr[j]]=[fr[j],fr[i]];}
+  const out=[];for(let i=0;i<n;i++)out.push(fr[i%fr.length]);return out;
+}
+$('bGo').onclick=async()=>{
+  if(bBusy)return;bBusy=true;$('bGo').disabled=true;
+  const qs=pickQuotes(bFiles.length,bCat,$('bFresh').checked),saveAll=$('bSave').checked;
+  const day=new Date().toLocaleDateString(undefined,{day:'numeric',month:'short'});
+  let done=0,saved=0,failed=0;
+  for(let i=0;i<bFiles.length;i++){
+    $('bGo').textContent=`Making ${i+1} of ${bFiles.length}…`;
+    const im=await loadImage(bFiles[i]);if(!im){failed++;continue;}
+    const now=Date.now();
+    proj={id:uid(),name:`${day} #${i+1}`,created:now,updated:now,img:bFiles[i],state:null,thumb:null};
+    loading=true;setControls(null);img=im;imgBlob=bFiles[i];sel=null;
+    if(bFitMode==='fit')$('sw').value=100;
+    if(bFitMode==='fill'){$('sw').value=100;$('sh').value=Math.min(400,Math.round(H/(im.height*W/im.width)*100));}
+    place();
+    const q=qs[i];texts=[{text:wrapQuote(q.t),cat:q.c,font:'tiktok',color:TT_YELLOW,style:'outline',size:120,sx:100,sy:100,x:W/2,y:H*POS[bPos]}];autoFit(texts[0]);
+    loading=false;
+    await saveNow();
+    if(saveAll){
+      exporting=true;draw();const d=cv.toDataURL('image/png');exporting=false;
+      try{const r=await saveToGallery(d,'taffy_'+proj.name.replace(/[^\w-]+/g,'_')+'_'+now);if(r==='gallery'||r==='download')saved++;}catch(e){}
+      await logPost();
+    }
+    done++;await new Promise(r=>setTimeout(r,30));
+  }
+  clearTimeout(saveT);clearTimeout(histT);proj=null;img=null;imgBlob=null;texts=[];
+  bBusy=false;
+  if(history.state&&history.state.bt)history.back();else closeBatchNow();
+  renderHome();
+  toast(saveAll&&native?`${done} posts made · ${saved} saved to gallery`:`${done} posts made`);
+};
+
 /* ================= STATS ================= */
+function usedSet(){try{return new Set(JSON.parse(localStorage.getItem('taffy-used')||'[]'));}catch(e){return new Set();}}
+function markUsed(list){const u=usedSet();list.forEach(t=>u.add(t));try{localStorage.setItem('taffy-used',JSON.stringify([...u]));}catch(e){}}
 async function logPost(){
   if(!proj)return;
+  markUsed(texts.map(t=>t.text.replace(/\s*\n\s*/g,' ').trim()));
   let all=[];try{all=await postsAll();}catch(e){return;}
   let p=all.find(x=>x.projId===proj.id);
   if(!p)p={id:uid(),projId:proj.id,created:Date.now(),posted:Date.now(),views:null,likes:null,comments:null,shares:null};
