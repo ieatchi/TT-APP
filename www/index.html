@@ -190,11 +190,12 @@ textarea:focus{outline:none;border-color:var(--fg2)}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:none;height:32px;padding:0 13px;border-radius:16px;background:var(--s1);color:var(--fg2);font-size:13px;font-weight:600;white-space:nowrap}
 .chip[aria-pressed="true"]{background:var(--fg);color:#000}
-.chip[data-c="Viral"]{color:var(--accent)}
+.chip[data-c="Viral"],.chip[data-c="Aesthetic"]{color:var(--accent)}
+.chip[data-c="Aesthetic"][aria-pressed="true"]{background:var(--accent);color:#000}
 .chip[data-c="Viral"][aria-pressed="true"]{background:var(--accent);color:#000}
 .qlist{flex:1;overflow:auto;scrollbar-width:none;padding:0 max(16px,var(--sar)) calc(var(--sab) + 20px) max(16px,var(--sal));display:flex;flex-direction:column;gap:8px}
 .qlist::-webkit-scrollbar{display:none}
-.q{display:flex;align-items:stretch;background:var(--s1);border-radius:10px;min-height:56px}
+.q{display:flex;align-items:stretch;background:var(--s1);border-radius:10px;min-height:56px;flex-shrink:0}
 .q .qt{flex:1;min-width:0;text-align:left;padding:13px 4px 13px 14px;font-size:15px;font-weight:600;line-height:1.35}
 .q .qt small{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-top:5px;text-transform:uppercase;letter-spacing:.04em}
 .q .qt:active{opacity:.7}
@@ -238,7 +239,7 @@ textarea:focus{outline:none;border-color:var(--fg2)}
 .hb b{text-align:right;font-variant-numeric:tabular-nums;font-size:13px}
 .snote{font-size:13px;color:var(--muted);margin:14px 2px;line-height:1.45}
 .plist{display:flex;flex-direction:column;gap:6px}
-.prow{display:flex;align-items:center;gap:12px;width:100%;padding:8px 12px 8px 8px;border-radius:10px;background:var(--s1);text-align:left}
+.prow{flex-shrink:0;display:flex;align-items:center;gap:12px;width:100%;padding:8px 12px 8px 8px;border-radius:10px;background:var(--s1);text-align:left}
 .prow:active{opacity:.75}
 .prow img,.prow .ph{width:36px;aspect-ratio:9/16;border-radius:4px;object-fit:cover;background:var(--s2);flex:none}
 .pc{flex:1;min-width:0}
@@ -518,7 +519,7 @@ textarea:focus{outline:none;border-color:var(--fg2)}
             <button class="sw" data-c="#7cff4f" style="--c:#7cff4f" aria-label="Green" aria-pressed="false"></button>
             <label class="sw custom" aria-label="Custom colour"><input type="color" id="customColor" value="#a78bfa"></label>
           </div>
-          <div class="opts"><button class="opt" id="swapQuote"><span style="color:var(--accent);font-size:20px;font-weight:900;line-height:1;margin-top:7px">&ldquo;</span>Pick a quote</button></div>
+          <div class="opts"><button class="opt" id="evenLines"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 7h14M7 12h10M5 17h14"/></svg>Even out lines</button><button class="opt" id="swapQuote"><span style="color:var(--accent);font-size:20px;font-weight:900;line-height:1;margin-top:7px">&ldquo;</span>Pick a quote</button></div>
           <div class="opts" id="fontPick">
             <button class="opt f-tiktok" data-f="tiktok" aria-pressed="true">TikTok</button>
             <button class="opt f-bold" data-f="bold" aria-pressed="false">Bold</button>
@@ -634,6 +635,13 @@ textarea:focus{outline:none;border-color:var(--fg2)}
         <button class="opt" data-f="fit" aria-pressed="false">Normal</button>
         <button class="opt" data-f="fill" aria-pressed="false">Fill screen</button>
       </div>
+      <div class="blabel">Text style</div>
+      <div class="opts" id="bTs">
+        <button class="opt f-tall" data-y="tall" aria-pressed="false">TALL shadow</button>
+        <button class="opt f-tiktok" data-y="tiktok" aria-pressed="false">TikTok outline</button>
+        <button class="opt f-bold" data-y="bold" aria-pressed="false">Bold outline</button>
+        <button class="opt" data-y="box" aria-pressed="false">Box</button>
+      </div>
       <div class="blabel">Filter</div>
       <div class="opts bfx" id="bFx"></div>
       <label class="bcheck"><input type="checkbox" id="bSave" checked><span><b>Save all to my gallery</b><small>Also adds them to Stats</small></span></label>
@@ -727,8 +735,8 @@ function nextName(){const names=new Set(projects.map(p=>p.name));let n=projects.
 async function newProject(file,opts={}){
   const now=Date.now();
   await openProject({id:uid(),name:nextName(),created:now,updated:now,img:file||null,state:null,thumb:null});
-  if(opts.quote)addText({...yellowPreset,text:wrapQuote(opts.quote),cat:opts.cat,y:H*.42},true);
-  else if(opts.text)addText(yellowPreset);
+  if(opts.quote)addText({...myStyle(),text:wrapQuote(opts.quote),cat:opts.cat,y:H*.42},true);
+  else if(opts.text)addText({...myStyle()});
   saveNow();
 }
 $('newFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f||!f.type.startsWith('image/'))return;if(!$('cScrim').hidden){cPending=()=>newProject(f);closeCreate();}else newProject(f);};
@@ -1040,16 +1048,18 @@ function addText(preset,noFocus){
   texts.push(t);sel=t;openPanel(1);syncTextUI();vibe();if(!noFocus)setTimeout(()=>{$('txt').focus();$('txt').select();},80);
 }
 const yellowPreset={color:TT_YELLOW,style:'outline',font:'tiktok'};
-$('addYellow').onclick=()=>addText(yellowPreset);
+function myStyle(){try{const v=JSON.parse(localStorage.getItem('taffy-style')||'null');if(v&&FONTS[v.font])return{font:v.font,style:v.style||'outline',color:v.color||TT_YELLOW};}catch(e){}return{...yellowPreset};}
+function rememberStyle(t){if(!t)return;try{localStorage.setItem('taffy-style',JSON.stringify({font:t.font,style:t.style,color:t.color}));}catch(e){}}
+$('addYellow').onclick=()=>addText({...myStyle(),color:TT_YELLOW});
 $('addText').onclick=()=>addText();
-$('addText2').onclick=()=>addText(sel?{font:sel.font,color:sel.color,style:sel.style}:yellowPreset);
+$('addText2').onclick=()=>addText(sel?{font:sel.font,color:sel.color,style:sel.style}:myStyle());
 $('delText').onclick=()=>{texts=texts.filter(t=>t!==sel);sel=null;syncTextUI();vibe();};
 function autoFit(t){const b=bounds(t),max=W*.92;if(b.w>max){t.size=Math.max(30,t.size*max/b.w);$('tsz').value=Math.round(t.size);}}
 $('txt').addEventListener('input',e=>{if(sel){sel.text=e.target.value;delete sel.cat;autoFit(sel);draw();}});
-$('colors').querySelectorAll('.sw[data-c]').forEach(b=>b.addEventListener('click',()=>{if(!sel)return;sel.color=b.dataset.c;syncTextUI();vibe();}));
+$('colors').querySelectorAll('.sw[data-c]').forEach(b=>b.addEventListener('click',()=>{if(!sel)return;sel.color=b.dataset.c;rememberStyle(sel);syncTextUI();vibe();}));
 $('customColor').addEventListener('input',e=>{if(sel){sel.color=e.target.value;syncTextUI();}});
-group('fontPick','f',f=>{if(sel){sel.font=f;autoFit(sel);syncTextUI();}});
-group('stylePick','s',s=>{if(sel){sel.style=s;syncTextUI();}});
+group('fontPick','f',f=>{if(sel){sel.font=f;autoFit(sel);rememberStyle(sel);syncTextUI();}});
+group('stylePick','s',s=>{if(sel){sel.style=s;rememberStyle(sel);syncTextUI();}});
 $('tsz').addEventListener('input',e=>{if(sel){sel.size=+e.target.value;draw();}});
 $('tsw').addEventListener('input',e=>{if(sel){sel.sx=+e.target.value;draw();}});
 $('tsh').addEventListener('input',e=>{if(sel){sel.sy=+e.target.value;draw();}});
@@ -1145,29 +1155,44 @@ $('export').onclick=async()=>{
 /* ---------- quote library ---------- */
 const QDATA=window.QUOTES||{};
 const QALL=Object.entries(QDATA).flatMap(([c,arr])=>arr.map(t=>({t,c})));
-let qCat='Viral',qMode='editor',qOrder=null,qPending=null;
+const CALM=new Set(window.CALM_CATS||[]);
+const AES='Aesthetic';
+const inCat=(q,cat)=>cat===AES?CALM.has(q.c):cat==='All'||cat==='Mix'?true:q.c===cat;
+let qCat=AES,qMode='editor',qOrder=null,qPending=null;
 function favs(){try{return JSON.parse(localStorage.getItem('taffy-favs')||'[]');}catch(e){return[];}}
 function setFavs(a){try{localStorage.setItem('taffy-favs',JSON.stringify(a));}catch(e){}}
 function wrapQuote(str){
-  const words=str.trim().split(/\s+/),n=str.length;
-  const lines=Math.min(6,Math.max(1,Math.ceil(n/20))),target=Math.ceil(n/lines);
-  const out=[];let cur='';
-  words.forEach(w=>{if(cur&&(cur+' '+w).length>target+3){out.push(cur);cur=w;}else cur=cur?cur+' '+w:w;});
-  if(cur)out.push(cur);return out.join('\n');
+  // Balanced line breaks: even line lengths, no lonely single words.
+  const words=String(str).replace(/\s*\n\s*/g,' ').trim().split(/\s+/).filter(Boolean),n=words.join(' ').length;
+  let L=Math.min(6,Math.max(1,Math.round(n/17)));if(n>14&&L<2)L=2;L=Math.min(L,words.length);
+  if(L<=1)return words.join(' ');
+  const target=n/L,W=words.length,memo=new Map();
+  const len=(a,b)=>{let t=b-a-1;for(let k=a;k<b;k++)t+=words[k].length;return t;};
+  function best(a,k){
+    const key=a*10+k;if(memo.has(key))return memo.get(key);
+    let res={c:Infinity,b:null};
+    const linePen=(a2,b2)=>{const l=len(a2,b2);let c=(l-target)**2;if(b2-a2===1&&W>2&&l<9)c+=target*target*.9;return c;};
+    if(k===1)res={c:linePen(a,W),b:[W]};
+    else for(let j2=a+1;j2<=W-(k-1);j2++){const r=best(j2,k-1),c=linePen(a,j2)+r.c;if(c<res.c)res={c,b:[j2,...r.b]};}
+    memo.set(key,res);return res;
+  }
+  const br=best(0,L).b;const out=[];let a=0;br.forEach(b=>{out.push(words.slice(a,b).join(' '));a=b;});
+  return out.join('\n');
 }
 function renderChips(){
-  const cats=['Viral','All','Saved',...Object.keys(QDATA).filter(c=>c!=='Viral')];
-  $('qChips').innerHTML=cats.map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===qCat}">${c==='Saved'?'&#9733; Saved':c==='Viral'?'&#128293; Viral':esc(c)}</button>`).join('');
+  const cats=[AES,'Viral','Saved','All',...Object.keys(QDATA).filter(c=>c!=='Viral')];
+  $('qChips').innerHTML=cats.map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===qCat}">${chipLabel(c)}</button>`).join('');
   $('qChips').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{qCat=b.dataset.c;qOrder=null;renderChips();renderQuotes();$('qList').scrollTop=0;vibe();});
 }
+function chipLabel(c){return c==='Saved'?'&#9733; Saved':c==='Viral'?'&#128293; Viral':c===AES?'&#127749; Aesthetic':c==='Mix'?'Mix of everything':esc(c);}
 function renderQuotes(){
   const f=new Set(favs()),used=usedSet(),term=$('qSearch').value.trim().toLowerCase();
-  let list=qCat==='All'?QALL:qCat==='Saved'?QALL.filter(q=>f.has(q.t)):QALL.filter(q=>q.c===qCat);
+  let list=qCat==='Saved'?QALL.filter(q=>f.has(q.t)):QALL.filter(q=>inCat(q,qCat));
   if(term)list=(qCat==='Saved'?list:QALL).filter(q=>q.t.toLowerCase().includes(term)||q.c.toLowerCase().includes(term));
   if(qOrder)list=[...list].sort((a,b)=>(qOrder.get(a.t)||0)-(qOrder.get(b.t)||0));
   $('qCount').textContent=list.length;
   if(!list.length){$('qList').innerHTML=`<div class="qnone">${qCat==='Saved'&&!term?'Tap the star on any quote to save it here.':'No quotes match that search.'}</div>`;return;}
-  $('qList').innerHTML=list.map((q,i)=>`<div class="q" data-i="${i}"><button class="qt">${esc(q.t)}${qCat==='All'||term||used.has(q.t)?`<small>${qCat==='All'||term?esc(q.c):''}${used.has(q.t)?`<span class="usedtag">Used</span>`:''}</small>`:''}</button><div class="qa">
+  $('qList').innerHTML=list.map((q,i)=>`<div class="q" data-i="${i}"><button class="qt">${esc(q.t)}${qCat==='All'||qCat===AES||term||used.has(q.t)?`<small>${qCat==='All'||qCat===AES||term?esc(q.c):''}${used.has(q.t)?`<span class="usedtag">Used</span>`:''}</small>`:''}</button><div class="qa">
     <button class="fav" aria-label="Save" aria-pressed="${f.has(q.t)}"><svg viewBox="0 0 24 24" fill="${f.has(q.t)?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></button>
     <button class="cp" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg></button></div></div>`).join('');
   $('qList').querySelectorAll('.q').forEach(el=>{const q=list[+el.dataset.i];
@@ -1194,7 +1219,7 @@ function pickQuote(t,c){
   if(qMode==='home'){qPending=()=>newProject(null,{quote:t,cat:c});}
   else qPending=()=>{
     if(sel){sel.text=wrapQuote(t);sel.cat=c;autoFit(sel);if(sel.color==='#ffffff'&&sel.style==='outline')sel.color=TT_YELLOW;syncTextUI();}
-    else addText({...yellowPreset,text:wrapQuote(t),cat:c,y:H*.42},true);
+    else addText({...myStyle(),text:wrapQuote(t),cat:c,y:H*.42},true);
   };
   closeQuotes();
 }
@@ -1203,19 +1228,24 @@ $('qSearch').addEventListener('input',renderQuotes);
 $('qShuffle').onclick=()=>{qOrder=new Map(QALL.map(q=>[q.t,Math.random()]));renderQuotes();$('qList').scrollTop=0;vibe();};
 $('openQuotes').onclick=()=>openQuotes('editor');
 $('swapQuote').onclick=()=>openQuotes('editor');
+$('evenLines').onclick=()=>{if(!sel)return;sel.text=wrapQuote(sel.text);autoFit(sel);syncTextUI();$('txt').value=sel.text;vibe();};
 
 /* ================= BATCH ================= */
-let bFiles=[],bCat='Viral',bPos='mid',bFitMode='stretch',bBusy=false,bFilter='none';
+const TS={tall:{font:'tall',style:'plain'},tiktok:{font:'tiktok',style:'outline'},bold:{font:'bold',style:'outline'},box:{font:'tiktok',style:'box'}};
+let bTs=null;
+let bFiles=[],bCat='Aesthetic',bPos='mid',bFitMode='stretch',bBusy=false,bFilter='none';
 const POS={top:.24,mid:.5,low:.68};
 function openBatch(files){
   bFiles=files.filter(f=>f.type.startsWith('image/')).slice(0,40);if(!bFiles.length)return;
   if(files.length>40)toast('Using the first 40 photos');
   $('bCount').textContent=bFiles.length+' photo'+(bFiles.length>1?'s':'');
   $('bStrip').innerHTML='';bFiles.forEach(f=>{const im=document.createElement('img');im.src=URL.createObjectURL(f);im.alt='';$('bStrip').appendChild(im);});
-  const cats=['Viral','Mix',...Object.keys(QDATA).filter(c=>c!=='Viral')];
-  $('bCats').innerHTML=cats.map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===bCat}">${c==='Viral'?'&#128293; Viral':c==='Mix'?'Mix of everything':esc(c)}</button>`).join('');
+  const cats=[AES,'Viral','Mix',...Object.keys(QDATA).filter(c=>c!=='Viral')];
+  $('bCats').innerHTML=cats.map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===bCat}">${chipLabel(c)}</button>`).join('');
   $('bCats').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{bCat=b.dataset.c;$('bCats').querySelectorAll('.chip').forEach(o=>o.setAttribute('aria-pressed',o===b));vibe();});
   $('bWm').textContent=WM.on&&wmText()?'Watermark '+wmText()+' will be added to every post.':'Tip: set a watermark in the editor (Mark tool) and it gets added to batch posts too.';
+  if(!bTs){const m=myStyle();bTs=m.style==='box'?'box':m.font==='tall'?'tall':m.font==='bold'?'bold':m.font==='tiktok'&&localStorage.getItem('taffy-style')?'tiktok':'tall';}
+  press('bTs','y',bTs);
   $('bFx').innerHTML=FXORDER.map(k=>`<button class="opt" data-x="${k}" aria-pressed="${k===bFilter}">${FILTERS[k].n}</button>`).join('');
   $('bFx').querySelectorAll('button').forEach(b=>b.onclick=()=>{bFilter=b.dataset.x;press('bFx','x',bFilter);vibe();});
   $('bGo').textContent='Make '+bFiles.length+' post'+(bFiles.length>1?'s':'');$('bGo').disabled=false;
@@ -1224,12 +1254,12 @@ function openBatch(files){
 function closeBatchNow(){if(bBusy)return;$('batch').hidden=true;syncChrome();}
 $('bClose').onclick=()=>{if(bBusy)return;if(history.state&&history.state.bt)history.back();else closeBatchNow();};
 $('batchFiles').onchange=e=>{const f=[...e.target.files];e.target.value='';if(!f.length)return;if(!$('cScrim').hidden){cPending=()=>openBatch(f);closeCreate();}else openBatch(f);};
-group('bPos','p',v=>bPos=v);group('bFit','f',v=>bFitMode=v);
+group('bPos','p',v=>bPos=v);group('bTs','y',v=>bTs=v);group('bFit','f',v=>bFitMode=v);
 function pickQuotes(n,cat,fresh){
   const used=fresh?usedSet():new Set();
-  let pool=(cat==='Mix'?QALL:QALL.filter(q=>q.c===cat));
+  let pool=QALL.filter(q=>inCat(q,cat));
   let fr=pool.filter(q=>!used.has(q.t));if(fr.length<n)fr=fr.concat(pool.filter(q=>used.has(q.t)));
-  if(cat!=='Mix'&&fr.length<n){const extra=QALL.filter(q=>!used.has(q.t)&&q.c!==cat);fr=fr.concat(extra);}
+  if(cat!=='Mix'&&cat!==AES&&fr.length<n){const extra=QALL.filter(q=>!used.has(q.t)&&q.c!==cat);fr=fr.concat(extra);}
   for(let i=fr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[fr[i],fr[j]]=[fr[j],fr[i]];}
   const out=[];for(let i=0;i<n;i++)out.push(fr[i%fr.length]);return out;
 }
@@ -1247,7 +1277,8 @@ $('bGo').onclick=async()=>{
     if(bFitMode==='fit')$('sw').value=100;
     if(bFitMode==='fill'){$('sw').value=100;$('sh').value=Math.min(400,Math.round(H/(im.height*W/im.width)*100));}
     place();
-    const q=qs[i];texts=[{text:wrapQuote(q.t),cat:q.c,font:'tiktok',color:TT_YELLOW,style:'outline',size:120,sx:100,sy:100,x:W/2,y:H*POS[bPos]}];autoFit(texts[0]);
+    const q=qs[i],ts=TS[bTs]||TS.tall,col=myStyle().color||TT_YELLOW;
+    texts=[{text:wrapQuote(q.t),cat:q.c,font:ts.font,color:col,style:ts.style,size:ts.font==='tall'?150:120,sx:100,sy:100,x:W/2,y:H*POS[bPos]}];autoFit(texts[0]);
     loading=false;
     await saveNow();
     if(saveAll){
