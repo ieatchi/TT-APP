@@ -163,6 +163,39 @@ textarea:focus{outline:none;border-color:var(--fg2)}
 .tool[aria-selected="true"],.tool[aria-selected="true"] svg{color:var(--accent)}
 .tool:active svg{transform:scale(.9)}
 
+.qwide{display:flex;align-items:center;gap:12px;width:100%;margin:-18px 0 28px;padding:14px;border-radius:12px;background:var(--s1);text-align:left}
+.qwide:active{opacity:.8}
+.qwide .qi{width:40px;height:40px;border-radius:10px;background:var(--s2);display:grid;place-items:center;color:var(--accent);font-size:28px;font-weight:900;line-height:1;padding-top:10px}
+.qwide b{display:block;font-size:14px;font-weight:700}
+.qwide small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.qwide svg{width:18px;height:18px;margin-left:auto;color:var(--muted)}
+/* quote picker */
+.qp{position:fixed;inset:0;z-index:25;background:var(--bg);display:flex;flex-direction:column;padding-top:var(--sat);animation:fade .15s}
+.qp-in{max-width:560px;width:100%;margin:0 auto;display:flex;flex-direction:column;min-height:0;flex:1}
+.qtop{display:flex;align-items:center;gap:4px;height:52px;padding:0 max(8px,var(--sar)) 0 max(4px,var(--sal));flex:none}
+.qtop h2{margin:0;font-size:17px;font-weight:700;flex:1}
+.qtop h2 small{font-size:13px;font-weight:400;color:var(--muted);margin-left:6px}
+.shuf{height:34px;padding:0 12px;border-radius:8px;background:var(--s2);font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.shuf svg{width:16px;height:16px}
+.qsearch{margin:0 max(16px,var(--sar)) 10px max(16px,var(--sal));position:relative;flex:none}
+.qsearch input{width:100%;height:42px;border-radius:10px;background:var(--s1);border:1px solid transparent;padding:0 12px 0 38px;font-size:15px;user-select:text;-webkit-user-select:text}
+.qsearch input:focus{outline:none;border-color:var(--line)}
+.qsearch svg{position:absolute;left:12px;top:12px;width:18px;height:18px;color:var(--muted)}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:0 max(16px,var(--sar)) 12px max(16px,var(--sal));flex:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;height:32px;padding:0 13px;border-radius:16px;background:var(--s1);color:var(--fg2);font-size:13px;font-weight:600;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--fg);color:#000}
+.qlist{flex:1;overflow:auto;scrollbar-width:none;padding:0 max(16px,var(--sar)) calc(var(--sab) + 20px) max(16px,var(--sal));display:flex;flex-direction:column;gap:8px}
+.qlist::-webkit-scrollbar{display:none}
+.q{display:flex;align-items:stretch;background:var(--s1);border-radius:10px;min-height:56px}
+.q .qt{flex:1;min-width:0;text-align:left;padding:13px 4px 13px 14px;font-size:15px;font-weight:600;line-height:1.35}
+.q .qt small{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-top:5px;text-transform:uppercase;letter-spacing:.04em}
+.q .qt:active{opacity:.7}
+.q .qa{display:flex;flex-direction:column;justify-content:center;padding-right:4px}
+.q .qa button{width:38px;height:34px;display:grid;place-items:center;color:var(--muted)}
+.q .qa button svg{width:18px;height:18px}
+.q .qa button[aria-pressed="true"]{color:var(--accent)}
+.qnone{text-align:center;color:var(--muted);font-size:14px;padding:40px 10px;line-height:1.5}
 .toast{position:fixed;left:50%;bottom:calc(var(--sab) + 140px);transform:translateX(-50%);padding:9px 14px;border-radius:8px;background:var(--s3);font-size:13px;font-weight:600;white-space:nowrap;z-index:30;pointer-events:none;opacity:0;transition:opacity .2s}
 .toast.show{opacity:1}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -189,6 +222,11 @@ textarea:focus{outline:none;border-color:var(--fg2)}
     </button>
   </div>
   <input id="newFile" type="file" accept="image/*">
+  <button class="qwide" id="homeQuotes">
+    <span class="qi">&ldquo;</span>
+    <span><b>Quote library</b><small id="qcountHome">Captions for your next post</small></span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+  </button>
 
   <div class="hsec"><h2>Drafts</h2><span id="count"></span></div>
   <div class="grid" id="grid"></div>
@@ -257,6 +295,7 @@ textarea:focus{outline:none;border-color:var(--fg2)}
       <div class="panel" data-panel="1" hidden>
         <div id="tnone" class="panel">
           <button class="bigbtn acc" id="addYellow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add yellow caption</button>
+          <button class="bigbtn" id="openQuotes"><span style="color:var(--accent);font-size:22px;font-weight:900;line-height:1;margin-top:8px">&ldquo;</span>Browse quotes</button>
           <button class="bigbtn" id="addText">Add white text</button>
           <p class="hint">Tap text on the canvas to edit it. Drag to move, pinch to resize, double-tap to centre.</p>
         </div>
@@ -276,6 +315,7 @@ textarea:focus{outline:none;border-color:var(--fg2)}
             <button class="sw" data-c="#7cff4f" style="--c:#7cff4f" aria-label="Green" aria-pressed="false"></button>
             <label class="sw custom" aria-label="Custom colour"><input type="color" id="customColor" value="#a78bfa"></label>
           </div>
+          <div class="opts"><button class="opt" id="swapQuote"><span style="color:var(--accent);font-size:20px;font-weight:900;line-height:1;margin-top:7px">&ldquo;</span>Pick a quote</button></div>
           <div class="opts" id="fontPick">
             <button class="opt f-tiktok" data-f="tiktok" aria-pressed="true">TikTok</button>
             <button class="opt f-bold" data-f="bold" aria-pressed="false">Bold</button>
@@ -325,8 +365,22 @@ textarea:focus{outline:none;border-color:var(--fg2)}
   </nav>
 </div>
 
+<div class="qp" id="qp" hidden>
+  <div class="qp-in">
+    <div class="qtop">
+      <button class="ib" id="qClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      <h2>Quotes<small id="qCount"></small></h2>
+      <button class="shuf" id="qShuffle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>Shuffle</button>
+    </div>
+    <div class="qsearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="qSearch" type="search" placeholder="Search quotes" aria-label="Search quotes"></div>
+    <div class="chips" id="qChips"></div>
+    <div class="qlist" id="qList"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
+<script src="quotes.js"></script>
 <script>
 const W=1080,H=1920;
 const TT_YELLOW='#f7ce46';
@@ -377,7 +431,8 @@ function nextName(){const names=new Set(projects.map(p=>p.name));let n=projects.
 async function newProject(file,opts={}){
   const now=Date.now();
   await openProject({id:uid(),name:nextName(),created:now,updated:now,img:file||null,state:null,thumb:null});
-  if(opts.text)addText(yellowPreset);
+  if(opts.quote)addText({...yellowPreset,text:wrapQuote(opts.quote),y:H*.42},true);
+  else if(opts.text)addText(yellowPreset);
   saveNow();
 }
 $('newFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f&&f.type.startsWith('image/'))newProject(f);};
@@ -431,7 +486,7 @@ async function saveNow(){
 }
 async function closeEditor(){if(proj){clearTimeout(histT);await saveNow();}proj=null;img=null;imgBlob=null;texts=[];sel=null;showScreen(false);renderHome();}
 $('back').onclick=()=>{if(location.hash==='#edit')history.back();else closeEditor();};
-window.addEventListener('popstate',()=>{if(!$('scrim').hidden){closeMenu();return;}if(!$('editor').hidden)closeEditor();});
+window.addEventListener('popstate',()=>{if(!$('qp').hidden){closeQuotesNow();return;}if(!$('scrim').hidden){closeMenu();return;}if(!$('editor').hidden)closeEditor();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&proj)saveNow();});
 
 /* ---------- undo / redo ---------- */
@@ -549,9 +604,10 @@ function syncTextUI(){
     $('colors').querySelectorAll('.sw[data-c]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.c===sel.color));}
   draw();
 }
-function addText(preset){
+function addText(preset,noFocus){
   const t=Object.assign({text:'Your text',font:'tiktok',color:'#ffffff',style:'outline',size:120,sx:100,sy:100,x:W/2,y:H*.3+(texts.length*170)%(H*.5)},preset||{});
-  texts.push(t);sel=t;openPanel(1);syncTextUI();vibe();setTimeout(()=>{$('txt').focus();$('txt').select();},80);
+  if(preset&&preset.text)autoFit(t);
+  texts.push(t);sel=t;openPanel(1);syncTextUI();vibe();if(!noFocus)setTimeout(()=>{$('txt').focus();$('txt').select();},80);
 }
 const yellowPreset={color:TT_YELLOW,style:'outline',font:'tiktok'};
 $('addYellow').onclick=()=>addText(yellowPreset);
@@ -635,6 +691,69 @@ $('export').onclick=async()=>{
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),3000);toast('Exported');
   }catch(err){if(err&&err.name!=='AbortError'&&!/cancel/i.test(err.message||''))toast('Export failed: '+(err.message||err));}
 };
+
+/* ---------- quote library ---------- */
+const QDATA=window.QUOTES||{};
+const QALL=Object.entries(QDATA).flatMap(([c,arr])=>arr.map(t=>({t,c})));
+let qCat='All',qMode='editor',qOrder=null,qPending=null;
+function favs(){try{return JSON.parse(localStorage.getItem('taffy-favs')||'[]');}catch(e){return[];}}
+function setFavs(a){try{localStorage.setItem('taffy-favs',JSON.stringify(a));}catch(e){}}
+function wrapQuote(str){
+  const words=str.trim().split(/\s+/),n=str.length;
+  const lines=Math.min(6,Math.max(1,Math.ceil(n/20))),target=Math.ceil(n/lines);
+  const out=[];let cur='';
+  words.forEach(w=>{if(cur&&(cur+' '+w).length>target+3){out.push(cur);cur=w;}else cur=cur?cur+' '+w:w;});
+  if(cur)out.push(cur);return out.join('\n');
+}
+function renderChips(){
+  const cats=['All','Saved',...Object.keys(QDATA)];
+  $('qChips').innerHTML=cats.map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===qCat}">${c==='Saved'?'&#9733; Saved':esc(c)}</button>`).join('');
+  $('qChips').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{qCat=b.dataset.c;qOrder=null;renderChips();renderQuotes();$('qList').scrollTop=0;vibe();});
+}
+function renderQuotes(){
+  const f=new Set(favs()),term=$('qSearch').value.trim().toLowerCase();
+  let list=qCat==='All'?QALL:qCat==='Saved'?QALL.filter(q=>f.has(q.t)):QALL.filter(q=>q.c===qCat);
+  if(term)list=(qCat==='Saved'?list:QALL).filter(q=>q.t.toLowerCase().includes(term)||q.c.toLowerCase().includes(term));
+  if(qOrder)list=[...list].sort((a,b)=>(qOrder.get(a.t)||0)-(qOrder.get(b.t)||0));
+  $('qCount').textContent=list.length;
+  if(!list.length){$('qList').innerHTML=`<div class="qnone">${qCat==='Saved'&&!term?'Tap the star on any quote to save it here.':'No quotes match that search.'}</div>`;return;}
+  $('qList').innerHTML=list.map((q,i)=>`<div class="q" data-i="${i}"><button class="qt">${esc(q.t)}${qCat==='All'||term?`<small>${esc(q.c)}</small>`:''}</button><div class="qa">
+    <button class="fav" aria-label="Save" aria-pressed="${f.has(q.t)}"><svg viewBox="0 0 24 24" fill="${f.has(q.t)?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></button>
+    <button class="cp" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg></button></div></div>`).join('');
+  $('qList').querySelectorAll('.q').forEach(el=>{const q=list[+el.dataset.i];
+    el.querySelector('.qt').onclick=()=>pickQuote(q.t);
+    el.querySelector('.fav').onclick=()=>{const a=favs(),k=a.indexOf(q.t);if(k>=0)a.splice(k,1);else a.unshift(q.t);setFavs(a);vibe();renderQuotes();};
+    el.querySelector('.cp').onclick=()=>copyText(q.t);
+  });
+}
+function copyText(t){vibe();
+  const done=()=>toast('Copied');
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(done,()=>fallback());else fallback();
+  function fallback(){const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');done();}catch(e){toast('Couldn’t copy');}ta.remove();}
+}
+function openQuotes(mode){
+  qMode=mode;qOrder=null;$('qSearch').value='';renderChips();renderQuotes();$('qp').hidden=false;$('qList').scrollTop=0;
+  history.pushState({q:1},'',location.href);
+}
+function closeQuotesNow(){$('qp').hidden=true;const p=qPending;qPending=null;if(p)p();}
+function closeQuotes(){if(history.state&&history.state.q)history.back();else closeQuotesNow();}
+function pickQuote(t){
+  vibe();
+  if(qMode==='home'){qPending=()=>newProject(null,{quote:t});}
+  else qPending=()=>{
+    if(sel){sel.text=wrapQuote(t);autoFit(sel);if(sel.color==='#ffffff'&&sel.style==='outline')sel.color=TT_YELLOW;syncTextUI();}
+    else addText({...yellowPreset,text:wrapQuote(t),y:H*.42},true);
+  };
+  closeQuotes();
+}
+$('qClose').onclick=closeQuotes;
+$('qSearch').addEventListener('input',renderQuotes);
+$('qShuffle').onclick=()=>{qOrder=new Map(QALL.map(q=>[q.t,Math.random()]));renderQuotes();$('qList').scrollTop=0;vibe();};
+$('homeQuotes').onclick=()=>openQuotes('home');
+$('openQuotes').onclick=()=>openQuotes('editor');
+$('swapQuote').onclick=()=>openQuotes('editor');
+$('qcountHome').textContent=QALL.length+' captions in '+Object.keys(QDATA).length+' categories';
 
 /* ---------- boot ---------- */
 if(location.hash==='#edit')history.replaceState(null,'',location.pathname);
