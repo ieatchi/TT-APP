@@ -185,6 +185,8 @@ textarea:focus{outline:none;border-color:var(--fg2)}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:none;height:32px;padding:0 13px;border-radius:16px;background:var(--s1);color:var(--fg2);font-size:13px;font-weight:600;white-space:nowrap}
 .chip[aria-pressed="true"]{background:var(--fg);color:#000}
+.chip[data-c="Viral"]{color:var(--accent)}
+.chip[data-c="Viral"][aria-pressed="true"]{background:var(--accent);color:#000}
 .qlist{flex:1;overflow:auto;scrollbar-width:none;padding:0 max(16px,var(--sar)) calc(var(--sab) + 20px) max(16px,var(--sal));display:flex;flex-direction:column;gap:8px}
 .qlist::-webkit-scrollbar{display:none}
 .q{display:flex;align-items:stretch;background:var(--s1);border-radius:10px;min-height:56px}
@@ -695,7 +697,7 @@ $('export').onclick=async()=>{
 /* ---------- quote library ---------- */
 const QDATA=window.QUOTES||{};
 const QALL=Object.entries(QDATA).flatMap(([c,arr])=>arr.map(t=>({t,c})));
-let qCat='All',qMode='editor',qOrder=null,qPending=null;
+let qCat='Viral',qMode='editor',qOrder=null,qPending=null;
 function favs(){try{return JSON.parse(localStorage.getItem('taffy-favs')||'[]');}catch(e){return[];}}
 function setFavs(a){try{localStorage.setItem('taffy-favs',JSON.stringify(a));}catch(e){}}
 function wrapQuote(str){
@@ -706,8 +708,8 @@ function wrapQuote(str){
   if(cur)out.push(cur);return out.join('\n');
 }
 function renderChips(){
-  const cats=['All','Saved',...Object.keys(QDATA)];
-  $('qChips').innerHTML=cats.map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===qCat}">${c==='Saved'?'&#9733; Saved':esc(c)}</button>`).join('');
+  const cats=['Viral','All','Saved',...Object.keys(QDATA).filter(c=>c!=='Viral')];
+  $('qChips').innerHTML=cats.map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===qCat}">${c==='Saved'?'&#9733; Saved':c==='Viral'?'&#128293; Viral':esc(c)}</button>`).join('');
   $('qChips').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{qCat=b.dataset.c;qOrder=null;renderChips();renderQuotes();$('qList').scrollTop=0;vibe();});
 }
 function renderQuotes(){
