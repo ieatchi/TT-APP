@@ -25,6 +25,10 @@ jobs:
           grep -n "uses-permission" $M
       - name: Generate app icon + splash from assets/
         run: npx -y @capacitor/assets@4.0.0 generate --android --iconBackgroundColor '#f7ce46' --iconBackgroundColorDark '#f7ce46' --splashBackgroundColor '#000000' --splashBackgroundColorDark '#000000'
+      - name: Notification icon
+        run: |
+          for d in assets/notif/drawable-*; do n=$(basename $d); mkdir -p android/app/src/main/res/$n; cp $d/ic_stat_taffy.png android/app/src/main/res/$n/; done
+          ls android/app/src/main/res/drawable-xhdpi | grep stat
       - name: Bump version so Android sees each build as an update
         run: |
           sed -i "s/versionCode 1$/versionCode ${{ github.run_number }}/; s/versionName \"1.0\"/versionName \"1.${{ github.run_number }}\"/" android/app/build.gradle
