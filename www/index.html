@@ -235,6 +235,21 @@ textarea:focus{outline:none;border-color:var(--fg2)}
 .q .qt small .usedtag:first-child{margin-left:0}
 .wmin{height:46px;border-radius:8px;background:var(--bg);border:1px solid var(--line);padding:0 12px;font-size:16px;font-weight:700;user-select:text;-webkit-user-select:text;width:100%}
 .wmin:focus{outline:none;border-color:var(--fg2)}
+.qk{display:flex;flex-direction:column}
+.qk>*{flex-shrink:0}
+.qk-photo{position:relative;align-self:center;width:min(200px,52vw);aspect-ratio:9/16;border-radius:14px;background:var(--s1);border:1.5px dashed var(--s3);overflow:hidden;display:grid;place-items:center;cursor:pointer;margin:4px 0 6px}
+.qk-photo.has{border-color:transparent;background:#000}
+.qk-photo canvas{position:absolute;inset:0;width:100%;height:100%}
+.qk-empty{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--muted);font-size:14px;font-weight:600}
+.qk-empty svg{width:28px;height:28px;color:var(--accent)}
+.qk-change{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:8px;background:rgba(0,0,0,.6);font-size:12px;font-weight:700}
+textarea.qk-cap{height:auto;min-height:60px;flex:none}
+textarea.qk-desc{height:auto;min-height:76px;flex:none;width:100%;font-size:14px}
+.tagrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tagrow .chip{height:30px;padding:0 11px;font-size:12.5px}
+.qk-go{position:sticky;bottom:0;padding:14px 0 calc(var(--sab) + 6px);background:linear-gradient(180deg,rgba(0,0,0,0),var(--bg) 30%);margin-top:6px}
+.qk-go .bigbtn{width:100%;height:52px;font-size:16px}
+.bigbtn:disabled{opacity:.6}
 .statsbtn{display:flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:8px;background:var(--s1);font-size:13px;font-weight:700}
 .statsbtn svg{width:16px;height:16px;color:var(--accent)}
 .sbody{flex:1;overflow:auto;scrollbar-width:none;padding:0 max(16px,var(--sar)) calc(var(--sab) + 24px) max(16px,var(--sal))}
@@ -391,18 +406,18 @@ textarea:focus{outline:none;border-color:var(--fg2)}
   </section>
 
   <div class="create">
-    <label class="ct primary" for="newFile">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>
-      <span><b>New post</b><small>Start from a photo</small></span>
+    <button class="ct primary" id="openQuick">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 10 14"/><path d="M21 3l-7 18-4-7-7-4z"/></svg>
+      <span><b>Quick post</b><small>Photo + caption, straight to TikTok</small></span>
+    </button>
+    <label class="ct" for="newFile">
+      <span style="color:var(--accent)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg></span>
+      <span><b>Edit a photo</b><small>Full editor</small></span>
     </label>
     <label class="ct" for="batchFiles">
       <span style="color:var(--accent)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="3" width="12" height="15" rx="2"/><path d="M5 6.5V19a2 2 0 0 0 2 2h9"/></svg></span>
       <span><b>Batch</b><small>Up to 40 photos</small></span>
     </label>
-    <button class="ct" id="newText">
-      <span style="color:var(--accent)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7V5h14v2M12 5v14M9 19h6"/></svg></span>
-      <span><b>Text post</b><small>A quote on black</small></span>
-    </button>
   </div>
   <input id="newFile" type="file" accept="image/*">
   <input id="batchFiles" type="file" accept="image/*" multiple>
@@ -429,7 +444,8 @@ textarea:focus{outline:none;border-color:var(--fg2)}
   <div class="asheet" role="dialog" aria-label="Create">
     <div class="grab"></div>
     <b class="cs-title">Create</b>
-    <label class="cs-row" for="newFile"><span class="cs-ic acc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg></span><span><b>New post</b><small>Start from a photo</small></span></label>
+    <button class="cs-row" id="csQuick"><span class="cs-ic acc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 10 14"/><path d="M21 3l-7 18-4-7-7-4z"/></svg></span><span><b>Quick post</b><small>Photo + caption, straight to TikTok</small></span></button>
+    <label class="cs-row" for="newFile"><span class="cs-ic yl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg></span><span><b>New post</b><small>Start from a photo</small></span></label>
     <label class="cs-row" for="batchFiles"><span class="cs-ic yl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="3" width="12" height="15" rx="2"/><path d="M5 6.5V19a2 2 0 0 0 2 2h9"/></svg></span><span><b>Batch</b><small>Pick up to 40 photos, get a post for each</small></span></label>
     <button class="cs-row" id="csQuotes"><span class="cs-ic yl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6.2C6.6 7.3 4.6 10 4.6 13.6V18h5.2v-5.2H7.2c.2-2 1.3-3.4 3.2-4.2zM19.4 6.2c-3.4 1.1-5.4 3.8-5.4 7.4V18h5.2v-5.2h-2.6c.2-2 1.3-3.4 3.2-4.2z"/></svg></span><span><b>From a quote</b><small>Pick a caption first, add a photo after</small></span></button>
     <button class="cs-row" id="csText"><span class="cs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7V5h14v2M12 5v14M9 19h6"/></svg></span><span><b>Text post</b><small>Yellow caption on black</small></span></button>
@@ -747,6 +763,55 @@ textarea:focus{outline:none;border-color:var(--fg2)}
   </nav>
 </div>
 
+<div class="qp" id="quick" hidden>
+  <div class="qp-in">
+    <div class="qtop">
+      <button class="ib" id="qkClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      <h2>Quick post</h2>
+    </div>
+    <div class="sbody qk">
+      <label class="qk-photo" id="qkPhoto" for="qkFile">
+        <canvas id="qkPrev" width="360" height="640" hidden></canvas>
+        <span class="qk-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add a photo</span>
+        <span class="qk-change" hidden>Change</span>
+      </label>
+      <input id="qkFile" type="file" accept="image/*">
+      <div class="blabel">Caption on the photo</div>
+      <textarea id="qkCap" class="qk-cap" rows="2" placeholder="Type a caption or pick a quote"></textarea>
+      <div class="opts" style="margin-top:8px">
+        <button class="opt" id="qkRandom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>Random quote</button>
+        <button class="opt" id="qkBrowse"><span style="color:var(--accent);font-size:20px;font-weight:900;line-height:1;margin-top:7px">&ldquo;</span>Browse quotes</button>
+      </div>
+      <div class="blabel">Caption position</div>
+      <div class="opts" id="qkPos">
+        <button class="opt" data-p="top" aria-pressed="false">Top</button>
+        <button class="opt" data-p="mid" aria-pressed="true">Middle</button>
+        <button class="opt" data-p="low" aria-pressed="false">Lower</button>
+      </div>
+      <div class="blabel">Look</div>
+      <div class="opts" id="qkLook">
+        <button class="opt" data-l="last" aria-pressed="true">Same as my last post</button>
+        <button class="opt" data-l="default" aria-pressed="false">Default</button>
+      </div>
+      <div class="blabel">TikTok description</div>
+      <textarea id="qkDesc" class="qk-desc" rows="3" placeholder="Optional. It gets copied so you can paste it in TikTok."></textarea>
+      <div class="tagrow" id="qkTags"></div>
+      <label class="bcheck"><input type="checkbox" id="qkSave" checked><span><b>Also save to my gallery</b><small>And add it to Drafts and Stats</small></span></label>
+      <div class="qk-go"><button class="bigbtn acc" id="qkPost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 10 14"/><path d="M21 3l-7 18-4-7-7-4z"/></svg>Post to TikTok</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="xScrim" hidden>
+  <div class="asheet pe" role="dialog" aria-label="Export">
+    <div class="grab"></div>
+    <div class="ahead"><img id="xThumb" alt=""><div><b>Ready to go</b><small>Post it or just save it to your gallery.</small></div></div>
+    <textarea id="xDesc" class="qk-desc" rows="3" placeholder="TikTok description (optional). It gets copied when you post."></textarea>
+    <div class="tagrow" id="xTags"></div>
+    <div class="pbtns" style="grid-template-columns:1fr 1.35fr"><button class="bigbtn" id="xSave">Save to gallery</button><button class="bigbtn acc" id="xPost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 10 14"/><path d="M21 3l-7 18-4-7-7-4z"/></svg>Post to TikTok</button></div>
+  </div>
+</div>
+
 <div class="qp" id="qp" hidden>
   <div class="qp-in">
     <div class="qtop">
@@ -893,7 +958,6 @@ async function newProject(file,opts={}){
   saveNow();
 }
 $('newFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f||!f.type.startsWith('image/'))return;if(!$('cScrim').hidden){cPending=()=>newProject(f);closeCreate();}else newProject(f);};
-$('newText').onclick=()=>newProject(null,{text:true});
 
 let menuP=null;
 function openMenu(p){menuP=p;$('mThumb').src=p.thumb||'';$('mName').textContent=p.name;$('mDate').textContent='Edited '+ago(p.updated).toLowerCase();
@@ -952,6 +1016,8 @@ window.addEventListener('popstate',()=>{
   if(!$('pScrim').hidden){closePostNow();return;}
   if(!$('cScrim').hidden){closeCreateNow();const p=cPending;cPending=null;if(p)p();return;}
   if(!$('qp').hidden&&qModal){closeQuotesNow();return;}
+  if(!$('xScrim').hidden){closeExportNow();return;}
+  if(!$('quick').hidden){closeQuickNow();return;}
   if(!$('scrim').hidden){closeMenu();return;}
   if(!$('editor').hidden){closeEditor();return;}
   if(curTab!=='home'){showTabScreen('home');const p=qPending;qPending=null;if(p)p();return;}
@@ -1543,7 +1609,7 @@ function up(e){
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 
 /* ---------- export ---------- */
-function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),1500);}
+function toast(t,ms){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),ms||1500);}
 function vibe(){try{navigator.vibrate&&navigator.vibrate(6);}catch(_){}}
 const fname_unused=()=>'taffy_'+(proj?proj.name.replace(/[^\w-]+/g,'_'):'export')+'_'+Date.now()+'.png';
 async function saveToGallery(dataUrl,name){
@@ -1568,7 +1634,8 @@ async function shareFallback(dataUrl,name){
   await Cap.Plugins.Share.share({title:'Export',files:[r.uri]});
 }
 const fbase=()=>'taffy_'+(proj?proj.name.replace(/[^\w-]+/g,'_'):'export')+'_'+Date.now();
-$('export').onclick=async()=>{
+$('export').onclick=()=>openExportSheet();
+const legacyExport=async()=>{
   vibe();exporting=true;draw();const dataUrl=cv.toDataURL('image/png');exporting=false;draw();await saveNow();logPost();
   const name=fbase();
   try{const r=await saveToGallery(dataUrl,name);toast(r==='gallery'?'Saved to your gallery':r==='download'?'Downloaded':'Shared');}
@@ -1636,7 +1703,7 @@ function copyText(t){vibe();
 }
 function openQuotes(mode){
   if(mode==='home'){goTab('quotes');return;}
-  qMode='editor';qModal=true;qOrder=null;$('qSearch').value='';$('qp').classList.remove('tab');renderChips();renderQuotes();$('qp').hidden=false;$('qList').scrollTop=0;
+  qMode=mode;qModal=true;qOrder=null;$('qSearch').value='';$('qp').classList.remove('tab');renderChips();renderQuotes();$('qp').hidden=false;$('qList').scrollTop=0;
   history.pushState({q:1},'',location.href);syncChrome();
 }
 function closeQuotesNow(){$('qp').hidden=true;qModal=false;syncChrome();const p=qPending;qPending=null;if(p)p();}
@@ -1644,6 +1711,7 @@ function closeQuotes(){if(qModal){if(history.state&&history.state.q)history.back
 function pickQuote(t,c){
   vibe();
   if(qMode==='home'){qPending=()=>newProject(null,{quote:t,cat:c});}
+  else if(qMode==='quick'){qPending=()=>{$('qkCap').value=t;qkCat=c;renderTags($('qkTags'),qkTagSet,c);qkPreviewSoon();};}
   else qPending=()=>{
     if(sel){sel.text=wrapQuote(t);sel.cat=c;autoFit(sel);if(sel.color==='#ffffff'&&sel.style==='outline')sel.color=TT_YELLOW;syncTextUI();}
     else addText({...myStyle(),text:wrapQuote(t),cat:c,y:H*.42},true);
@@ -1656,6 +1724,121 @@ $('qShuffle').onclick=()=>{qOrder=new Map(QALL.map(q=>[q.t,Math.random()]));rend
 $('openQuotes').onclick=()=>openQuotes('editor');
 $('swapQuote').onclick=()=>openQuotes('editor');
 $('evenLines').onclick=()=>{if(!sel)return;sel.text=wrapQuote(sel.text);autoFit(sel);syncTextUI();$('txt').value=sel.text;vibe();};
+
+/* ================= POSTING ================= */
+const TAGS_BASE=['#fyp','#foryou','#quotes'];
+const CATTAGS={Sunsets:['#sunset','#goldenhour'],Ocean:['#ocean','#beach'],'Moon & stars':['#moon','#nightsky'],Healing:['#healing','#selflove'],Peace:['#peace','#calm'],
+ 'Life lessons':['#lifelessons','#lifequotes'],Reflections:['#deepthoughts','#reflection'],Gratitude:['#grateful','#gratitude'],'Letting go':['#lettinggo','#moveon'],
+ Overthinking:['#overthinking','#relatable'],Timing:['#trusttheprocess'],Kindness:['#bekind'],'Alone time':['#alonetime','#solitude'],'Soft reminders':['#reminder','#selfcare'],
+ Youth:['#nostalgia','#youth'],Worth:['#selfworth','#knowyourworth'],Friends:['#bestfriend','#friendship'],Love:['#love','#couple'],Heartbreak:['#heartbreak','#sadquotes'],
+ Motivation:['#motivation','#mindset'],Gym:['#gym','#gymtok'],Funny:['#funny','#relatable'],Relatable:['#relatable','#mood'],Viral:['#viral','#deepquotes'],Deep:['#deepquotes','#deepthoughts'],
+ Nature:['#nature','#naturelover'],Summer:['#summer','#summervibes'],'Late night':['#latenight','#3am'],Memories:['#memories','#nostalgia'],Sad:['#sadquotes','#feelings'],
+ Success:['#success','#grind'],Family:['#family'],POV:['#pov'],Gaming:['#gaming','#gamer'],'Glow up':['#glowup'],Attitude:['#attitude'],'Self love':['#selflove','#selfcare'],Couples:['#couple','#love']};
+function tagsFor(cat){const extra=CATTAGS[cat]||[];return[...new Set([...TAGS_BASE,'#aesthetic',...extra,...(CALM.has(cat)?['#deepthoughts']:[])])].slice(0,7);}
+function renderTags(el,set,cat){
+  const tags=tagsFor(cat);[...set].forEach(t=>{if(!tags.includes(t))set.delete(t);});
+  if(!set.size)tags.forEach(t=>set.add(t));
+  el.innerHTML=tags.map(t=>`<button class="chip" data-t="${t}" aria-pressed="${set.has(t)}">${t}</button>`).join('');
+  el.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{const t=b.dataset.t;if(set.has(t))set.delete(t);else set.add(t);b.setAttribute('aria-pressed',set.has(t));vibe();});
+}
+function buildDesc(txt,set){const tags=[...set].join(' ');txt=(txt||'').trim();return txt?(tags?txt+'\n\n'+tags:txt):tags;}
+function copyQuiet(t){if(!t)return;try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).catch(()=>fb());return;}}catch(e){}fb();
+  function fb(){const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}ta.remove();}}
+async function shareToTikTok(dataUrl,desc){
+  let TS=null;try{TS=native&&Cap&&((Cap.Plugins&&Cap.Plugins.TikTokShare)||(Cap.registerPlugin&&Cap.registerPlugin('TikTokShare')));}catch(e){}
+  if(TS){try{const r=await TS.share({data:dataUrl,text:desc||''});return r&&r.app||'tiktok';}catch(e){}}
+  if(native&&Cap.Plugins&&Cap.Plugins.Share){try{await shareFallback(dataUrl,'taffy_post_'+Date.now());return 'chooser';}catch(e){}}
+  try{const blob=await(await fetch(dataUrl)).blob(),file=new File([blob],'taffy_post.png',{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:desc||''});return 'shared';}
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;a.click();return 'download';}catch(e){return 'none';}
+}
+function postedToast(app,desc){
+  toast(app==='tiktok'?(desc?'Description copied. Paste it in TikTok and post':'Opened in TikTok'):app==='download'?'Saved. Upload it to TikTok':desc?'Description copied':'Done',3200);
+}
+
+/* ---- export sheet (from the editor) ---- */
+const xTagSet=new Set();
+function editorCat(){const t=texts.find(t=>t.cat);return t?t.cat:null;}
+function openExportSheet(){
+  exporting=true;draw();const c=document.createElement('canvas');c.width=180;c.height=Math.round(180*H/W);c.getContext('2d').drawImage(cv,0,0,c.width,c.height);exporting=false;draw();
+  $('xThumb').src=c.toDataURL('image/jpeg',.8);xTagSet.clear();renderTags($('xTags'),xTagSet,editorCat());
+  $('xScrim').hidden=false;history.pushState({xs:1},'',location.href);vibe();
+}
+function closeExportNow(){$('xScrim').hidden=true;}
+function closeExport(){if(history.state&&history.state.xs)history.back();else closeExportNow();}
+$('xScrim').addEventListener('click',e=>{if(e.target===$('xScrim'))closeExport();});
+async function renderFinal(){exporting=true;draw();const d=cv.toDataURL('image/png');exporting=false;draw();return d;}
+$('xSave').onclick=async()=>{
+  vibe();const dataUrl=await renderFinal();await saveNow();logPost();closeExport();
+  const name=fbase();
+  try{const r=await saveToGallery(dataUrl,name);toast(r==='gallery'?'Saved to your gallery':r==='download'?'Downloaded':'Shared');}
+  catch(err){if(err&&(err.name==='AbortError'||/cancel/i.test(err.message||'')))return;if(native&&Cap.Plugins.Share){try{await shareFallback(dataUrl,name);}catch(e){}}else toast('Export failed: '+(err.message||err));}
+};
+$('xPost').onclick=async()=>{
+  const desc=buildDesc($('xDesc').value,xTagSet);copyQuiet(desc);vibe();
+  $('xPost').disabled=true;
+  try{const dataUrl=await renderFinal();await saveNow();await logPost();try{await saveToGallery(dataUrl,fbase());}catch(e){}
+    closeExport();const app=await shareToTikTok(dataUrl,desc);postedToast(app,desc);}
+  finally{$('xPost').disabled=false;}
+};
+
+/* ---- quick post ---- */
+let qkFile=null,qkImg=null,qkCat=null,qkPos='mid',qkLook='last',qkT=null;const qkTagSet=new Set();
+function lastState(){const p=projects.find(p=>p.state&&p.img);return p?p.state:null;}
+function qkApply(){
+  const base=qkLook==='last'?lastState():null,b2=base?JSON.parse(JSON.stringify(base)):null;
+  const t0=b2&&b2.texts?b2.texts.find(t=>t.kind!=='emoji'):null;
+  if(b2){delete b2.texts;delete b2.strokes;delete b2.x;delete b2.y;delete b2.crop;b2.rot=0;b2.str=0;b2.flipV=false;}
+  loading=true;setControls(b2);img=qkImg;imgBlob=qkFile;sel=null;strokes=[];
+  if(img)place();
+  const st=t0?{font:t0.font,style:t0.style,color:t0.color}:myStyle(),cap=$('qkCap').value.trim();
+  texts=cap?[{text:wrapQuote(cap),cat:qkCat||undefined,font:st.font,color:st.color,style:st.style,size:st.font==='tall'?150:120,sx:100,sy:100,x:W/2,y:H*POS[qkPos]}]:[];
+  if(texts[0])autoFit(texts[0]);
+  loading=false;
+}
+function qkPreview(){
+  if(!qkImg)return;qkApply();exporting=true;draw();
+  const c=$('qkPrev');c.width=360;c.height=Math.round(360*H/W);c.getContext('2d').drawImage(cv,0,0,c.width,c.height);exporting=false;
+  img=null;imgBlob=null;texts=[];
+}
+function qkPreviewSoon(){clearTimeout(qkT);qkT=setTimeout(qkPreview,200);}
+function openQuick(){
+  vibe();qkFile=null;qkImg=null;qkCat=null;$('qkCap').value='';$('qkDesc').value='';$('qkPrev').hidden=true;
+  $('qkPhoto').classList.remove('has');$('qkPhoto').querySelector('.qk-empty').hidden=false;$('qkPhoto').querySelector('.qk-change').hidden=true;
+  qkLook=lastState()?'last':'default';press('qkLook','l',qkLook);$('qkLook').querySelector('[data-l=last]').hidden=!lastState();
+  qkTagSet.clear();renderTags($('qkTags'),qkTagSet,null);
+  $('quick').hidden=false;history.pushState({qk:1},'',location.href);syncChrome();$('quick').querySelector('.sbody').scrollTop=0;
+}
+function closeQuickNow(){$('quick').hidden=true;img=null;imgBlob=null;texts=[];proj=null;syncChrome();renderHome();}
+function closeQuick(){if(history.state&&history.state.qk)history.back();else closeQuickNow();}
+$('openQuick').onclick=openQuick;
+$('csQuick').onclick=()=>{cPending=openQuick;closeCreate();};
+$('qkClose').onclick=closeQuick;
+$('qkFile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f||!f.type.startsWith('image/'))return;
+  const im=await loadImage(f);if(!im){toast('Couldn’t open that photo');return;}
+  qkFile=f;qkImg=im;$('qkPrev').hidden=false;$('qkPhoto').classList.add('has');$('qkPhoto').querySelector('.qk-empty').hidden=true;$('qkPhoto').querySelector('.qk-change').hidden=false;qkPreview();
+  if(!$('qkCap').value.trim())$('qkRandom').click();};
+$('qkCap').addEventListener('input',()=>{qkCat=null;qkPreviewSoon();});
+$('qkRandom').onclick=()=>{const q=pickQuotes(1,AES,true)[0];if(!q)return;$('qkCap').value=q.t;qkCat=q.c;renderTags($('qkTags'),qkTagSet,q.c);qkPreviewSoon();vibe();};
+$('qkBrowse').onclick=()=>openQuotes('quick');
+group('qkPos','p',v=>{qkPos=v;qkPreviewSoon();});
+group('qkLook','l',v=>{qkLook=v;qkPreviewSoon();});
+$('qkPost').onclick=async()=>{
+  if(!qkImg){toast('Add a photo first');$('qkFile').click();return;}
+  const desc=buildDesc($('qkDesc').value,qkTagSet);copyQuiet(desc);vibe();
+  const btn=$('qkPost');btn.disabled=true;const old=btn.innerHTML;btn.textContent='Making your post…';
+  try{
+    qkApply();const now=Date.now();
+    proj={id:uid(),name:'Post '+new Date().toLocaleDateString(undefined,{day:'numeric',month:'short'}),created:now,updated:now,img:qkFile,state:null,thumb:null};
+    await saveNow();const dataUrl=await renderFinal();
+    if($('qkSave').checked){await logPost();try{if(native)await saveToGallery(dataUrl,'taffy_post_'+now);}catch(e){}}
+    else{try{await dbDel(proj.id);}catch(e){}}
+    proj=null;
+    const app=await shareToTikTok(dataUrl,desc);
+    closeQuick();postedToast(app,desc);
+  }catch(e){toast('Couldn’t make the post: '+(e.message||e));}
+  finally{btn.disabled=false;btn.innerHTML=old;}
+};
 
 /* ================= BATCH ================= */
 const TS={tall:{font:'tall',style:'plain'},tiktok:{font:'tiktok',style:'outline'},bold:{font:'bold',style:'outline'},box:{font:'tiktok',style:'box'}};
@@ -1844,7 +2027,7 @@ $('sAdd').onclick=()=>openPost(null);
 /* ================= TABS + CREATE ================= */
 let curTab='home',qModal=false,cPending=null;
 function syncChrome(){
-  $('tabbar').hidden=!$('editor').hidden||!$('batch').hidden||qModal;
+  $('tabbar').hidden=!$('editor').hidden||!$('batch').hidden||!$('quick').hidden||qModal;
   document.querySelectorAll('.tb[data-t]').forEach(b=>{if(b.dataset.t===curTab)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
 }
 function showTabScreen(t){

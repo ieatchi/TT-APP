@@ -23,6 +23,28 @@ jobs:
           M=android/app/src/main/AndroidManifest.xml
           sed -i 's#</manifest>#    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />\n    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />\n    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />\n    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />\n</manifest>#' $M
           grep -n "uses-permission" $M
+      - name: TikTok share plugin (open TikTok with the image)
+        run: |
+          D=android/app/src/main/java/net/nexumc/stretch
+          cp native/TikTokSharePlugin.java $D/
+          cat > $D/MainActivity.java <<'JAVA'
+          package net.nexumc.stretch;
+
+          import android.os.Bundle;
+          import com.getcapacitor.BridgeActivity;
+
+          public class MainActivity extends BridgeActivity {
+              @Override
+              public void onCreate(Bundle savedInstanceState) {
+                  registerPlugin(TikTokSharePlugin.class);
+                  super.onCreate(savedInstanceState);
+              }
+          }
+          JAVA
+          sed -i 's/^          //' $D/MainActivity.java
+          M=android/app/src/main/AndroidManifest.xml
+          sed -i 's#</manifest>#    <queries>\n        <package android:name="com.zhiliaoapp.musically" />\n        <package android:name="com.ss.android.ugc.trill" />\n        <package android:name="com.zhiliaoapp.musically.go" />\n    </queries>\n</manifest>#' $M
+          cat $D/MainActivity.java; grep -n "queries" -A4 $M
       - name: Generate app icon + splash from assets/
         run: npx -y @capacitor/assets@4.0.0 generate --android --iconBackgroundColor '#f7ce46' --iconBackgroundColorDark '#f7ce46' --splashBackgroundColor '#000000' --splashBackgroundColorDark '#000000'
       - name: Notification icon
