@@ -251,7 +251,7 @@ textarea.qk-desc{height:auto;min-height:76px;flex:none;width:100%;font-size:14px
 .tagrow .chip{height:30px;padding:0 11px;font-size:12.5px}
 .asheet .tagrow .chip:not([aria-pressed="true"]){background:var(--s2);color:var(--muted)}
 .tagrow .chip:not([aria-pressed="true"]){color:var(--muted)}
-.qk-go{position:sticky;bottom:0;padding:14px 0 calc(var(--sab) + 6px);background:linear-gradient(180deg,rgba(0,0,0,0),var(--bg) 30%);margin-top:6px}
+.qk-go{position:sticky;bottom:calc(-1 * (var(--sab) + 24px));padding:12px max(16px,var(--sar)) calc(var(--sab) + 14px) max(16px,var(--sal));background:var(--bg);border-top:1px solid var(--line);margin:14px calc(-1 * max(16px,var(--sar))) calc(-1 * (var(--sab) + 24px)) calc(-1 * max(16px,var(--sal)))}
 .qk-go{display:grid;grid-template-columns:1fr 1.6fr;gap:8px}
 .qk-go .bigbtn{width:100%;height:52px;font-size:16px}
 .bigbtn:disabled{opacity:.6}
@@ -910,7 +910,7 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
         <button class="opt" data-p="mid" aria-pressed="true">Middle</button>
         <button class="opt" data-p="low" aria-pressed="false">Lower</button>
       </div>
-      <div class="blabel">Look</div>
+      <div class="blabel" id="qkLookL">Look</div>
       <div class="opts" id="qkLook">
         <button class="opt" data-l="last" aria-pressed="true">Same as my last post</button>
         <button class="opt" data-l="default" aria-pressed="false">Default</button>
@@ -1931,7 +1931,7 @@ function qkPreviewSoon(){clearTimeout(qkT);qkT=setTimeout(qkPreview,200);}
 function openQuick(){
   vibe();qkFile=null;qkImg=null;qkCat=null;$('qkCap').value='';$('qkDesc').value='';$('qkPrev').hidden=true;
   $('qkPhoto').classList.remove('has');$('qkPhoto').querySelector('.qk-empty').hidden=false;$('qkPhoto').querySelector('.qk-change').hidden=true;
-  qkLook=lastState()?'last':'default';press('qkLook','l',qkLook);$('qkLook').querySelector('[data-l=last]').hidden=!lastState();
+  qkLook=lastState()?'last':'default';press('qkLook','l',qkLook);$('qkLook').hidden=$('qkLookL').hidden=!lastState();
   qkTagSet.clear();renderTags($('qkTags'),qkTagSet,null);
   $('quick').hidden=false;history.pushState({qk:1},'',location.href);syncChrome();$('quick').querySelector('.sbody').scrollTop=0;
 }
