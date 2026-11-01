@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#060606">
 <title>Taffy</title>
 <link rel="icon" href="icon.png">
 <style>
@@ -16,9 +16,10 @@
 
 /* Flat editor UI: black chrome, grey workspace, one accent (caption yellow). Tools open a panel; ✓ closes it. */
 :root{
-  --bg:#000; --work:#101011; --s1:#1a1a1b; --s2:#262628; --s3:#323235; --line:#2b2b2e;
+  --bg:#060606; --work:#0c0c0d; --s1:#121213; --s2:#1c1c1e; --s3:#2b2b2e; --line:#222225; --bar:#3d3d42;
   --fg:#fff; --fg2:#d6d6da; --muted:#8e8e93; --dim:#5c5c61;
-  --accent:#f7ce46; --on-accent:#000; --danger:#ff453a;
+  --accent:#ff2b3a; --accent-deep:#d0101e; --accent-soft:rgba(255,43,58,.14); --on-accent:#fff; --danger:#ff453a;
+  --display:"Anton","TikTok Sans",Impact,sans-serif;
   --ui:"TikTok Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
   --sal:env(safe-area-inset-left,0px); --sar:env(safe-area-inset-right,0px);
@@ -388,6 +389,123 @@ textarea.qk-desc{height:auto;min-height:76px;flex:none;width:100%;font-size:14px
 #editor:not([hidden]){animation:slidein .26s cubic-bezier(.2,.8,.2,1)}
 .panelwrap:not([hidden]){animation:panelup .2s cubic-bezier(.2,.8,.2,1)}
 .panel:not([hidden]){animation:fade .16s}
+/* ======================= RED & BLACK ======================= */
+/* Poster-style display type (Anton) for titles and big numbers; one red for every primary action. */
+::selection{background:var(--accent);color:#fff}
+.wordmark{font-family:var(--display);font-weight:400;font-size:32px;letter-spacing:.015em;text-transform:uppercase;gap:11px}
+.wordmark img{width:36px;height:36px;border-radius:10px}
+.hsec{margin-bottom:14px}
+.hsec h2,.qp.tab .qtop h2,#stats .qtop h2,#me .qtop h2,.cs-title,.qtop h2{font-family:var(--display);font-weight:400;text-transform:uppercase;letter-spacing:.015em}
+.hsec h2{font-size:30px;line-height:1}
+.hsec span{font-family:var(--display);font-size:20px;color:var(--dim)}
+.qtop h2{font-size:24px}
+.qp.tab .qtop,#stats .qtop,#me .qtop{height:72px}
+.qp.tab .qtop h2,#stats .qtop h2,#me .qtop h2{font-size:44px;line-height:1}
+.qtop h2 small{font-family:var(--ui);font-size:14px;font-weight:700;color:var(--accent);margin-left:8px;letter-spacing:0;vertical-align:middle}
+.cs-title{font-size:26px;padding-bottom:10px}
+
+/* home */
+.streakchip{background:var(--s1);border:1px solid var(--line);font-family:var(--display);font-weight:400;font-size:19px;padding:0 13px 0 10px;height:36px;border-radius:18px}
+.streakchip.lit{border-color:rgba(255,43,58,.45)}
+.streakchip.lit svg,.streak.lit .st-num{color:var(--accent)}
+.streak{background:var(--s1);border:1px solid var(--line);border-radius:18px;padding:18px 18px 4px}
+.streak.lit{background:var(--s1);border-color:rgba(255,43,58,.35)}
+.st-top b{font-family:var(--display);font-weight:400;font-size:26px;text-transform:uppercase;letter-spacing:.01em;line-height:1.05}
+.st-top small{font-size:13.5px;margin-top:5px}
+.st-num{font-family:var(--display);font-weight:400;font-size:52px;letter-spacing:0;gap:4px}
+.st-num svg{width:30px;height:30px}
+.wd small{font-size:11px;font-weight:800}
+.wd i{width:34px;height:34px;color:#fff;background:var(--s2)}
+.wd.on i{background:var(--accent)}
+.wd.today:not(.on) i{background:transparent;box-shadow:inset 0 0 0 2px var(--accent)}
+.st-rem>svg{color:var(--accent)}
+.create{grid-template-rows:96px 96px;gap:10px}
+.ct{background:var(--s1);border:1px solid var(--line);border-radius:18px;padding:14px}
+.ct b{font-size:15px;font-weight:800}
+.ct.primary{background:var(--accent);color:#fff;border-color:transparent;padding:18px;position:relative;overflow:hidden}
+.ct.primary::after{content:"";position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;border:22px solid rgba(255,255,255,.09)}
+.ct.primary svg{width:34px;height:34px}
+.ct.primary b{font-family:var(--display);font-weight:400;font-size:34px;line-height:.95;text-transform:uppercase;letter-spacing:.01em;display:block}
+.ct.primary small{color:rgba(255,255,255,.82);font-size:13px;margin-top:6px}
+.ct:active{transform:scale(.97)}
+.th{border-radius:14px}
+.card b{font-size:13.5px;font-weight:700}
+.more{background:rgba(0,0,0,.55);border-radius:8px}
+.none{border:1px dashed var(--s3);border-radius:18px}
+
+/* tab bar */
+.tabbar{background:rgba(6,6,6,.96);border-top:1px solid var(--line)}
+.tb{font-weight:700}
+.tb[aria-current]{color:#fff}
+.tb[aria-current] svg{color:var(--accent)}
+.tb.plus span{width:54px;height:38px;border-radius:14px;background:var(--accent);color:#fff;box-shadow:0 6px 18px -6px rgba(255,43,58,.7)}
+
+/* chips, options, sliders, switches */
+.chip{background:var(--s1);border:1px solid var(--line);font-weight:700}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip[data-c="Viral"],.chip[data-c="Aesthetic"]{color:var(--accent)}
+.chip[data-c="Viral"][aria-pressed="true"],.chip[data-c="Aesthetic"][aria-pressed="true"]{background:var(--accent);color:#fff}
+.opt{background:var(--s2);border:1.5px solid transparent;font-weight:700}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:#fff}
+.tabs3{background:var(--bg);border:1px solid var(--line)}
+.tabs3 button[aria-pressed="true"]{background:var(--accent);color:#fff}
+input[type=range]::-webkit-slider-runnable-track{background:linear-gradient(90deg,var(--accent) var(--p,50%),var(--s3) var(--p,50%))}
+input[type=range][data-bi]::-webkit-slider-runnable-track,input[type=range][data-zero]::-webkit-slider-runnable-track{background:linear-gradient(90deg,var(--s3) var(--a,50%),var(--accent) var(--a,50%),var(--accent) var(--b,50%),var(--s3) var(--b,50%))}
+input[type=range]::-moz-range-progress{background:var(--accent)}
+input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18),0 2px 6px rgba(0,0,0,.5)}
+.row output{color:var(--fg2);font-weight:700}
+.switch:checked{background:var(--accent)}
+.bcheck{border:1px solid var(--line)}
+.bcheck input{accent-color:var(--accent)}
+
+/* buttons */
+.bigbtn{border-radius:12px;font-weight:800}
+.bigbtn.acc{background:var(--accent);color:#fff;box-shadow:0 8px 22px -10px rgba(255,43,58,.8)}
+.bigbtn.acc:active{background:var(--accent-deep)}
+.export{background:var(--accent);color:#fff;border-radius:10px;height:36px;font-weight:800}
+.export:active{background:var(--accent-deep)}
+.rename button{background:var(--accent);color:#fff}
+.phead .done{color:var(--accent)}
+.addphoto{background:var(--accent);color:#fff;border-radius:10px}
+
+/* editor */
+.top{border-bottom:1px solid var(--line)}
+.panelwrap{background:var(--s1);border-top:1px solid var(--line)}
+.phead b{font-family:var(--display);font-weight:400;font-size:22px;text-transform:uppercase;letter-spacing:.015em}
+.toolbar{background:var(--bg)}
+.tool{font-weight:700}
+.tool[aria-selected="true"]{color:#fff}
+.tool[aria-selected="true"] svg{color:var(--accent)}
+.tg{background:var(--s2);border:1px solid var(--line);border-radius:14px}
+.tg svg{color:var(--accent)}
+.fx[aria-pressed="true"] img{box-shadow:0 0 0 2px var(--s1),0 0 0 4px var(--accent)}
+
+/* lists, cards, sheets */
+.q{background:var(--s1);border:1px solid var(--line);border-radius:14px}
+.q .qa button[aria-pressed="true"]{color:var(--accent)}
+.usedtag{background:var(--accent-soft);color:var(--accent)}
+.asheet{background:var(--s1);border-top:1px solid var(--line);border-radius:22px 22px 0 0}
+.cs-ic{background:var(--s2)}
+.cs-ic.acc{background:var(--accent);color:#fff}
+.cs-ic.yl{color:var(--accent)}
+.tile2{background:var(--s1);border:1px solid var(--line);border-radius:16px}
+.tile2 b{font-family:var(--display);font-weight:400;font-size:38px;letter-spacing:.005em;line-height:1.05;margin-top:4px}
+.card2{background:var(--s1);border:1px solid var(--line);border-radius:16px}
+.ch b{font-weight:800}
+.prow{background:var(--s1);border:1px solid var(--line);border-radius:14px}
+.pv b{font-family:var(--display);font-weight:400;font-size:22px}
+.addst{color:var(--accent)}
+.setcard{border:1px solid var(--line);border-radius:16px}
+.me-stats{border:1px solid var(--line);border-radius:16px}
+.me-stats b{font-family:var(--display);font-weight:400;font-size:34px;line-height:1.1}
+.avatar{background:var(--accent);color:#fff;font-family:var(--display);font-weight:400;font-size:30px}
+.me-head b{font-family:var(--display);font-weight:400;font-size:28px;text-transform:none;letter-spacing:.01em}
+.qk-photo{border-radius:16px}
+.qk-empty svg{color:var(--accent)}
+.qsearch input{background:var(--s1);border:1px solid var(--line);border-radius:12px}
+.toast{background:#fff;color:#000;font-weight:800;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.blabel{color:var(--fg2);font-weight:800}
+.sempty svg{color:var(--accent)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -1951,7 +2069,7 @@ function barsV(items,w,h=150){
   svg+=`<line x1="0" x2="${w}" y1="${base+.5}" y2="${base+.5}" stroke="var(--line)"/>`;
   items.forEach((it,i)=>{
     const x=x0+i*(bw+gap),bh=it.v?Math.max(3,(base-top)*it.v/max):0,y=base-bh,r=Math.min(4,bw/2,bh);
-    const fill=it.hi?'var(--accent)':it.v==null?'var(--s3)':'var(--fg2)';
+    const fill=it.hi?'var(--accent)':it.v==null?'var(--s3)':'var(--bar)';
     if(it.v==null)svg+=`<rect x="${x}" y="${base-3}" width="${bw}" height="3" rx="1.5" fill="var(--s3)"/>`;
     else svg+=`<path d="M${x},${base}V${y+r}Q${x},${y} ${x+r},${y}H${x+bw-r}Q${x+bw},${y} ${x+bw},${y+r}V${base}Z" fill="${fill}"/>`;
     if(it.hi&&it.v)svg+=`<text x="${x+bw/2}" y="${y-6}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--fg)">${fmt(it.v)}</text>`;
@@ -1963,7 +2081,7 @@ function barsV(items,w,h=150){
 }
 function barsH(items){
   const max=Math.max(1,...items.map(i=>i.v));
-  return `<div class="hbars">`+items.map(it=>`<div class="hb"><span>${esc(it.l)}</span><div class="hbt"><i style="width:${Math.max(2,it.v/max*100)}%;background:${it.hi?'var(--accent)':'var(--fg2)'}"></i></div><b>${fmt(it.v)}</b></div>`).join('')+`</div>`;
+  return `<div class="hbars">`+items.map(it=>`<div class="hb"><span>${esc(it.l)}</span><div class="hbt"><i style="width:${Math.max(2,it.v/max*100)}%;background:${it.hi?'var(--accent)':'var(--bar)'}"></i></div><b>${fmt(it.v)}</b></div>`).join('')+`</div>`;
 }
 async function renderStats(){
   let all=[];try{all=await postsAll();}catch(e){}
@@ -2138,7 +2256,7 @@ async function scheduleReminders(){
   for(let i=0;i<14;i++){const d=new Date(now);d.setDate(now.getDate()+i);d.setHours(hh,mm,0,0);
     if(d<=now)continue;if(i===0&&s.today)continue;
     const[title,body]=remMsg(d,s,list.length);
-    list.push({id:7000+i,title,body,channelId:'reminders',smallIcon:'ic_stat_taffy',iconColor:'#f7ce46',schedule:{at:d,allowWhileIdle:true},isExactNotification:false});}
+    list.push({id:7000+i,title,body,channelId:'reminders',smallIcon:'ic_stat_taffy',iconColor:'#ff2b3a',schedule:{at:d,allowWhileIdle:true},isExactNotification:false});}
   try{if(list.length)await L.schedule({notifications:list});}catch(e){console.warn('reminders',e);}
 }
 function scheduleSoon(){clearTimeout(remT);remT=setTimeout(scheduleReminders,800);}
@@ -2165,7 +2283,7 @@ $('remTest').onclick=async()=>{
   const L=LN();if(!L){toast('Reminders only work in the Android app');return;}
   if(!(await remPermission())){toast('Allow notifications for Taffy in your phone settings');return;}
   await ensureChannel();
-  try{await L.schedule({notifications:[{id:7999,title:'Taffy reminders are on',body:'This is what your daily nudge looks like.',channelId:'reminders',smallIcon:'ic_stat_taffy',iconColor:'#f7ce46'}]});toast('Sent');}
+  try{await L.schedule({notifications:[{id:7999,title:'Taffy reminders are on',body:'This is what your daily nudge looks like.',channelId:'reminders',smallIcon:'ic_stat_taffy',iconColor:'#ff2b3a'}]});toast('Sent');}
   catch(e){toast('Couldn’t send: '+(e.message||e));}
 };
 $('meWmOn').onchange=e=>{WM.on=e.target.checked;saveWM();syncWMUI();renderMe();vibe();};

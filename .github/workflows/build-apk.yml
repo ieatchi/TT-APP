@@ -46,7 +46,7 @@ jobs:
           sed -i 's#</manifest>#    <queries>\n        <package android:name="com.zhiliaoapp.musically" />\n        <package android:name="com.ss.android.ugc.trill" />\n        <package android:name="com.zhiliaoapp.musically.go" />\n    </queries>\n</manifest>#' $M
           cat $D/MainActivity.java; grep -n "queries" -A4 $M
       - name: Generate app icon + splash from assets/
-        run: npx -y @capacitor/assets@4.0.0 generate --android --iconBackgroundColor '#f7ce46' --iconBackgroundColorDark '#f7ce46' --splashBackgroundColor '#000000' --splashBackgroundColorDark '#000000'
+        run: npx -y @capacitor/assets@4.0.0 generate --android --iconBackgroundColor '#ff2b3a' --iconBackgroundColorDark '#ff2b3a' --splashBackgroundColor '#060606' --splashBackgroundColorDark '#060606'
       - name: Notification icon
         run: |
           for d in assets/notif/drawable-*; do n=$(basename $d); mkdir -p android/app/src/main/res/$n; cp $d/ic_stat_taffy.png android/app/src/main/res/$n/; done
