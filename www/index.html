@@ -183,7 +183,7 @@ textarea:focus{outline:none;border-color:var(--fg2)}
 .bigbtn:active{opacity:.8}
 
 /* toolbar */
-.toolbar{flex:none;display:grid;grid-template-columns:repeat(6,1fr);background:var(--bg);border-top:1px solid var(--line);padding:6px max(4px,var(--sar)) calc(6px + var(--sab)) max(4px,var(--sal))}
+.toolbar{flex:none;display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg);border-top:1px solid var(--line);padding:6px max(4px,var(--sar)) calc(6px + var(--sab)) max(4px,var(--sal))}
 .tool{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;font-size:11px;color:var(--muted)}
 .tool svg{width:24px;height:24px;color:var(--fg)}
 .tool[aria-selected="true"],.tool[aria-selected="true"] svg{color:var(--accent)}
@@ -476,6 +476,7 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
 .tool{font-weight:700}
 .tool[aria-selected="true"]{color:#fff}
 .tool[aria-selected="true"] svg{color:var(--accent)}
+.tool[aria-pressed="true"]{color:#fff}.tool[aria-pressed="true"] svg{color:var(--accent)}
 .tg{background:var(--s2);border:1px solid var(--line);border-radius:14px}
 .tg svg{color:var(--accent)}
 .fx[aria-pressed="true"] img{box-shadow:0 0 0 2px var(--s1),0 0 0 4px var(--accent)}
@@ -717,7 +718,7 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
           <div class="row"><span>Clarity</span><input id="clar" type="range" min="-100" max="100" value="0" data-bi="1"><output id="claro"></output></div>
           <div class="row"><span>Blur</span><input id="blur" type="range" min="0" max="60" value="0"><output id="bluro"></output></div>
         </div>
-        <div class="opts"><button class="opt" id="adjReset">Reset adjustments</button></div>
+        <div class="opts"><button class="opt" id="adjAuto" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 21 12-12"/><path d="m13 7 4 4"/><path d="M18 2.5v3M16.5 4h3M20.5 9v2M19.5 10h2M9 3v2M8 4h2"/></svg>Auto</button><button class="opt" id="adjReset">Reset adjustments</button></div>
         <p class="hint">Tap a number to reset that slider.</p>
       </div>
 
@@ -879,6 +880,7 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
     <button class="tool" role="tab" data-tab="0" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="5" width="8" height="14" rx="1.5"/><path d="M2 12h4m-2-2 2 2-2 2M22 12h-4m2-2-2 2 2 2"/></svg>Stretch</button>
     <button class="tool" role="tab" data-tab="1" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7V5h14v2M12 5v14M9 19h6"/></svg>Text</button>
     <button class="tool" id="toolQuotes" aria-label="Quotes"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6.2C6.6 7.3 4.6 10 4.6 13.6V18h5.2v-5.2H7.2c.2-2 1.3-3.4 3.2-4.2zM19.4 6.2c-3.4 1.1-5.4 3.8-5.4 7.4V18h5.2v-5.2h-2.6c.2-2 1.3-3.4 3.2-4.2z"/></svg>Quotes</button>
+    <button class="tool" id="toolAuto" aria-pressed="false" aria-label="Auto enhance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 21 12-12"/><path d="m13 7 4 4"/><path d="M18 2.5v3M16.5 4h3M20.5 9v2M19.5 10h2M9 3v2M8 4h2"/></svg>Auto</button>
     <button class="tool" role="tab" data-tab="6" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9.5" r="5.5"/><circle cx="15" cy="9.5" r="5.5"/><circle cx="12" cy="14.5" r="5.5"/></svg>Filters</button>
     <button class="tool" role="tab" data-tab="4" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5z"/><path d="m3 13 9 5 9-5"/></svg>Backdrop</button>
     <button class="tool" role="tab" data-tab="7" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>Tools</button>
@@ -915,6 +917,7 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
         <button class="opt" data-l="last" aria-pressed="true">Same as my last post</button>
         <button class="opt" data-l="default" aria-pressed="false">Default</button>
       </div>
+      <label class="bcheck"><input type="checkbox" id="qkAuto"><span><b>Auto-enhance photo</b><small>Fixes dull, dark or washed-out photos</small></span></label>
       <div class="blabel">TikTok description</div>
       <textarea id="qkDesc" class="qk-desc" rows="3" placeholder="Optional. It gets copied so you can paste it in TikTok."></textarea>
       <div class="tagrow" id="qkTags"></div>
@@ -978,6 +981,7 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
       </div>
       <div class="blabel">Filter</div>
       <div class="opts bfx" id="bFx"></div>
+      <label class="bcheck"><input type="checkbox" id="bAuto"><span><b>Auto-enhance each photo</b><small>Fixes dull, dark or washed-out photos</small></span></label>
       <label class="bcheck"><input type="checkbox" id="bSave" checked><span><b>Save all to my gallery</b><small>Also adds them to Stats</small></span></label>
       <label class="bcheck"><input type="checkbox" id="bFresh" checked><span><b>Skip quotes I've already used</b><small>So you never post the same one twice</small></span></label>
       <p class="hint" id="bWm" style="margin-top:12px"></p>
@@ -1024,14 +1028,14 @@ const TOOLS={0:'Stretch',1:'Text',2:'Adjust',4:'Backdrop',5:'Watermark',6:'Filte
 const GRID=new Set([2,5,8,9,10,11,12,13,14]);
 const DEF={sw:178,sh:100,blur:0,bgblur:50,bgbr:80,bri:100,con:100,sat:100,fint:100,anchor:'right',bgmode:'blur',flip:false,filter:'none',
   hi:0,shd:0,wht:0,blk:0,fade:0,temp:0,tint:0,vib:0,hue:0,sharp:0,clar:0,grain:0,vig:0,leak:60,fblur:14,fsize:40,fx:50,fy:50,frw:40,frr:0,str:0,
-  rot:0,flipV:false,crop:null,cropR:'free',ratio:'9:16',focus:'off',leakS:'none',frameS:'none',frameC:'#ffffff',strokes:[]};
+  rot:0,flipV:false,crop:null,cropR:'free',ratio:'9:16',focus:'off',leakS:'none',frameS:'none',frameC:'#ffffff',strokes:[],auto:false,autoPrev:null};
 const SLIDERS=['sw','sh','blur','bgblur','bgbr','bri','con','sat','fint','hi','shd','wht','blk','fade','temp','tint','vib','hue','sharp','clar','grain','vig','leak','fblur','fsize','fx','fy','frw','frr','str'];
 const $=id=>document.getElementById(id);
 const cv=$('cv'),ctx=cv.getContext('2d');
 const thumbCv=Object.assign(document.createElement('canvas'),{width:216,height:384}),tctx=thumbCv.getContext('2d');
 const Cap=window.Capacitor, native=!!(Cap&&Cap.isNativePlatform&&Cap.isNativePlatform());
 let rot=0,flipV=false,crop=null,cropR='free',ratio='9:16',focusMode='off',leakS='none',frameS='none',frameC='#ffffff',strokes=[];
-let cropMode=false,drawMode=false,compareHold=false,fastPreview=false;
+let cropMode=false,drawMode=false,compareHold=false,fastPreview=false,autoOn=false,autoPrev=null;
 const sv=k=>+$(k).value;
 let curFilter='none',img=null,imgBlob=null,anchor='right',bgmode='blur',flip=false,x=0,y=0,prevW=0,prevH=0;
 let texts=[],sel=null,exporting=false,tab=-1;
@@ -1107,8 +1111,9 @@ function setControls(s){
   press('anchor','a',anchor);press('bgmode','m',bgmode);$('flip').setAttribute('aria-pressed',flip);syncFx();
   press('cropRatio','r',cropR);press('focusMode','m2',focusMode);press('leakPick','l',leakS);press('frameStyle','fs',frameS);
   $('frameCol').querySelectorAll('.sw[data-c]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.c===frameC));
+  autoOn=!!s.auto;autoPrev=s.autoPrev?{...s.autoPrev}:null;syncAuto();
 }
-function snapshot(){const s={anchor,bgmode,flip,filter:curFilter,rot,flipV,crop:crop?{...crop}:null,cropR,ratio,focus:focusMode,leakS,frameS,frameC,strokes:strokes.map(t=>({...t,pts:t.pts.slice()})),x,y,texts:texts.map(t=>({...t}))};SLIDERS.forEach(k=>s[k]=+$(k).value);return s;}
+function snapshot(){const s={anchor,bgmode,flip,filter:curFilter,rot,flipV,crop:crop?{...crop}:null,cropR,ratio,focus:focusMode,leakS,frameS,frameC,auto:autoOn,autoPrev:autoPrev?{...autoPrev}:null,strokes:strokes.map(t=>({...t,pts:t.pts.slice()})),x,y,texts:texts.map(t=>({...t}))};SLIDERS.forEach(k=>s[k]=+$(k).value);return s;}
 function showScreen(ed){$('editor').hidden=!ed;$('home').hidden=ed;if(ed)requestAnimationFrame(fit);syncChrome();}
 function loadImage(blob){
   if(imgCache.has(blob))return Promise.resolve(imgCache.get(blob));
@@ -1295,15 +1300,15 @@ function geoSrc(cap){
   geoC.key=key;geoC.cv=out;return out;
 }
 /* ----- tone, colour, detail, effects, focus ----- */
-function toneLUT(){
-  const hi=sv('hi')/100,sh=sv('shd')/100,wh=sv('wht')/100,bl=sv('blk')/100,fa=sv('fade')/100,L=new Uint8ClampedArray(256);
+function toneLUT(v){
+  const G=k=>v?v[k]:sv(k),hi=G('hi')/100,sh=G('shd')/100,wh=G('wht')/100,bl=G('blk')/100,fa=(v?v.fade||0:sv('fade'))/100,L=new Uint8ClampedArray(256);
   for(let i=0;i<256;i++){let t=i/255;
     t+=sh*1.2*t*(1-t)*(1-t);t+=hi*1.2*t*t*(1-t);t+=wh*.25*t*t*t;t+=bl*.25*(1-t)*(1-t)*(1-t);
     t=t*(1-fa*.22)+fa*.14;L[i]=Math.round(Math.min(1,Math.max(0,t))*255);}
   return L;
 }
-function tonePass(g,w,h){
-  const d=g.getImageData(0,0,w,h),p=d.data,L=toneLUT(),te=sv('temp')/100*28,ti=sv('tint')/100*22,vb=sv('vib')/100;
+function tonePass(g,w,h,v){
+  const G=k=>v?v[k]:sv(k),d=g.getImageData(0,0,w,h),p=d.data,L=toneLUT(v),te=G('temp')/100*28,ti=G('tint')/100*22,vb=G('vib')/100;
   for(let i=0;i<p.length;i+=4){
     let r=L[p[i]],gg=L[p[i+1]],b=L[p[i+2]];
     if(te){r+=te;b-=te;}
@@ -1370,6 +1375,82 @@ function processed(){
   if(foc)focusPass(c,g,w,h);
   proc.key=key;proc.cv=c;return c;
 }
+/* ----- one-tap auto enhance -----
+   Looks at a small copy of the photo, picks Adjust values, then checks them by running the
+   real brightness/contrast + tone pipeline on that copy and nudging until the midtones land. */
+const AUTOK=['bri','con','sat','hi','shd','wht','blk','temp','tint','vib','sharp','clar'];
+function autoSample(src){
+  const k=Math.min(1,200/Math.max(src.width,src.height)),w=Math.max(8,Math.round(src.width*k)),h=Math.max(8,Math.round(src.height*k));
+  const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(src,0,0,w,h);
+  return{c,w,h,d:g.getImageData(0,0,w,h).data,big:Math.max(src.width,src.height)};
+}
+function autoStats(d){
+  const Hs=new Uint32Array(256);let n=0,sum=0,sum2=0,chr=0,mr=0,mg=0,mb=0,mn=0,warm=0;
+  for(let i=0;i<d.length;i+=4){
+    const r=d[i],g=d[i+1],b=d[i+2],y=Math.round(.299*r+.587*g+.114*b),mx=Math.max(r,g,b),mi=Math.min(r,g,b),c=(mx-mi)/255;
+    Hs[y]++;n++;sum+=y;sum2+=y*y;chr+=c;
+    if(y>38&&y<218&&c<.15){mr+=r;mg+=g;mb+=b;mn++;}
+    if(c>.25&&r>=g&&g>=b&&y>60)warm++;
+  }
+  const pct=q=>{const t=q*n;let a=0;for(let i=0;i<256;i++){a+=Hs[i];if(a>=t)return i/255;}return 1;};
+  let dark=0,bright=0;for(let i=0;i<256;i++){if(i<36)dark+=Hs[i];if(i>242)bright+=Hs[i];}
+  return{p01:pct(.01),p50:pct(.5),p95:pct(.95),p99:pct(.99),std:Math.sqrt(Math.max(0,sum2/n-(sum/n)**2))/255,
+    chroma:chr/n,dark:dark/n,bright:bright/n,warm:warm/n,cast:mn>n*.04?{rb:(mr-mb)/mn,g:(mg-(mr+mb)/2)/mn}:null};
+}
+function autoRender(sm,v){
+  const c=document.createElement('canvas');c.width=sm.w;c.height=sm.h;const g=c.getContext('2d',{willReadFrequently:true});
+  g.filter=`brightness(${v.bri/100}) contrast(${v.con/100}) saturate(${v.sat/100})`;g.drawImage(sm.c,0,0);g.filter='none';
+  tonePass(g,sm.w,sm.h,v);return g.getImageData(0,0,sm.w,sm.h).data;
+}
+function autoValues(src){
+  const sm=autoSample(src),s0=autoStats(sm.d),cl=(x,a,b)=>Math.round(Math.max(a,Math.min(b,x)));
+  const v={bri:100,con:100,sat:100,hi:0,shd:0,wht:0,blk:0,fade:0,temp:0,tint:0,vib:0,sharp:0,clar:0};
+  const night=s0.p50<.14&&(s0.p99>s0.p50*3||s0.p99>.5),mono=s0.chroma<.035,golden=!night&&s0.warm>.12;
+  const under=!night&&s0.p50<.3,over=s0.p50>.65;
+  // highlights and shadows (sunset silhouettes are left dark on purpose)
+  if(s0.bright>.025)v.hi=-cl(10+s0.bright*260,10,45);
+  if(!night&&!golden&&s0.dark>.08)v.shd=cl(8+s0.dark*110,8,under?55:40);
+  if(under&&!golden)v.shd=Math.max(v.shd,cl((.3-s0.p50)*160,10,55));
+  // colour: vibrance for dull photos, gentle fix for blue or magenta casts (warm sunsets and green fields are left alone)
+  if(!mono){
+    v.vib=s0.chroma<.1?30:s0.chroma<.28?cl(30-(s0.chroma-.1)/.18*22,8,30):6;
+    if(golden)v.vib=Math.max(v.vib,14);
+    if(s0.chroma<.06)v.sat=108;
+    if(s0.cast&&!night&&!golden){
+      if(s0.cast.rb<-10)v.temp=cl(-s0.cast.rb*.4/.56,0,12);
+      if(s0.cast.g<-6||s0.cast.g>14)v.tint=cl(s0.cast.g*.4/.297,-10,10);
+    }
+  }
+  // exposure: land the midtones (night shots stay moody, sunsets stay rich)
+  const T=night?Math.min(.3,s0.p50+.08):golden?Math.min(Math.max(s0.p50,.4),.5):over?.56:.46;
+  const aim=n=>{for(let k=0;k<n;k++){const s=autoStats(autoRender(sm,v));if(Math.abs(T-s.p50)<.012)break;
+    v.bri=cl(v.bri*Math.pow((T+.03)/(s.p50+.03),.9),88,155);}};
+  aim(4);
+  // contrast, judged after exposure so dark photos aren't crushed
+  let s1=autoStats(autoRender(sm,v));
+  if(!night){if(s1.std<.18)v.con=cl(100+(.2-s1.std)*260,100,130);else if(s1.std>.3)v.con=96;}
+  // black and white points
+  s1=autoStats(autoRender(sm,v));
+  if(!night&&s1.p01>.06)v.blk=-cl((s1.p01-.03)/(.25*Math.pow(1-s1.p01,3))*100*.8,0,45);
+  if(!night&&!golden&&s1.p99<.9)v.wht=cl((.96-s1.p99)/(.25*Math.pow(Math.max(.3,s1.p99),3))*100*.7,0,40);
+  aim(3);
+  // a touch of detail
+  v.sharp=sm.big<1200?24:18;v.clar=night?0:golden?10:14;
+  return v;
+}
+const autoCache=new WeakMap();
+function autoFor(src){let v=autoCache.get(src);if(!v){v=autoValues(src);autoCache.set(src,v);}return v;}
+function applyAuto(src){if(!autoOn){autoPrev={};AUTOK.forEach(k=>autoPrev[k]=sv(k));}const v=autoFor(src);AUTOK.forEach(k=>$(k).value=v[k]);autoOn=true;syncAuto();}
+function syncAuto(){$('toolAuto').setAttribute('aria-pressed',autoOn);$('adjAuto').setAttribute('aria-pressed',autoOn);}
+function toggleAuto(){
+  if(!img){toast('Add a photo first');return;}
+  vibe();
+  if(autoOn){const p=autoPrev||{};AUTOK.forEach(k=>$(k).value=p[k]!=null?p[k]:DEF[k]);autoOn=false;autoPrev=null;syncAuto();fastPreview=false;draw();toast('Auto off');return;}
+  try{applyAuto(geoSrc(1600));}catch(e){toast('Couldn’t read this photo');return;}
+  fastPreview=false;draw();toast('Auto-enhanced · tap again to undo',1800);
+}
+function autoPref(){try{return localStorage.getItem('taffy-auto')==='1';}catch(e){return false;}}
+function setAutoPref(on){try{localStorage.setItem('taffy-auto',on?'1':'0');}catch(e){}}
 /* ----- crop view ----- */
 let cropDrag=null,cropStart='';
 const CROPR={'1:1':1,'4:5':.8,'3:4':.75,'9:16':9/16,'16:9':16/9};
@@ -1574,7 +1655,7 @@ document.querySelectorAll('.tg[data-open]').forEach(b=>b.addEventListener('click
 }));
 function resetEdits(){
   const keep=['sw','sh','bgblur','bgbr','fint'];
-  SLIDERS.forEach(k=>{if(!keep.includes(k))$(k).value=DEF[k];});
+  SLIDERS.forEach(k=>{if(!keep.includes(k))$(k).value=DEF[k];});autoOn=false;autoPrev=null;syncAuto();
   curFilter='none';rot=0;flipV=false;crop=null;cropR='free';focusMode='off';leakS='none';frameS='none';
   press('cropRatio','r',cropR);press('focusMode','m2',focusMode);press('leakPick','l',leakS);press('frameStyle','fs',frameS);syncFx();
   if(img)place();draw();toast('Edits reset');
@@ -1627,7 +1708,8 @@ $('fillH').onclick=()=>{if(!img)return;$('sh').value=fillPct();place();vibe();};
 $('fillAll').onclick=()=>{if(!img)return;$('sw').value=100;$('sh').value=fillPct();place();vibe();};
 $('flip').onclick=()=>{flip=!flip;$('flip').setAttribute('aria-pressed',flip);draw();vibe();};
 $('reset').onclick=()=>{['sw','sh'].forEach(k=>$(k).value=DEF[k]);anchor=DEF.anchor;press('anchor','a',anchor);flip=false;$('flip').setAttribute('aria-pressed',false);place();draw();vibe();};
-$('adjReset').onclick=()=>{['bri','con','sat','hue','hi','shd','wht','blk','fade','temp','tint','vib','sharp','clar','blur'].forEach(k=>$(k).value=DEF[k]);fastPreview=false;draw();vibe();toast('Adjustments reset');};
+$('adjReset').onclick=()=>{['bri','con','sat','hue','hi','shd','wht','blk','fade','temp','tint','vib','sharp','clar','blur'].forEach(k=>$(k).value=DEF[k]);autoOn=false;autoPrev=null;syncAuto();fastPreview=false;draw();vibe();toast('Adjustments reset');};
+$('toolAuto').onclick=toggleAuto;$('adjAuto').onclick=toggleAuto;
 
 /* ---------- text ---------- */
 function syncTextUI(){
@@ -1665,7 +1747,9 @@ async function load(file){
   if(!file||!file.type.startsWith('image/'))return;
   if(!proj){newProject(file);return;}
   const i=await loadImage(file);if(!i){toast('Couldn’t open that photo');return;}
-  img=i;imgBlob=file;$('empty').hidden=true;place();if(tab===6)renderFx();
+  img=i;imgBlob=file;$('empty').hidden=true;
+  if(autoOn){try{const p=autoPrev;autoOn=false;applyAuto(geoSrc(1600));autoPrev=p;}catch(e){}}
+  place();if(tab===6)renderFx();
 }
 $('file').onchange=e=>{load(e.target.files[0]);e.target.value='';};
 document.addEventListener('dragover',e=>e.preventDefault());
@@ -1937,8 +2021,9 @@ function lastState(){const p=projects.find(p=>p.state&&p.img);return p?p.state:n
 function qkApply(){
   const base=qkLook==='last'?lastState():null,b2=base?JSON.parse(JSON.stringify(base)):null;
   const t0=b2&&b2.texts?b2.texts.find(t=>t.kind!=='emoji'):null;
-  if(b2){delete b2.texts;delete b2.strokes;delete b2.x;delete b2.y;delete b2.crop;b2.rot=0;b2.str=0;b2.flipV=false;}
+  if(b2){delete b2.texts;delete b2.strokes;delete b2.x;delete b2.y;delete b2.crop;b2.rot=0;b2.str=0;b2.flipV=false;b2.auto=false;b2.autoPrev=null;}
   loading=true;setControls(b2);img=qkImg;imgBlob=qkFile;sel=null;strokes=[];
+  if(img&&$('qkAuto').checked){try{applyAuto(img);}catch(e){}}
   if(img)place();
   const st=t0?{font:t0.font,style:t0.style,color:t0.color}:myStyle(),cap=$('qkCap').value.trim();
   texts=cap?[{text:wrapQuote(cap),cat:qkCat||undefined,font:st.font,color:st.color,style:st.style,size:st.font==='tall'?150:120,sx:100,sy:100,x:W/2,y:H*POS[qkPos]}]:[];
@@ -1955,7 +2040,7 @@ function openQuick(){
   vibe();qkFile=null;qkImg=null;qkCat=null;$('qkCap').value='';$('qkDesc').value='';$('qkPrev').hidden=true;
   $('qkPhoto').classList.remove('has');$('qkPhoto').querySelector('.qk-empty').hidden=false;$('qkPhoto').querySelector('.qk-change').hidden=true;
   qkLook=lastState()?'last':'default';press('qkLook','l',qkLook);$('qkLook').hidden=$('qkLookL').hidden=!lastState();
-  qkTagSet.clear();renderTags($('qkTags'),qkTagSet,null);
+  qkTagSet.clear();renderTags($('qkTags'),qkTagSet,null);$('qkAuto').checked=autoPref();
   $('quick').hidden=false;history.pushState({qk:1},'',location.href);syncChrome();$('quick').querySelector('.sbody').scrollTop=0;
 }
 let qkPending=null;
@@ -1971,6 +2056,7 @@ $('qkFile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f
 $('qkCap').addEventListener('input',()=>{qkCat=null;qkPreviewSoon();});
 $('qkRandom').onclick=()=>{const q=pickQuotes(1,AES,true)[0];if(!q)return;$('qkCap').value=q.t;qkCat=q.c;renderTags($('qkTags'),qkTagSet,q.c);qkPreviewSoon();vibe();};
 $('qkBrowse').onclick=()=>openQuotes('quick');
+$('qkAuto').onchange=e=>{setAutoPref(e.target.checked);qkPreviewSoon();vibe();};
 group('qkPos','p',v=>{qkPos=v;qkPreviewSoon();});
 group('qkLook','l',v=>{qkLook=v;qkPreviewSoon();});
 $('qkEdit').onclick=()=>{
@@ -2017,6 +2103,7 @@ function openBatch(files){
   press('bTs','y',bTs);
   $('bFx').innerHTML=FXORDER.map(k=>`<button class="opt" data-x="${k}" aria-pressed="${k===bFilter}">${FILTERS[k].n}</button>`).join('');
   $('bFx').querySelectorAll('button').forEach(b=>b.onclick=()=>{bFilter=b.dataset.x;press('bFx','x',bFilter);vibe();});
+  $('bAuto').checked=autoPref();
   $('bGo').textContent='Make '+bFiles.length+' post'+(bFiles.length>1?'s':'');$('bGo').disabled=false;
   $('batch').hidden=false;history.pushState({bt:1},'',location.href);syncChrome();
 }
@@ -2024,6 +2111,7 @@ function closeBatchNow(){if(bBusy)return;$('batch').hidden=true;syncChrome();}
 $('bClose').onclick=()=>{if(bBusy)return;if(history.state&&history.state.bt)history.back();else closeBatchNow();};
 $('batchFiles').onchange=e=>{const f=[...e.target.files];e.target.value='';if(!f.length)return;if(!$('cScrim').hidden){cPending=()=>openBatch(f);closeCreate();}else openBatch(f);};
 group('bPos','p',v=>bPos=v);group('bTs','y',v=>bTs=v);group('bFit','f',v=>bFitMode=v);
+$('bAuto').onchange=e=>{setAutoPref(e.target.checked);vibe();};
 function pickQuotes(n,cat,fresh){
   const used=fresh?usedSet():new Set();
   let pool=QALL.filter(q=>inCat(q,cat));
@@ -2043,6 +2131,7 @@ $('bGo').onclick=async()=>{
     const now=Date.now();
     proj={id:uid(),name:`${day} #${i+1}`,created:now,updated:now,img:bFiles[i],state:null,thumb:null};
     loading=true;setControls(null);curFilter=bFilter;img=im;imgBlob=bFiles[i];sel=null;
+    if($('bAuto').checked){try{applyAuto(im);}catch(e){}}
     if(bFitMode==='fit')$('sw').value=100;
     if(bFitMode==='fill'){$('sw').value=100;$('sh').value=Math.min(400,Math.round(H/(im.height*W/im.width)*100));}
     place();
