@@ -100,7 +100,8 @@ input[type=file]{display:none}
 .pname{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--fg2);padding-right:6px}
 .hist{display:flex;gap:0}
 #compare:active{background:var(--s2);color:var(--accent)}
-.export{height:34px;padding:0 16px;border-radius:8px;background:var(--accent);color:var(--on-accent);font-size:14px;font-weight:700}
+.export{height:34px;padding:0 14px 0 12px;border-radius:8px;background:var(--accent);color:var(--on-accent);font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px}
+.export svg{width:16px;height:16px}
 .export:active{opacity:.8}
 
 .stage{flex:1;min-height:0;position:relative;display:grid;place-items:center;background:var(--work);padding:14px}
@@ -247,7 +248,10 @@ textarea.qk-cap{height:auto;min-height:60px;flex:none}
 textarea.qk-desc{height:auto;min-height:76px;flex:none;width:100%;font-size:14px}
 .tagrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .tagrow .chip{height:30px;padding:0 11px;font-size:12.5px}
+.asheet .tagrow .chip:not([aria-pressed="true"]){background:var(--s2);color:var(--muted)}
+.tagrow .chip:not([aria-pressed="true"]){color:var(--muted)}
 .qk-go{position:sticky;bottom:0;padding:14px 0 calc(var(--sab) + 6px);background:linear-gradient(180deg,rgba(0,0,0,0),var(--bg) 30%);margin-top:6px}
+.qk-go{display:grid;grid-template-columns:1fr 1.6fr;gap:8px}
 .qk-go .bigbtn{width:100%;height:52px;font-size:16px}
 .bigbtn:disabled{opacity:.6}
 .statsbtn{display:flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:8px;background:var(--s1);font-size:13px;font-weight:700}
@@ -500,7 +504,7 @@ textarea.qk-desc{height:auto;min-height:76px;flex:none;width:100%;font-size:14px
       <button class="ib" id="undo" aria-label="Undo" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
       <button class="ib" id="redo" aria-label="Redo" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
     </div>
-    <div class="r"><button class="export" id="export">Export</button></div>
+    <div class="r"><button class="export" id="export"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 10 14"/><path d="M21 3l-7 18-4-7-7-4z"/></svg>Post</button></div>
   </header>
 
   <main class="stage" id="stage">
@@ -797,7 +801,7 @@ textarea.qk-desc{height:auto;min-height:76px;flex:none;width:100%;font-size:14px
       <textarea id="qkDesc" class="qk-desc" rows="3" placeholder="Optional. It gets copied so you can paste it in TikTok."></textarea>
       <div class="tagrow" id="qkTags"></div>
       <label class="bcheck"><input type="checkbox" id="qkSave" checked><span><b>Also save to my gallery</b><small>And add it to Drafts and Stats</small></span></label>
-      <div class="qk-go"><button class="bigbtn acc" id="qkPost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 10 14"/><path d="M21 3l-7 18-4-7-7-4z"/></svg>Post to TikTok</button></div>
+      <div class="qk-go"><button class="bigbtn" id="qkEdit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Edit first</button><button class="bigbtn acc" id="qkPost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 10 14"/><path d="M21 3l-7 18-4-7-7-4z"/></svg>Post to TikTok</button></div>
     </div>
   </div>
 </div>
@@ -1761,12 +1765,16 @@ const xTagSet=new Set();
 function editorCat(){const t=texts.find(t=>t.cat);return t?t.cat:null;}
 function openExportSheet(){
   exporting=true;draw();const c=document.createElement('canvas');c.width=180;c.height=Math.round(180*H/W);c.getContext('2d').drawImage(cv,0,0,c.width,c.height);exporting=false;draw();
-  $('xThumb').src=c.toDataURL('image/jpeg',.8);xTagSet.clear();renderTags($('xTags'),xTagSet,editorCat());
+  $('xThumb').src=c.toDataURL('image/jpeg',.8);xTagSet.clear();
+  if(proj&&Array.isArray(proj.tags))proj.tags.forEach(t=>xTagSet.add(t));
+  renderTags($('xTags'),xTagSet,editorCat());$('xDesc').value=proj&&proj.desc||'';
+  $('xTags').querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{if(proj)proj.tags=[...xTagSet];}));
   $('xScrim').hidden=false;history.pushState({xs:1},'',location.href);vibe();
 }
 function closeExportNow(){$('xScrim').hidden=true;}
 function closeExport(){if(history.state&&history.state.xs)history.back();else closeExportNow();}
 $('xScrim').addEventListener('click',e=>{if(e.target===$('xScrim'))closeExport();});
+$('xDesc').addEventListener('input',e=>{if(proj){proj.desc=e.target.value;proj.tags=[...xTagSet];}});
 async function renderFinal(){exporting=true;draw();const d=cv.toDataURL('image/png');exporting=false;draw();return d;}
 $('xSave').onclick=async()=>{
   vibe();const dataUrl=await renderFinal();await saveNow();logPost();closeExport();
@@ -1809,7 +1817,8 @@ function openQuick(){
   qkTagSet.clear();renderTags($('qkTags'),qkTagSet,null);
   $('quick').hidden=false;history.pushState({qk:1},'',location.href);syncChrome();$('quick').querySelector('.sbody').scrollTop=0;
 }
-function closeQuickNow(){$('quick').hidden=true;img=null;imgBlob=null;texts=[];proj=null;syncChrome();renderHome();}
+let qkPending=null;
+function closeQuickNow(){$('quick').hidden=true;img=null;imgBlob=null;texts=[];proj=null;syncChrome();const p=qkPending;qkPending=null;if(p)p();else renderHome();}
 function closeQuick(){if(history.state&&history.state.qk)history.back();else closeQuickNow();}
 $('openQuick').onclick=openQuick;
 $('csQuick').onclick=()=>{cPending=openQuick;closeCreate();};
@@ -1823,6 +1832,15 @@ $('qkRandom').onclick=()=>{const q=pickQuotes(1,AES,true)[0];if(!q)return;$('qkC
 $('qkBrowse').onclick=()=>openQuotes('quick');
 group('qkPos','p',v=>{qkPos=v;qkPreviewSoon();});
 group('qkLook','l',v=>{qkLook=v;qkPreviewSoon();});
+$('qkEdit').onclick=()=>{
+  if(!qkImg){toast('Add a photo first');$('qkFile').click();return;}
+  vibe();qkApply();const st=snapshot(),now=Date.now();
+  const p={id:uid(),name:'Post '+new Date().toLocaleDateString(undefined,{day:'numeric',month:'short'}),created:now,updated:now,img:qkFile,state:st,thumb:null,
+    desc:$('qkDesc').value,tags:[...qkTagSet]};
+  img=null;imgBlob=null;texts=[];
+  qkPending=async()=>{await openProject(p);saveNow();toast('Edit it how you like, then tap Post',2600);};
+  closeQuick();
+};
 $('qkPost').onclick=async()=>{
   if(!qkImg){toast('Add a photo first');$('qkFile').click();return;}
   const desc=buildDesc($('qkDesc').value,qkTagSet);copyQuiet(desc);vibe();
