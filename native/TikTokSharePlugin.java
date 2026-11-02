@@ -16,7 +16,7 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 import java.io.File;
 import java.io.FileOutputStream;
 
-/** Opens TikTok directly with an image ready to post (falls back to the share sheet). */
+/** Opens TikTok directly with a photo or video ready to post (falls back to the share sheet). */
 @CapacitorPlugin(name = "TikTokShare")
 public class TikTokSharePlugin extends Plugin {
     private static final String[] PACKAGES = {
@@ -38,6 +38,7 @@ public class TikTokSharePlugin extends Plugin {
         call.resolve(r);
     }
 
+    /** Photo: base64 PNG data from the app. */
     @PluginMethod
     public void share(PluginCall call) {
         String data = call.getString("data");
@@ -52,30 +53,50 @@ public class TikTokSharePlugin extends Plugin {
             FileOutputStream out = new FileOutputStream(f);
             out.write(bytes);
             out.close();
-            Uri uri = FileProvider.getUriForFile(getContext(), getContext().getPackageName() + ".fileprovider", f);
-
-            Intent i = new Intent(Intent.ACTION_SEND);
-            i.setType("image/png");
-            i.putExtra(Intent.EXTRA_STREAM, uri);
-            if (text != null && text.length() > 0) i.putExtra(Intent.EXTRA_TEXT, text);
-            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            JSObject r = new JSObject();
-            String pkg = installedTikTok();
-            if (pkg != null) {
-                i.setPackage(pkg);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().startActivity(i);
-                r.put("app", "tiktok");
-            } else {
-                Intent chooser = Intent.createChooser(i, "Post");
-                chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().startActivity(chooser);
-                r.put("app", "chooser");
-            }
-            call.resolve(r);
+            send(call, f, "image/png", text);
         } catch (Exception e) {
             call.reject(e.getMessage() != null ? e.getMessage() : "Share failed");
         }
+    }
+
+    /** Video (or any file): a file:// path inside the app's cache, written by the app first. */
+    @PluginMethod
+    public void shareFile(PluginCall call) {
+        String path = call.getString("path");
+        String mime = call.getString("mime", "video/mp4");
+        String text = call.getString("text", "");
+        if (path == null) { call.reject("No file"); return; }
+        try {
+            File f = path.startsWith("file:") ? new File(Uri.parse(path).getPath()) : new File(path);
+            if (!f.exists()) { call.reject("File not found"); return; }
+            send(call, f, mime, text);
+        } catch (Exception e) {
+            call.reject(e.getMessage() != null ? e.getMessage() : "Share failed");
+        }
+    }
+
+    private void send(PluginCall call, File f, String mime, String text) {
+        Uri uri = FileProvider.getUriForFile(getContext(), getContext().getPackageName() + ".fileprovider", f);
+
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType(mime);
+        i.putExtra(Intent.EXTRA_STREAM, uri);
+        if (text != null && text.length() > 0) i.putExtra(Intent.EXTRA_TEXT, text);
+        i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        JSObject r = new JSObject();
+        String pkg = installedTikTok();
+        if (pkg != null) {
+            i.setPackage(pkg);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(i);
+            r.put("app", "tiktok");
+        } else {
+            Intent chooser = Intent.createChooser(i, "Post");
+            chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(chooser);
+            r.put("app", "chooser");
+        }
+        call.resolve(r);
     }
 }

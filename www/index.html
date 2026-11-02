@@ -507,6 +507,22 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
 .toast{background:#fff;color:#000;font-weight:800;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
 .blabel{color:var(--fg2);font-weight:800}
 .sempty svg{color:var(--accent)}
+/* ---- video ---- */
+.stage.hasv{padding-bottom:62px}
+.vbar{position:absolute;left:12px;right:12px;bottom:10px;height:44px;display:flex;align-items:center;gap:10px;padding:0 12px 0 6px;background:var(--s1);border:1px solid var(--line);border-radius:12px}
+.vplay{width:34px;height:34px;display:grid;place-items:center;border-radius:9px;background:var(--accent);color:#fff;flex:none}
+.vplay svg{width:16px;height:16px}.vplay .i-pause{display:none}.vplay.on .i-play{display:none}.vplay.on .i-pause{display:block}
+.vbar input[type=range]{flex:1;min-width:0}
+.vtime{font-size:12px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.vbadge{position:absolute;left:6px;bottom:6px;display:flex;align-items:center;gap:3px;padding:3px 6px 3px 4px;border-radius:6px;background:rgba(0,0,0,.62);color:#fff;font-size:11px;font-weight:700;pointer-events:none}
+.vbadge svg{width:12px;height:12px}
+.vxo{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.84);display:grid;place-items:center;padding:24px}
+.vxo-in{width:min(320px,100%);background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px;text-align:center}
+.vxo-in b{font:400 26px var(--display);letter-spacing:.01em}
+.vxo-bar{height:6px;border-radius:6px;background:var(--s3);overflow:hidden}
+.vxo-bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+.vxo-in small{color:var(--muted);font-size:13px}
+.vxo-in .bigbtn{width:100%}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -535,14 +551,15 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
     </button>
     <label class="ct" for="newFile">
       <span style="color:var(--accent)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg></span>
-      <span><b>Edit a photo</b><small>Full editor</small></span>
+      <span><b>Edit photo or video</b><small>Full editor</small></span>
     </label>
     <label class="ct" for="batchFiles">
       <span style="color:var(--accent)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="3" width="12" height="15" rx="2"/><path d="M5 6.5V19a2 2 0 0 0 2 2h9"/></svg></span>
       <span><b>Batch</b><small>Up to 40 photos</small></span>
     </label>
   </div>
-  <input id="newFile" type="file" accept="image/*">
+  <input id="newFile" type="file" accept="image/*,video/*">
+  <input id="newVideo" type="file" accept="video/*">
   <input id="batchFiles" type="file" accept="image/*" multiple>
 
   <div class="hsec"><h2>Drafts</h2><span id="count"></span></div>
@@ -568,7 +585,8 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
     <div class="grab"></div>
     <b class="cs-title">Create</b>
     <button class="cs-row" id="csQuick"><span class="cs-ic acc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 10 14"/><path d="M21 3l-7 18-4-7-7-4z"/></svg></span><span><b>Quick post</b><small>Photo + caption, straight to TikTok</small></span></button>
-    <label class="cs-row" for="newFile"><span class="cs-ic yl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg></span><span><b>New post</b><small>Start from a photo</small></span></label>
+    <label class="cs-row" for="newFile"><span class="cs-ic yl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg></span><span><b>New post</b><small>Start from a photo or video</small></span></label>
+    <label class="cs-row" for="newVideo"><span class="cs-ic yl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="13" height="14" rx="2.5"/><path d="m16 10 5-3v10l-5-3z"/></svg></span><span><b>Video post</b><small>Your clip + caption, saved as an MP4</small></span></label>
     <label class="cs-row" for="batchFiles"><span class="cs-ic yl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="3" width="12" height="15" rx="2"/><path d="M5 6.5V19a2 2 0 0 0 2 2h9"/></svg></span><span><b>Batch</b><small>Pick up to 40 photos, get a post for each</small></span></label>
     <button class="cs-row" id="csQuotes"><span class="cs-ic yl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6.2C6.6 7.3 4.6 10 4.6 13.6V18h5.2v-5.2H7.2c.2-2 1.3-3.4 3.2-4.2zM19.4 6.2c-3.4 1.1-5.4 3.8-5.4 7.4V18h5.2v-5.2h-2.6c.2-2 1.3-3.4 3.2-4.2z"/></svg></span><span><b>From a quote</b><small>Pick a caption first, add a photo after</small></span></button>
     <button class="cs-row" id="csText"><span class="cs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7V5h14v2M12 5v14M9 19h6"/></svg></span><span><b>Text post</b><small>Yellow caption on black</small></span></button>
@@ -632,8 +650,13 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
       <div class="guides" id="guides"><i class="v"></i><i class="h"></i></div>
       <label class="addphoto" id="empty" for="file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add photo</label>
     </div>
+    <div class="vbar" id="vbar" hidden>
+      <button class="vplay" id="vPlay" aria-label="Play"><svg class="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></svg><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4.2" height="16" rx="1.2"/><rect x="13.8" y="4" width="4.2" height="16" rx="1.2"/></svg></button>
+      <input type="range" id="vSeek" min="0" max="1000" value="0" aria-label="Position">
+      <span class="vtime" id="vTime">0:00</span>
+    </div>
   </main>
-  <input id="file" type="file" accept="image/*">
+  <input id="file" type="file" accept="image/*,video/*">
 
   <section class="panelwrap" id="panelwrap" hidden>
     <div class="phead"><div class="phl"><button class="pback" id="pback" aria-label="All tools" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><b id="ptitle"></b></div><button class="done" id="done" aria-label="Done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></button></div>
@@ -734,7 +757,7 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
       </div>
 
       <div class="panel" data-panel="7" hidden>
-        <div class="tgrid"><button class="tg" data-open="8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg><span>Crop</span></button><button class="tg" data-open="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Adjust</span></button><button class="tg" data-open="9"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/></svg><span>Focus</span></button><button class="tg" data-open="10"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5 13.8 11.3 12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Effects</span></button><button class="tg" data-open="11"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 4-1.5 5-3.5S10 14 12 14"/><path d="m14.5 4.5 5 5L12 17l-5-5z"/><path d="m17 2 5 5-2.5 2.5-5-5z"/></svg><span>Draw</span></button><button class="tg" data-open="12"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5a4.5 4.5 0 0 0 7 0"/><path d="M9 9.5h.01M15 9.5h.01"/></svg><span>Stickers</span></button><button class="tg" data-open="13"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg><span>Frame</span></button><button class="tg" data-open="14"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="1.5"/><path d="M2 8h3M2 16h3M19 8h3M19 16h3"/></svg><span>Canvas</span></button><button class="tg" data-open="5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M15.5 9.5a3.5 3.5 0 1 0 0 5"/><path d="M15.5 9v4.2c0 1 .7 1.6 1.5 1.6"/></svg><span>Watermark</span></button><label class="tg" for="file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12a4 4 0 0 1 7-2.6M16 12a4 4 0 0 1-7 2.6"/><path d="M15 6.5v3h-3M9 17.5v-3h3"/></svg><span>Replace</span></label><button class="tg" data-open="flip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M8 7 3 12l5 5V7zM16 7l5 5-5 5V7z"/></svg><span>Flip</span></button><button class="tg" data-open="resetall"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg><span>Reset all</span></button></div>
+        <div class="tgrid"><button class="tg" data-open="15" id="tgTrim" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg><span>Trim</span></button><button class="tg" data-open="8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg><span>Crop</span></button><button class="tg" data-open="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Adjust</span></button><button class="tg" data-open="9"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/></svg><span>Focus</span></button><button class="tg" data-open="10"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5 13.8 11.3 12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Effects</span></button><button class="tg" data-open="11"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 4-1.5 5-3.5S10 14 12 14"/><path d="m14.5 4.5 5 5L12 17l-5-5z"/><path d="m17 2 5 5-2.5 2.5-5-5z"/></svg><span>Draw</span></button><button class="tg" data-open="12"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5a4.5 4.5 0 0 0 7 0"/><path d="M9 9.5h.01M15 9.5h.01"/></svg><span>Stickers</span></button><button class="tg" data-open="13"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg><span>Frame</span></button><button class="tg" data-open="14"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="1.5"/><path d="M2 8h3M2 16h3M19 8h3M19 16h3"/></svg><span>Canvas</span></button><button class="tg" data-open="5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M15.5 9.5a3.5 3.5 0 1 0 0 5"/><path d="M15.5 9v4.2c0 1 .7 1.6 1.5 1.6"/></svg><span>Watermark</span></button><label class="tg" for="file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12a4 4 0 0 1 7-2.6M16 12a4 4 0 0 1-7 2.6"/><path d="M15 6.5v3h-3M9 17.5v-3h3"/></svg><span>Replace</span></label><button class="tg" data-open="flip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M8 7 3 12l5 5V7zM16 7l5 5-5 5V7z"/></svg><span>Flip</span></button><button class="tg" data-open="resetall"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg><span>Reset all</span></button></div>
       </div>
 
       <div class="panel" data-panel="8" hidden>
@@ -840,6 +863,12 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
         <p class="hint" id="canvasHint">Exports at 1080 × 1920</p>
       </div>
 
+      <div class="panel" data-panel="15" hidden>
+        <div class="row"><span>Start</span><input id="trS" type="range" min="0" max="100" value="0"><output id="trSv"></output></div>
+        <div class="row"><span>End</span><input id="trE" type="range" min="0" max="100" value="100"><output id="trEv"></output></div>
+        <p class="hint" id="trHint"></p>
+      </div>
+
       <div class="panel" data-panel="6" hidden>
         <div class="fxstrip" id="fxStrip"></div>
         <div class="row" id="fxIntRow"><span>Strength</span><input id="fint" type="range" min="0" max="100" value="100"><output id="finto"></output></div>
@@ -896,10 +925,10 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
     <div class="sbody qk">
       <label class="qk-photo" id="qkPhoto" for="qkFile">
         <canvas id="qkPrev" width="360" height="640" hidden></canvas>
-        <span class="qk-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add a photo</span>
+        <span class="qk-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add a photo or video</span>
         <span class="qk-change" hidden>Change</span>
       </label>
-      <input id="qkFile" type="file" accept="image/*">
+      <input id="qkFile" type="file" accept="image/*,video/*">
       <div class="blabel">Caption on the photo</div>
       <textarea id="qkCap" class="qk-cap" rows="2" placeholder="Type a caption or pick a quote"></textarea>
       <div class="opts" style="margin-top:8px">
@@ -930,10 +959,19 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
 <div class="scrim" id="xScrim" hidden>
   <div class="asheet pe" role="dialog" aria-label="Export">
     <div class="grab"></div>
-    <div class="ahead"><img id="xThumb" alt=""><div><b>Ready to go</b><small>Post it or just save it to your gallery.</small></div></div>
+    <div class="ahead"><img id="xThumb" alt=""><div><b>Ready to go</b><small id="xSub">Post it or just save it to your gallery.</small></div></div>
     <textarea id="xDesc" class="qk-desc" rows="3" placeholder="TikTok description (optional). It gets copied when you post."></textarea>
     <div class="tagrow" id="xTags"></div>
     <div class="pbtns" style="grid-template-columns:1fr 1.35fr"><button class="bigbtn" id="xSave">Save to gallery</button><button class="bigbtn acc" id="xPost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 10 14"/><path d="M21 3l-7 18-4-7-7-4z"/></svg>Post to TikTok</button></div>
+  </div>
+</div>
+
+<div class="vxo" id="vxo" hidden>
+  <div class="vxo-in" role="dialog" aria-label="Making your video">
+    <b id="vxoT">Making your video</b>
+    <div class="vxo-bar"><i id="vxoBar"></i></div>
+    <small id="vxoS">Starting…</small>
+    <button class="bigbtn" id="vxoCancel">Cancel</button>
   </div>
 </div>
 
@@ -1020,15 +1058,16 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
 <div class="toast" id="toast"></div>
 
 <script src="quotes.js"></script>
+<script src="vendor/mp4-muxer.js"></script>
 <script>
 const W=1080;let H=1920;
 const TT_YELLOW='#f7ce46';
 const FONTS={tiktok:{family:'"TikTok Sans"',weight:900},bold:{family:'Montserrat',weight:900},tall:{family:'Anton',weight:400}};
-const TOOLS={0:'Stretch',1:'Text',2:'Adjust',4:'Backdrop',5:'Watermark',6:'Filters',7:'Tools',8:'Crop & rotate',9:'Focus blur',10:'Effects',11:'Draw',12:'Stickers',13:'Frame',14:'Canvas size'};
-const GRID=new Set([2,5,8,9,10,11,12,13,14]);
+const TOOLS={0:'Stretch',1:'Text',2:'Adjust',4:'Backdrop',5:'Watermark',6:'Filters',7:'Tools',8:'Crop & rotate',9:'Focus blur',10:'Effects',11:'Draw',12:'Stickers',13:'Frame',14:'Canvas size',15:'Trim'};
+const GRID=new Set([2,5,8,9,10,11,12,13,14,15]);
 const DEF={sw:178,sh:100,blur:0,bgblur:50,bgbr:80,bri:100,con:100,sat:100,fint:100,anchor:'right',bgmode:'blur',flip:false,filter:'none',
   hi:0,shd:0,wht:0,blk:0,fade:0,temp:0,tint:0,vib:0,hue:0,sharp:0,clar:0,grain:0,vig:0,leak:60,fblur:14,fsize:40,fx:50,fy:50,frw:40,frr:0,str:0,
-  rot:0,flipV:false,crop:null,cropR:'free',ratio:'9:16',focus:'off',leakS:'none',frameS:'none',frameC:'#ffffff',strokes:[],auto:false,autoPrev:null};
+  rot:0,flipV:false,crop:null,cropR:'free',ratio:'9:16',focus:'off',leakS:'none',frameS:'none',frameC:'#ffffff',strokes:[],auto:false,autoPrev:null,trimS:0,trimE:null};
 const SLIDERS=['sw','sh','blur','bgblur','bgbr','bri','con','sat','fint','hi','shd','wht','blk','fade','temp','tint','vib','hue','sharp','clar','grain','vig','leak','fblur','fsize','fx','fy','frw','frr','str'];
 const $=id=>document.getElementById(id);
 const cv=$('cv'),ctx=cv.getContext('2d');
@@ -1036,6 +1075,7 @@ const thumbCv=Object.assign(document.createElement('canvas'),{width:216,height:3
 const Cap=window.Capacitor, native=!!(Cap&&Cap.isNativePlatform&&Cap.isNativePlatform());
 let rot=0,flipV=false,crop=null,cropR='free',ratio='9:16',focusMode='off',leakS='none',frameS='none',frameC='#ffffff',strokes=[];
 let cropMode=false,drawMode=false,compareHold=false,fastPreview=false,autoOn=false,autoPrev=null;
+let vid=null,vPlaying=false,vExporting=false,vFrameN=0,trimS=0,trimE=null,liveDraw=false;
 const sv=k=>+$(k).value;
 let curFilter='none',img=null,imgBlob=null,anchor='right',bgmode='blur',flip=false,x=0,y=0,prevW=0,prevH=0;
 let texts=[],sel=null,exporting=false,tab=-1;
@@ -1065,7 +1105,7 @@ async function renderHome(){
   const g=$('grid');g.innerHTML='';
   projects.forEach(p=>{
     const c=document.createElement('div');c.className='card';
-    c.innerHTML=`<div class="th" role="button" tabindex="0" aria-label="Open ${esc(p.name)}">${p.thumb?`<img src="${p.thumb}" alt="">`:''}<button class="more" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button></div><b>${esc(p.name)}</b><small>${ago(p.updated)}</small>`;
+    c.innerHTML=`<div class="th" role="button" tabindex="0" aria-label="Open ${esc(p.name)}">${p.thumb?`<img src="${p.thumb}" alt="">`:''}${isVid(p.img)?`<span class="vbadge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></svg>${p.vdur?fmtT(p.vdur):''}</span>`:''}<button class="more" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button></div><b>${esc(p.name)}</b><small>${ago(p.updated)}</small>`;
     const th=c.querySelector('.th');let lp=null,fired=false;
     th.addEventListener('pointerdown',()=>{fired=false;lp=setTimeout(()=>{fired=true;vibe();openMenu(p);},480);});
     ['pointerup','pointerleave','pointercancel','pointermove'].forEach(ev=>th.addEventListener(ev,()=>clearTimeout(lp)));
@@ -1083,7 +1123,8 @@ async function newProject(file,opts={}){
   else if(opts.text)addText({...myStyle()});
   saveNow();
 }
-$('newFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f||!f.type.startsWith('image/'))return;if(!$('cScrim').hidden){cPending=()=>newProject(f);closeCreate();}else newProject(f);};
+$('newVideo').onchange=e=>{const f=asMedia(e.target.files[0]);e.target.value='';if(!f||!isVid(f)){if(f)toast('Pick a video');return;}if(!$('cScrim').hidden){cPending=()=>newProject(f);closeCreate();}else newProject(f);};
+$('newFile').onchange=e=>{const f=asMedia(e.target.files[0]);e.target.value='';if(!f)return;if(!$('cScrim').hidden){cPending=()=>newProject(f);closeCreate();}else newProject(f);};
 
 let menuP=null;
 function openMenu(p){menuP=p;$('mThumb').src=p.thumb||'';$('mName').textContent=p.name;$('mDate').textContent='Edited '+ago(p.updated).toLowerCase();
@@ -1112,8 +1153,9 @@ function setControls(s){
   press('cropRatio','r',cropR);press('focusMode','m2',focusMode);press('leakPick','l',leakS);press('frameStyle','fs',frameS);
   $('frameCol').querySelectorAll('.sw[data-c]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.c===frameC));
   autoOn=!!s.auto;autoPrev=s.autoPrev?{...s.autoPrev}:null;syncAuto();
+  trimS=+s.trimS||0;trimE=s.trimE==null?null:+s.trimE;
 }
-function snapshot(){const s={anchor,bgmode,flip,filter:curFilter,rot,flipV,crop:crop?{...crop}:null,cropR,ratio,focus:focusMode,leakS,frameS,frameC,auto:autoOn,autoPrev:autoPrev?{...autoPrev}:null,strokes:strokes.map(t=>({...t,pts:t.pts.slice()})),x,y,texts:texts.map(t=>({...t}))};SLIDERS.forEach(k=>s[k]=+$(k).value);return s;}
+function snapshot(){const s={anchor,bgmode,flip,filter:curFilter,rot,flipV,crop:crop?{...crop}:null,cropR,ratio,focus:focusMode,leakS,frameS,frameC,auto:autoOn,autoPrev:autoPrev?{...autoPrev}:null,trimS,trimE,strokes:strokes.map(t=>({...t,pts:t.pts.slice()})),x,y,texts:texts.map(t=>({...t}))};SLIDERS.forEach(k=>s[k]=+$(k).value);return s;}
 function showScreen(ed){$('editor').hidden=!ed;$('home').hidden=ed;if(ed)requestAnimationFrame(fit);syncChrome();}
 function loadImage(blob){
   if(imgCache.has(blob))return Promise.resolve(imgCache.get(blob));
@@ -1122,21 +1164,22 @@ function loadImage(blob){
 async function openProject(p){
   loading=true;proj=p;sel=null;texts=(p.state?.texts||[]).map(t=>({...t}));
   setControls(p.state);$('projName').textContent=p.name;
-  imgBlob=p.img||null;img=null;$('empty').hidden=!!imgBlob;
-  showScreen(true);closePanel();
+  imgBlob=p.img||null;img=null;vid=null;$('empty').hidden=!!imgBlob;
+  showScreen(true);closePanel();setVideoUI();
   if(location.hash!=='#edit')history.pushState({edit:1},'','#edit');
-  if(imgBlob){img=await loadImage(imgBlob);if(!img)toast('Couldn’t load this photo');
+  if(imgBlob){img=await loadMedia(imgBlob);if(!img)toast(isVid(imgBlob)?'Couldn’t load this video':'Couldn’t load this photo');
     else if(p.state&&typeof p.state.x==='number'){x=p.state.x;y=p.state.y;const s=size();prevW=s.w;prevH=s.h;}else place();}
+  if(vid){setVideoUI();await vSeek(vid,trimS||Math.min(.05,vid.dur/2));grab(vid);}
   loading=false;hist=[];hi=-1;pushHist();draw();
 }
 function touch(){if(!proj||loading||saving)return;clearTimeout(saveT);saveT=setTimeout(saveNow,600);clearTimeout(histT);histT=setTimeout(pushHist,350);}
 async function saveNow(){
   if(!proj)return;clearTimeout(saveT);
   saving=true;exporting=true;draw();thumbCv.height=Math.round(216*H/W);tctx.drawImage(cv,0,0,thumbCv.width,thumbCv.height);exporting=false;draw();saving=false;
-  Object.assign(proj,{state:snapshot(),thumb:thumbCv.toDataURL('image/jpeg',.75),updated:Date.now(),img:imgBlob});
+  Object.assign(proj,{state:snapshot(),thumb:thumbCv.toDataURL('image/jpeg',.75),updated:Date.now(),img:imgBlob,vdur:vid?Math.max(0,vEnd()-trimS):undefined});
   try{await dbPut(proj);}catch(e){toast('Couldn’t save draft');}
 }
-async function closeEditor(){if(proj){clearTimeout(histT);await saveNow();}proj=null;img=null;imgBlob=null;texts=[];sel=null;showScreen(false);renderHome();}
+async function closeEditor(){vStop();if(proj){clearTimeout(histT);await saveNow();}proj=null;img=null;imgBlob=null;vid=null;texts=[];sel=null;setVideoUI();showScreen(false);renderHome();}
 $('back').onclick=()=>{if(location.hash==='#edit')history.back();else closeEditor();};
 window.addEventListener('popstate',()=>{
   if(!$('batch').hidden){if(bBusy){history.pushState({bt:1},'',location.href);return;}closeBatchNow();return;}
@@ -1149,7 +1192,7 @@ window.addEventListener('popstate',()=>{
   if(!$('editor').hidden){closeEditor();return;}
   if(curTab!=='home'){showTabScreen('home');const p=qPending;qPending=null;if(p)p();return;}
 });
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&proj)saveNow();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){if(vPlaying)vPause();if(proj)saveNow();}});
 
 /* ---------- undo / redo ---------- */
 let hist=[],hi=-1,histT=null;const blobIds=new WeakMap();let blobN=0;
@@ -1163,7 +1206,8 @@ function pushHist(){
 function updHist(){$('undo').disabled=hi<=0;$('redo').disabled=hi>=hist.length-1;}
 async function applyHist(h){
   loading=true;sel=null;setControls(h.s);texts=h.s.texts.map(t=>({...t}));x=h.s.x;y=h.s.y;
-  if(h.blob!==imgBlob){imgBlob=h.blob;img=imgBlob?await loadImage(imgBlob):null;}
+  if(h.blob!==imgBlob){vStop();imgBlob=h.blob;vid=null;img=imgBlob?await loadMedia(imgBlob):null;setVideoUI();}
+  if(vid){syncTrimUI();await vSeek(vid,Math.max(trimS,Math.min(vid.v.currentTime,vEnd())));grab(vid);}
   $('empty').hidden=!!imgBlob;if(img){const s=size();prevW=s.w;prevH=s.h;}
   loading=false;if(tab===6)renderFx();syncTextUI();updHist();clearTimeout(saveT);saveT=setTimeout(saveNow,600);
 }
@@ -1177,8 +1221,8 @@ document.addEventListener('keydown',e=>{if($('editor').hidden||e.target.tagName=
 
 /* ---------- layout ---------- */
 function fit(){
-  const r=$('stage').getBoundingClientRect();if(!r.width)return;
-  const aw=r.width-28,ah=r.height-28;let h=ah,w=h*W/H;if(w>aw){w=aw;h=w*H/W;}
+  const st=$('stage'),r=st.getBoundingClientRect();if(!r.width)return;
+  const cs=getComputedStyle(st),aw=r.width-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight),ah=r.height-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);let h=ah,w=h*W/H;if(w>aw){w=aw;h=w*H/W;}
   $('frame').style.width=Math.max(0,Math.floor(w))+'px';$('frame').style.height=Math.max(0,Math.floor(h))+'px';
 }
 new ResizeObserver(fit).observe($('stage'));
@@ -1222,14 +1266,18 @@ function drawSelection(t){
   ctx.fillStyle='#fff';[[b.x-p,b.y-p],[b.x+b.w+p,b.y-p],[b.x-p,b.y+b.h+p],[b.x+b.w+p,b.y+b.h+p]].forEach(([cx,cy])=>{ctx.fillRect(cx-9,cy-9,18,18);});
   ctx.restore();
 }
+let bgSmallC=null;function bgSmall(w,h){if(!bgSmallC)bgSmallC=document.createElement('canvas');if(bgSmallC.width!==w||bgSmallC.height!==h){bgSmallC.width=w;bgSmallC.height=h;}return bgSmallC;}
 function draw(){
-  labels();
+  if(!liveDraw)labels();
   if(cropMode&&img&&!exporting){drawCropView();return;}
   ctx.filter='none';ctx.fillStyle=bgmode==='white'?'#fff':'#000';ctx.fillRect(0,0,W,H);
   if(img){
     const src=processed();
-    if(bgmode==='blur'){const s=Math.max(W/src.width,H/src.height)*1.15,bw=src.width*s,bh=src.height*s;
-      ctx.filter=`blur(${$('bgblur').value}px) brightness(${$('bgbr').value/100})`;ctx.drawImage(src,(W-bw)/2,(H-bh)/2,bw,bh);}
+    if(bgmode==='blur'){const s=Math.max(W/src.width,H/src.height)*1.15,bw=src.width*s,bh=src.height*s,bb=+$('bgblur').value,bf=`brightness(${$('bgbr').value/100})`;
+      if(bb>=8){// heavy blur: do it at quarter size and scale up (looks the same, much faster, keeps video smooth)
+        const k=4,c=bgSmall(Math.round(W/k),Math.round(H/k)),g=c.getContext('2d');g.filter='none';g.clearRect(0,0,c.width,c.height);
+        g.filter=`blur(${bb/k}px) ${bf}`;g.drawImage(src,(W-bw)/2/k,(H-bh)/2/k,bw/k,bh/k);g.filter='none';ctx.drawImage(c,0,0,W,H);}
+      else{ctx.filter=`blur(${bb}px) ${bf}`;ctx.drawImage(src,(W-bw)/2,(H-bh)/2,bw,bh);}}
     const{w,h}=size();
     ctx.filter=+$('blur').value?`blur(${$('blur').value}px)`:'none';
     if(flip){ctx.save();ctx.translate(x+w,y);ctx.scale(-1,1);ctx.drawImage(src,0,0,w,h);ctx.restore();}else ctx.drawImage(src,x,y,w,h);
@@ -1240,7 +1288,7 @@ function draw(){
   texts.forEach(drawText);
   drawWatermark();drawWmSel();
   if(sel&&!exporting)drawSelection(sel);
-  if(!exporting)touch();
+  if(!exporting&&!liveDraw)touch();
 }
 
 /* ---------- filters ---------- */
@@ -1279,7 +1327,7 @@ function bake(g,src,w,h,fk,inten,adj){
 const imgIds=new WeakMap();let imgN=0;const iid=o=>o?(imgIds.get(o)||(imgIds.set(o,++imgN),imgN)):0;
 /* ----- geometry: rotate, flip, straighten, crop ----- */
 const geoC={key:'',cv:null},fgC={key:'',cv:null};
-function geoBase(){return[iid(img),rot,flipV?1:0,sv('str')].join('|');}
+function geoBase(){return[iid(img),vtag(),rot,flipV?1:0,sv('str')].join('|');}
 function fullGeo(cap){
   const r90=rot%2===1,iw=img.width,ih=img.height,gw0=r90?ih:iw,gh0=r90?iw:ih;
   const sc=Math.min(1,cap/Math.max(gw0,gh0)),gw=Math.round(gw0*sc),gh=Math.round(gh0*sc);
@@ -1357,14 +1405,14 @@ function focusPass(c,g,w,h){
 }
 const proc={key:'',cv:null};
 function processed(){
-  const cap=(fastPreview&&!exporting)?900:1600,g0=geoSrc(cap);
+  const cap=(fastPreview&&!exporting)?(vPlaying?640:900):(vExporting?1100:1600),g0=geoSrc(cap);
   if(compareHold&&!exporting)return g0;
   const inten=sv('fint')/100,bri=sv('bri'),con=sv('con'),sat=sv('sat'),hue=sv('hue');
   const cssAdj=(bri!==100||con!==100||sat!==100||hue!==0)?`brightness(${bri/100}) contrast(${con/100}) saturate(${sat/100})${hue?` hue-rotate(${hue}deg)`:''}`:'';
   const tone=sv('hi')||sv('shd')||sv('wht')||sv('blk')||sv('fade')||sv('temp')||sv('tint')||sv('vib');
-  const det=sv('sharp')||sv('clar'),eff=sv('grain')||sv('vig')||(leakS!=='none'&&sv('leak')),foc=focusMode!=='off'&&sv('fblur')>0,fil=curFilter!=='none'&&inten>0;
+  const det=(sv('sharp')||sv('clar'))&&!(vPlaying&&!exporting),eff=sv('grain')||sv('vig')||(leakS!=='none'&&sv('leak')),foc=focusMode!=='off'&&sv('fblur')>0,fil=curFilter!=='none'&&inten>0;
   if(!cssAdj&&!tone&&!det&&!eff&&!foc&&!fil)return g0;
-  const key=iid(g0)+'|'+cap+'|'+curFilter+'|'+leakS+'|'+focusMode+'|'+['bri','con','sat','hue','hi','shd','wht','blk','fade','temp','tint','vib','sharp','clar','grain','vig','leak','fblur','fsize','fx','fy','fint'].map(sv).join(',');
+  const key=iid(g0)+'|'+vtag()+'|'+cap+'|'+curFilter+'|'+leakS+'|'+focusMode+'|'+['bri','con','sat','hue','hi','shd','wht','blk','fade','temp','tint','vib','sharp','clar','grain','vig','leak','fblur','fsize','fx','fy','fint'].map(sv).join(',');
   if(proc.key===key&&proc.cv)return proc.cv;
   const sc=Math.min(1,cap/Math.max(g0.width,g0.height)),w=Math.round(g0.width*sc),h=Math.round(g0.height*sc);
   const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d',{willReadFrequently:true});
@@ -1374,6 +1422,201 @@ function processed(){
   if(eff)effectsPass(g,w,h);
   if(foc)focusPass(c,g,w,h);
   proc.key=key;proc.cv=c;return c;
+}
+/* ----- video clips -----
+   A clip is drawn frame by frame into a canvas, and that canvas stands in for the photo,
+   so every photo tool (stretch, backdrop, filters, Adjust, Auto, text, watermark) works on video. */
+var VEXT=/\.(mp4|m4v|mov|webm|3gp|mkv)$/i,IEXT=/\.(jpe?g|png|webp|gif|heic|heif|avif|bmp)$/i;
+function isVid(b){return!!(b&&((b.type&&b.type.startsWith('video/'))||(!b.type&&b.name&&VEXT.test(b.name))));}
+function asMedia(f){
+  if(!f)return null;
+  if(f.type&&(f.type.startsWith('image/')||f.type.startsWith('video/')))return f;
+  if(VEXT.test(f.name||''))return new File([f],f.name,{type:/\.webm$/i.test(f.name)?'video/webm':/\.mov$/i.test(f.name)?'video/quicktime':'video/mp4'});
+  if(IEXT.test(f.name||''))return new File([f],f.name,{type:'image/jpeg'});
+  return null;
+}
+function fmtT(t){t=Math.max(0,t||0);const m=Math.floor(t/60),s=Math.floor(t%60);return m+':'+String(s).padStart(2,'0');}
+function vtag(){return vid&&img===vid.c?vFrameN:0;}
+const vidCache=new Map();
+function loadVideo(blob){
+  if(vidCache.has(blob))return Promise.resolve(vidCache.get(blob));
+  return new Promise(res=>{
+    const v=document.createElement('video');v.muted=true;v.defaultMuted=true;v.playsInline=true;v.setAttribute('playsinline','');v.setAttribute('muted','');v.preload='auto';
+    let done=false;const fin=o=>{if(done)return;done=true;res(o);};
+    v.onerror=()=>fin(null);setTimeout(()=>fin(null),20000);
+    v.onloadeddata=async()=>{
+      if(!v.videoWidth){fin(null);return;}
+      const k=Math.min(1,1920/Math.max(v.videoWidth,v.videoHeight)),c=document.createElement('canvas');
+      c.width=Math.max(2,Math.round(v.videoWidth*k));c.height=Math.max(2,Math.round(v.videoHeight*k));
+      const o={v,c,g:c.getContext('2d'),dur:isFinite(v.duration)?v.duration:0,blob};
+      await vSeek(o,Math.min(.05,o.dur/2||0));grab(o);vidCache.set(blob,o);fin(o);
+    };
+    v.src=URL.createObjectURL(blob);
+  });
+}
+async function loadMedia(blob){
+  if(isVid(blob)){const o=await loadVideo(blob);vid=o;return o?o.c:null;}
+  return loadImage(blob);
+}
+function vSeek(o,t){return new Promise(r=>{const v=o.v;t=Math.max(0,Math.min(t,(o.dur||t)-.001));
+  if(Math.abs(v.currentTime-t)<.002&&v.readyState>=2){r();return;}
+  let ok=false;const f=()=>{if(ok)return;ok=true;v.removeEventListener('seeked',f);r();};v.addEventListener('seeked',f);v.currentTime=t;setTimeout(f,2000);});}
+function grab(o){o.g.drawImage(o.v,0,0,o.c.width,o.c.height);vFrameN++;}
+function vEnd(){return vid?(trimE!=null?Math.min(trimE,vid.dur):vid.dur):0;}
+function setVideoUI(){
+  const on=!!vid;$('vbar').hidden=!on;$('stage').classList.toggle('hasv',on);$('tgTrim').hidden=!on;
+  if(on){syncTrimUI();updSeek();}syncPlayBtn();requestAnimationFrame(fit);
+}
+function syncPlayBtn(){$('vPlay').classList.toggle('on',vPlaying);$('vPlay').setAttribute('aria-label',vPlaying?'Pause':'Play');}
+function updSeek(){if(!vid)return;const len=Math.max(.01,vEnd()-trimS),t=Math.max(0,vid.v.currentTime-trimS);
+  $('vSeek').value=Math.round(Math.min(1,t/len)*1000);$('vTime').textContent=fmtT(t)+' / '+fmtT(len);
+  const el=$('vSeek');el.style.setProperty('--p',el.value/10+'%');}
+function vPlay(){
+  if(!vid||vPlaying||vExporting)return;const v=vid.v;
+  if(v.currentTime<trimS-.01||v.currentTime>=vEnd()-.06)v.currentTime=trimS;
+  vPlaying=true;syncPlayBtn();v.playbackRate=1;v.onended=()=>{if(vPlaying){v.currentTime=trimS;v.play().catch(()=>{});}};
+  v.play().catch(()=>{vPlaying=false;syncPlayBtn();});vLoop();
+}
+function vLoop(){
+  if(!vPlaying||!vid)return;const o=vid;
+  o.v.requestVideoFrameCallback((now,meta)=>{
+    if(!vPlaying||vid!==o)return;
+    if(meta.mediaTime>=vEnd()-.03){o.v.currentTime=trimS;}
+    grab(o);fastPreview=true;liveDraw=true;try{draw();}finally{liveDraw=false;}updSeek();vLoop();
+  });
+}
+function vPause(){if(!vid)return;vPlaying=false;vid.v.pause();syncPlayBtn();fastPreview=false;draw();}
+function vStop(){if(vid){vPlaying=false;try{vid.v.pause();}catch(e){}syncPlayBtn();}}
+$('vPlay').onclick=()=>{vibe();vPlaying?vPause():vPlay();};
+let seekBusy=false,seekWant=null;
+async function seekTo(t){seekWant=t;if(seekBusy)return;seekBusy=true;
+  while(seekWant!=null){const w=seekWant;seekWant=null;await vSeek(vid,w);grab(vid);fastPreview=true;liveDraw=true;try{draw();}finally{liveDraw=false;}updSeek();}
+  seekBusy=false;}
+$('vSeek').addEventListener('input',e=>{if(!vid)return;if(vPlaying){vPlaying=false;vid.v.pause();syncPlayBtn();}
+  const t=trimS+(+e.target.value/1000)*(vEnd()-trimS);seekTo(t);});
+$('vSeek').addEventListener('change',()=>{fastPreview=false;draw();});
+/* trim */
+function syncTrimUI(){
+  if(!vid)return;const d=Math.max(.1,vid.dur),mx=Math.max(1,Math.round(d*10));
+  $('trS').max=mx;$('trE').max=mx;$('trS').value=Math.round(trimS*10);$('trE').value=Math.round(vEnd()*10);
+  $('trSv').textContent=fmtT(trimS);$('trEv').textContent=fmtT(vEnd());
+  const len=vEnd()-trimS;$('trHint').textContent='Length '+fmtT(len)+(len>60?' · long clips take a while to export':'')+'. TikTok plays it on a loop.';
+}
+function trimInput(which){
+  if(!vid)return;if(vPlaying){vPlaying=false;vid.v.pause();syncPlayBtn();}
+  let a=+$('trS').value/10,b=+$('trE').value/10;const gap=Math.min(.5,vid.dur);
+  if(which==='s'&&a>b-gap){a=Math.max(0,b-gap);$('trS').value=Math.round(a*10);}
+  if(which==='e'&&b<a+gap){b=Math.min(vid.dur,a+gap);$('trE').value=Math.round(b*10);}
+  trimS=a;trimE=b>=vid.dur-.05?null:b;syncTrimUI();seekTo(which==='s'?trimS:Math.max(trimS,vEnd()-.05));
+}
+$('trS').addEventListener('input',()=>trimInput('s'));$('trE').addEventListener('input',()=>trimInput('e'));
+['trS','trE'].forEach(id=>$(id).addEventListener('change',()=>{fastPreview=false;draw();}));
+
+/* ----- export: render each frame and encode an MP4 (H.264) ----- */
+async function makeEncoder(w,h,fps){
+  if(window.VideoEncoder&&window.VideoFrame&&window.Mp4Muxer){
+    for(const codec of ['avc1.640028','avc1.4d0028','avc1.42e028','avc1.640033']){
+      const cfg={codec,width:w,height:h,bitrate:w*h>=1.5e6?10e6:6e6,framerate:fps,avc:{format:'avc'}};
+      let ok=false;try{ok=(await VideoEncoder.isConfigSupported(cfg)).supported;}catch(e){}
+      if(!ok)continue;
+      const mux=new Mp4Muxer.Muxer({target:new Mp4Muxer.ArrayBufferTarget(),video:{codec:'avc',width:w,height:h,frameRate:fps},fastStart:'in-memory',firstTimestampBehavior:'offset'});
+      let err=null;const ve=new VideoEncoder({output:(ch,meta)=>mux.addVideoChunk(ch,meta),error:e=>{err=e;}});
+      ve.configure(cfg);
+      return{ext:'mp4',type:'video/mp4',realtime:false,
+        encode(c,ts,key){if(err)throw err;const f=new VideoFrame(c,{timestamp:ts,duration:Math.round(1e6/fps)});ve.encode(f,{keyFrame:key});f.close();},
+        async finish(){await ve.flush();if(err)throw err;ve.close();mux.finalize();return new Blob([mux.target.buffer],{type:'video/mp4'});},
+        abort(){try{ve.close();}catch(e){}}};
+    }
+  }
+  if(window.MediaRecorder&&cv.captureStream){
+    const mime=['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm'].find(m=>MediaRecorder.isTypeSupported(m));
+    if(mime){
+      const stream=cv.captureStream(0),track=stream.getVideoTracks()[0],rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:10e6}),chunks=[];
+      rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};rec.start(500);const type=mime.split(';')[0];
+      return{ext:type==='video/mp4'?'mp4':'webm',type,realtime:true,
+        encode(){if(track.requestFrame)track.requestFrame();},
+        finish(){return new Promise(r=>{rec.onstop=()=>r(new Blob(chunks,{type}));rec.stop();track.stop();});},
+        abort(){try{rec.stop();track.stop();}catch(e){}}};
+    }
+  }
+  throw new Error('This phone can’t make videos here');
+}
+let vxCancel=false;
+function showVxo(title){$('vxoT').textContent=title||'Making your video';$('vxoBar').style.width='0%';$('vxoS').textContent='Starting…';$('vxo').hidden=false;}
+function setVxo(f,eta){$('vxoBar').style.width=Math.round(f*100)+'%';$('vxoS').textContent=Math.round(f*100)+'%'+(eta>2?' · about '+(eta<60?Math.ceil(eta)+'s':Math.ceil(eta/60)+' min')+' left':'');}
+$('vxoCancel').onclick=()=>{vxCancel=true;vibe();};
+async function exportVideo(title){
+  if(!vid)throw new Error('No video');
+  vStop();const o=vid,v=o.v,fps=30,s0=trimS,e0=vEnd(),len=Math.max(.1,e0-s0);
+  showVxo(title);vxCancel=false;const sel0=sel;sel=null;let wl=null;
+  try{wl=navigator.wakeLock?await navigator.wakeLock.request('screen'):null;}catch(e){}
+  let enc=null;
+  try{
+    enc=await makeEncoder(W,H,fps);
+    vExporting=true;exporting=true;await vSeek(o,s0);
+    const t0=performance.now();
+    await new Promise((resolve,reject)=>{
+      let rate=enc.realtime?1:.35,last=-1,n=0,fin=false,dog=null;
+      const finish=()=>{if(fin)return;fin=true;clearTimeout(dog);v.pause();v.onended=null;resolve();};
+      const kick=()=>{clearTimeout(dog);dog=setTimeout(finish,5000);};
+      const onFrame=(now,meta)=>{
+        if(fin)return;if(vxCancel){finish();return;}
+        const t=meta.mediaTime;if(t>=e0-.001){finish();return;}
+        const a=performance.now();
+        try{grab(o);draw();const slot=Math.max(0,Math.round((t-s0)*fps));
+          if(slot>last){enc.encode(cv,Math.round(slot*1e6/fps),n%(fps*2)===0);last=slot;n++;}}
+        catch(e){fin=true;v.pause();reject(e);return;}
+        const ms=performance.now()-a;
+        if(!enc.realtime){rate=Math.max(.05,Math.min(.5,rate*.7+.3*Math.min(.5,(1000/fps)*.6/Math.max(1,ms))));v.playbackRate=rate;}
+        const f=Math.min(1,(t-s0)/len),el=(performance.now()-t0)/1000;setVxo(f,f>.04?el/f-el:0);kick();
+        v.requestVideoFrameCallback(onFrame);
+      };
+      v.onended=finish;v.playbackRate=rate;v.requestVideoFrameCallback(onFrame);
+      v.play().then(kick,e=>{fin=true;reject(e);});
+    });
+    if(vxCancel){enc.abort();return null;}
+    setVxo(1);$('vxoS').textContent='Finishing…';
+    return await enc.finish();
+  }catch(e){if(enc)enc.abort();throw e;}
+  finally{vExporting=false;exporting=false;v.playbackRate=1;sel=sel0;$('vxo').hidden=true;try{wl&&wl.release();}catch(e){}
+    if(vid===o){await vSeek(o,s0);grab(o);}draw();updSeek();}
+}
+let vxLast={key:'',blob:null};
+async function exportVideoCached(title){
+  const key=JSON.stringify(snapshot())+'|'+bid(imgBlob)+'|'+JSON.stringify(WM);
+  if(vxLast.key===key&&vxLast.blob)return vxLast.blob;
+  const b=await exportVideo(title);if(b)vxLast={key,blob:b};return b;
+}
+/* native file helpers: write the video into the app cache in pieces, then hand the file over */
+function blobB64(b){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]||'');r.onerror=()=>rej(r.error);r.readAsDataURL(b);});}
+async function blobToCache(blob,name){
+  const FS=Cap.Plugins.Filesystem,CH=3*1024*1024;let uri=null;
+  for(let o=0;o<blob.size;o+=CH){const d=await blobB64(blob.slice(o,o+CH));
+    if(o===0)uri=(await FS.writeFile({path:name,data:d,directory:'CACHE'})).uri;else await FS.appendFile({path:name,data:d,directory:'CACHE'});}
+  return uri||(await FS.getUri({path:name,directory:'CACHE'})).uri;
+}
+async function saveVideoToGallery(blob,name){
+  const M=Cap&&Cap.Plugins&&Cap.Plugins.Media,ext=blob.type==='video/webm'?'webm':'mp4';
+  if(native&&M){
+    try{if(M.requestPermissions)await M.requestPermissions();}catch(e){}
+    await taffyAlbum(M);const uri=await blobToCache(blob,name+'.'+ext);
+    await M.saveVideo({path:uri,albumIdentifier:saveToGallery.album,fileName:name});return{r:'gallery',uri};
+  }
+  const file=new File([blob],name+'.'+ext,{type:blob.type});
+  if(navigator.canShare&&navigator.canShare({files:[file]})&&matchMedia('(pointer:coarse)').matches){await navigator.share({files:[file]});return{r:'shared'};}
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000);return{r:'download'};
+}
+async function shareVideoToTikTok(blob,desc,uri){
+  let TS=null;try{TS=native&&Cap&&((Cap.Plugins&&Cap.Plugins.TikTokShare)||(Cap.registerPlugin&&Cap.registerPlugin('TikTokShare')));}catch(e){}
+  const ext=blob.type==='video/webm'?'webm':'mp4';
+  if(native){
+    try{if(!uri)uri=await blobToCache(blob,'taffy_post_'+Date.now()+'.'+ext);}catch(e){uri=null;}
+    if(uri&&TS){try{const r=await TS.shareFile({path:uri,mime:blob.type||'video/mp4',text:desc||''});return r&&r.app||'tiktok';}catch(e){}}
+    if(uri&&Cap.Plugins.Share){try{await Cap.Plugins.Share.share({title:'Post',files:[uri]});return 'chooser';}catch(e){}}
+  }
+  try{const file=new File([blob],'taffy_post.'+ext,{type:blob.type});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:desc||''});return 'shared';}
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;a.click();return 'download';}catch(e){return 'none';}
 }
 /* ----- one-tap auto enhance -----
    Looks at a small copy of the photo, picks Adjust values, then checks them by running the
@@ -1635,6 +1878,7 @@ syncWMUI();
 /* ---------- tool panel ---------- */
 function openPanel(n){
   if(tab===8&&n!==8)leaveCrop();
+  if(n===8&&vPlaying)vPause();if(n===15)syncTrimUI();
   tab=n;$('panelwrap').hidden=false;$('ptitle').textContent=TOOLS[n];if(n===6)renderFx();
   drawMode=n===11;if(n===8)enterCrop();$('pback').hidden=!GRID.has(n);
   if(drawMode||cropMode){if(sel){sel=null;syncTextUI();}}
@@ -1744,10 +1988,12 @@ $('tsh').addEventListener('input',e=>{if(sel){sel.sy=+e.target.value;draw();}});
 
 /* ---------- photo input ---------- */
 async function load(file){
-  if(!file||!file.type.startsWith('image/'))return;
+  file=asMedia(file);if(!file)return;
   if(!proj){newProject(file);return;}
-  const i=await loadImage(file);if(!i){toast('Couldn’t open that photo');return;}
-  img=i;imgBlob=file;$('empty').hidden=true;
+  vStop();const was=vid;vid=null;
+  const i=await loadMedia(file);if(!i){vid=was;toast(isVid(file)?'Couldn’t open that video':'Couldn’t open that photo');setVideoUI();return;}
+  if(vid){trimS=0;trimE=null;}
+  img=i;imgBlob=file;$('empty').hidden=true;setVideoUI();
   if(autoOn){try{const p=autoPrev;autoOn=false;applyAuto(geoSrc(1600));autoPrev=p;}catch(e){}}
   place();if(tab===6)renderFx();
 }
@@ -1818,16 +2064,18 @@ cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 function toast(t,ms){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),ms||1500);}
 function vibe(){try{navigator.vibrate&&navigator.vibrate(6);}catch(_){}}
 const fname_unused=()=>'taffy_'+(proj?proj.name.replace(/[^\w-]+/g,'_'):'export')+'_'+Date.now()+'.png';
+async function taffyAlbum(M){
+  if(saveToGallery.album)return saveToGallery.album;
+  let base='';try{base=(await M.getAlbumsPath()).path||'';}catch(e){}
+  const find=async()=>{const {albums}=await M.getAlbums();return albums.find(a=>a.name==='Taffy'&&(!base||a.identifier.startsWith(base)))||albums.find(a=>a.name==='Taffy');};
+  let a=await find();if(!a){await M.createAlbum({name:'Taffy'});a=await find();}
+  if(!a)throw new Error('no album');return saveToGallery.album=a.identifier;
+}
 async function saveToGallery(dataUrl,name){
   const M=Cap&&Cap.Plugins&&Cap.Plugins.Media;
   if(native&&M){
     try{if(M.requestPermissions)await M.requestPermissions();}catch(e){}
-    if(!saveToGallery.album){
-      let base='';try{base=(await M.getAlbumsPath()).path||'';}catch(e){}
-      const find=async()=>{const {albums}=await M.getAlbums();return albums.find(a=>a.name==='Taffy'&&(!base||a.identifier.startsWith(base)))||albums.find(a=>a.name==='Taffy');};
-      let a=await find();if(!a){await M.createAlbum({name:'Taffy'});a=await find();}
-      if(!a)throw new Error('no album');saveToGallery.album=a.identifier;
-    }
+    await taffyAlbum(M);
     await M.savePhoto({path:dataUrl,albumIdentifier:saveToGallery.album,fileName:name});
     return 'gallery';
   }
@@ -1989,10 +2237,11 @@ function postedToast(app,desc){
 const xTagSet=new Set();
 function editorCat(){const t=texts.find(t=>t.cat);return t?t.cat:null;}
 function openExportSheet(){
-  exporting=true;draw();const c=document.createElement('canvas');c.width=180;c.height=Math.round(180*H/W);c.getContext('2d').drawImage(cv,0,0,c.width,c.height);exporting=false;draw();
+  vStop();exporting=true;draw();const c=document.createElement('canvas');c.width=180;c.height=Math.round(180*H/W);c.getContext('2d').drawImage(cv,0,0,c.width,c.height);exporting=false;draw();
   $('xThumb').src=c.toDataURL('image/jpeg',.8);xTagSet.clear();
   if(proj&&Array.isArray(proj.tags))proj.tags.forEach(t=>xTagSet.add(t));
   renderTags($('xTags'),xTagSet,editorCat());$('xDesc').value=proj&&proj.desc||'';
+  $('xSub').textContent=vid?'Video · '+fmtT(vEnd()-trimS)+'. Add a sound in TikTok.':'Post it or just save it to your gallery.';
   $('xTags').querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{if(proj)proj.tags=[...xTagSet];}));
   $('xScrim').hidden=false;history.pushState({xs:1},'',location.href);vibe();
 }
@@ -2001,7 +2250,13 @@ function closeExport(){if(history.state&&history.state.xs)history.back();else cl
 $('xScrim').addEventListener('click',e=>{if(e.target===$('xScrim'))closeExport();});
 $('xDesc').addEventListener('input',e=>{if(proj){proj.desc=e.target.value;proj.tags=[...xTagSet];}});
 async function renderFinal(){exporting=true;draw();const d=cv.toDataURL('image/png');exporting=false;draw();return d;}
+const isCancel=e=>e&&(e.name==='AbortError'||/cancel/i.test(e.message||''));
 $('xSave').onclick=async()=>{
+  if(vid){vibe();closeExport();
+    try{const blob=await exportVideoCached();if(!blob){toast('Cancelled');return;}await saveNow();logPost();
+      const r=await saveVideoToGallery(blob,fbase());toast(r.r==='gallery'?'Video saved to your gallery':r.r==='download'?'Downloaded':'Shared');}
+    catch(e){if(!isCancel(e))toast('Couldn’t make the video: '+(e.message||e),3200);}
+    return;}
   vibe();const dataUrl=await renderFinal();await saveNow();logPost();closeExport();
   const name=fbase();
   try{const r=await saveToGallery(dataUrl,name);toast(r==='gallery'?'Saved to your gallery':r==='download'?'Downloaded':'Shared');}
@@ -2009,6 +2264,12 @@ $('xSave').onclick=async()=>{
 };
 $('xPost').onclick=async()=>{
   const desc=buildDesc($('xDesc').value,xTagSet);copyQuiet(desc);vibe();
+  if(vid){closeExport();
+    try{const blob=await exportVideoCached('Making your TikTok');if(!blob){toast('Cancelled');return;}await saveNow();await logPost();
+      let uri=null;try{const r=await saveVideoToGallery(blob,fbase());uri=r.uri||null;}catch(e){}
+      const app=await shareVideoToTikTok(blob,desc,uri);postedToast(app,desc);}
+    catch(e){if(!isCancel(e))toast('Couldn’t make the video: '+(e.message||e),3200);}
+    return;}
   $('xPost').disabled=true;
   try{const dataUrl=await renderFinal();await saveNow();await logPost();try{await saveToGallery(dataUrl,fbase());}catch(e){}
     closeExport();const app=await shareToTikTok(dataUrl,desc);postedToast(app,desc);}
@@ -2016,13 +2277,13 @@ $('xPost').onclick=async()=>{
 };
 
 /* ---- quick post ---- */
-let qkFile=null,qkImg=null,qkCat=null,qkPos='mid',qkLook='last',qkT=null;const qkTagSet=new Set();
+let qkVid=null,qkFile=null,qkImg=null,qkCat=null,qkPos='mid',qkLook='last',qkT=null;const qkTagSet=new Set();
 function lastState(){const p=projects.find(p=>p.state&&p.img);return p?p.state:null;}
 function qkApply(){
   const base=qkLook==='last'?lastState():null,b2=base?JSON.parse(JSON.stringify(base)):null;
   const t0=b2&&b2.texts?b2.texts.find(t=>t.kind!=='emoji'):null;
   if(b2){delete b2.texts;delete b2.strokes;delete b2.x;delete b2.y;delete b2.crop;b2.rot=0;b2.str=0;b2.flipV=false;b2.auto=false;b2.autoPrev=null;}
-  loading=true;setControls(b2);img=qkImg;imgBlob=qkFile;sel=null;strokes=[];
+  loading=true;setControls(b2);img=qkImg;imgBlob=qkFile;vid=qkVid;trimS=0;trimE=null;sel=null;strokes=[];
   if(img&&$('qkAuto').checked){try{applyAuto(img);}catch(e){}}
   if(img)place();
   const st=t0?{font:t0.font,style:t0.style,color:t0.color}:myStyle(),cap=$('qkCap').value.trim();
@@ -2033,25 +2294,26 @@ function qkApply(){
 function qkPreview(){
   if(!qkImg)return;qkApply();exporting=true;draw();
   const c=$('qkPrev');c.width=360;c.height=Math.round(360*H/W);c.getContext('2d').drawImage(cv,0,0,c.width,c.height);exporting=false;
-  img=null;imgBlob=null;texts=[];
+  img=null;imgBlob=null;vid=null;texts=[];
 }
 function qkPreviewSoon(){clearTimeout(qkT);qkT=setTimeout(qkPreview,200);}
 function openQuick(){
-  vibe();qkFile=null;qkImg=null;qkCat=null;$('qkCap').value='';$('qkDesc').value='';$('qkPrev').hidden=true;
+  vibe();qkFile=null;qkImg=null;qkVid=null;qkCat=null;$('qkCap').value='';$('qkDesc').value='';$('qkPrev').hidden=true;
   $('qkPhoto').classList.remove('has');$('qkPhoto').querySelector('.qk-empty').hidden=false;$('qkPhoto').querySelector('.qk-change').hidden=true;
   qkLook=lastState()?'last':'default';press('qkLook','l',qkLook);$('qkLook').hidden=$('qkLookL').hidden=!lastState();
   qkTagSet.clear();renderTags($('qkTags'),qkTagSet,null);$('qkAuto').checked=autoPref();
   $('quick').hidden=false;history.pushState({qk:1},'',location.href);syncChrome();$('quick').querySelector('.sbody').scrollTop=0;
 }
 let qkPending=null;
-function closeQuickNow(){$('quick').hidden=true;img=null;imgBlob=null;texts=[];proj=null;syncChrome();const p=qkPending;qkPending=null;if(p)p();else renderHome();}
+function closeQuickNow(){$('quick').hidden=true;img=null;imgBlob=null;vid=null;texts=[];proj=null;syncChrome();const p=qkPending;qkPending=null;if(p)p();else renderHome();}
 function closeQuick(){if(history.state&&history.state.qk)history.back();else closeQuickNow();}
 $('openQuick').onclick=openQuick;
 $('csQuick').onclick=()=>{cPending=openQuick;closeCreate();};
 $('qkClose').onclick=closeQuick;
-$('qkFile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f||!f.type.startsWith('image/'))return;
-  const im=await loadImage(f);if(!im){toast('Couldn’t open that photo');return;}
-  qkFile=f;qkImg=im;$('qkPrev').hidden=false;$('qkPhoto').classList.add('has');$('qkPhoto').querySelector('.qk-empty').hidden=true;$('qkPhoto').querySelector('.qk-change').hidden=false;qkPreview();
+$('qkFile').onchange=async e=>{const f=asMedia(e.target.files[0]);e.target.value='';if(!f)return;
+  let im=null,qv=null;if(isVid(f)){qv=await loadVideo(f);im=qv?qv.c:null;}else im=await loadImage(f);
+  if(!im){toast(isVid(f)?'Couldn’t open that video':'Couldn’t open that photo');return;}
+  qkFile=f;qkImg=im;qkVid=qv;$('qkPrev').hidden=false;$('qkPhoto').classList.add('has');$('qkPhoto').querySelector('.qk-empty').hidden=true;$('qkPhoto').querySelector('.qk-change').hidden=false;qkPreview();
   if(!$('qkCap').value.trim())$('qkRandom').click();};
 $('qkCap').addEventListener('input',()=>{qkCat=null;qkPreviewSoon();});
 $('qkRandom').onclick=()=>{const q=pickQuotes(1,AES,true)[0];if(!q)return;$('qkCap').value=q.t;qkCat=q.c;renderTags($('qkTags'),qkTagSet,q.c);qkPreviewSoon();vibe();};
@@ -2075,7 +2337,15 @@ $('qkPost').onclick=async()=>{
   try{
     qkApply();const now=Date.now();
     proj={id:uid(),name:'Post '+new Date().toLocaleDateString(undefined,{day:'numeric',month:'short'}),created:now,updated:now,img:qkFile,state:null,thumb:null};
-    await saveNow();const dataUrl=await renderFinal();
+    await saveNow();
+    if(qkVid){
+      const blob=await exportVideo('Making your TikTok');if(!blob){try{await dbDel(proj.id);}catch(e){}proj=null;img=null;vid=null;texts=[];toast('Cancelled');return;}
+      let uri=null;
+      if($('qkSave').checked){await logPost();try{const r=await saveVideoToGallery(blob,'taffy_post_'+now);uri=r.uri||null;}catch(e){}}
+      else{try{await dbDel(proj.id);}catch(e){}}
+      proj=null;const app=await shareVideoToTikTok(blob,desc,uri);closeQuick();postedToast(app,desc);return;
+    }
+    const dataUrl=await renderFinal();
     if($('qkSave').checked){await logPost();try{if(native)await saveToGallery(dataUrl,'taffy_post_'+now);}catch(e){}}
     else{try{await dbDel(proj.id);}catch(e){}}
     proj=null;
