@@ -23,10 +23,10 @@ jobs:
           M=android/app/src/main/AndroidManifest.xml
           sed -i 's#</manifest>#    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />\n    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />\n    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />\n    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />\n</manifest>#' $M
           grep -n "uses-permission" $M
-      - name: TikTok share plugin (open TikTok with the image)
+      - name: Native plugins (open TikTok with the post, Share to Taffy)
         run: |
           D=android/app/src/main/java/net/nexumc/stretch
-          cp native/TikTokSharePlugin.java $D/
+          cp native/TikTokSharePlugin.java native/IncomingSharePlugin.java $D/
           cat > $D/MainActivity.java <<'JAVA'
           package net.nexumc.stretch;
 
@@ -37,6 +37,7 @@ jobs:
               @Override
               public void onCreate(Bundle savedInstanceState) {
                   registerPlugin(TikTokSharePlugin.class);
+                  registerPlugin(IncomingSharePlugin.class);
                   super.onCreate(savedInstanceState);
               }
           }
@@ -44,7 +45,10 @@ jobs:
           sed -i 's/^          //' $D/MainActivity.java
           M=android/app/src/main/AndroidManifest.xml
           sed -i 's#</manifest>#    <queries>\n        <package android:name="com.zhiliaoapp.musically" />\n        <package android:name="com.ss.android.ugc.trill" />\n        <package android:name="com.zhiliaoapp.musically.go" />\n    </queries>\n</manifest>#' $M
-          cat $D/MainActivity.java; grep -n "queries" -A4 $M
+          # "Share to Taffy": show Taffy in the share menu for photos, clips and text
+          sed -i 's#</activity>#    <intent-filter android:label="Taffy">\n                <action android:name="android.intent.action.SEND" />\n                <category android:name="android.intent.category.DEFAULT" />\n                <data android:mimeType="image/*" />\n                <data android:mimeType="video/*" />\n                <data android:mimeType="text/plain" />\n            </intent-filter>\n            <intent-filter android:label="Taffy">\n                <action android:name="android.intent.action.SEND_MULTIPLE" />\n                <category android:name="android.intent.category.DEFAULT" />\n                <data android:mimeType="image/*" />\n                <data android:mimeType="video/*" />\n            </intent-filter>\n        </activity>#' $M
+          test $(grep -c "android.intent.action.SEND\"" $M) -eq 1 && test $(grep -c "SEND_MULTIPLE" $M) -eq 1
+          cat $D/MainActivity.java; grep -n "queries" -A4 $M; grep -n "intent-filter" -A6 $M
       - name: Generate app icon + splash from assets/
         run: npx -y @capacitor/assets@4.0.0 generate --android --iconBackgroundColor '#ff2b3a' --iconBackgroundColorDark '#ff2b3a' --splashBackgroundColor '#060606' --splashBackgroundColorDark '#060606'
       - name: Notification icon

@@ -507,6 +507,18 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
 .toast{background:#fff;color:#000;font-weight:800;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
 .blabel{color:var(--fg2);font-weight:800}
 .sempty svg{color:var(--accent)}
+/* ---- my quotes ---- */
+.qadd{display:flex;flex-direction:column;gap:8px;padding:12px;background:var(--s1);border:1px solid var(--line);border-radius:14px;flex-shrink:0}
+.qadd textarea{flex:none;width:100%;height:auto;min-height:76px;resize:vertical}
+.qadd .bigbtn{width:100%}
+.qadd small{color:var(--muted);font-size:12.5px;line-height:1.4}
+.q .qa button.del.armed{color:var(--danger)}
+/* ---- share line option ---- */
+.bcheck .minib{margin-left:auto;flex:none;width:38px;height:38px;display:grid;place-items:center;border-radius:9px;background:var(--s2);color:var(--fg)}
+.bcheck .minib svg{width:18px;height:18px}
+.bcheck>span{min-width:0}
+.setrow.warn small{color:var(--accent)}
+a.setrow{color:inherit;text-decoration:none}
 /* ---- video ---- */
 .stage.hasv{padding-bottom:62px}
 .vbar{position:absolute;left:12px;right:12px;bottom:10px;height:44px;display:flex;align-items:center;gap:10px;padding:0 12px 0 6px;background:var(--s1);border:1px solid var(--line);border-radius:12px}
@@ -612,6 +624,17 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
         <label class="setrow"><span><b>Watermark every post</b><small>Change the style with the Mark tool in the editor</small></span><input type="checkbox" class="switch" id="meWmOn"></label>
         <div class="setrow" style="cursor:default"><input class="wmin" id="meWmHandle" placeholder="@yourname" maxlength="30" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Your handle"></div>
       </div>
+      <div class="blabel" style="margin-top:24px">Your stuff</div>
+      <div class="setcard">
+        <button class="setrow" id="meMine"><span><b>My quotes</b><small id="meMineS">Add your own quotes</small></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+        <button class="setrow" id="bkSave"><span><b>Save a backup</b><small id="bkSaveS">Drafts, stats, saved quotes and settings</small></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+        <label class="setrow" for="bkFile"><span><b>Restore a backup</b><small>Adds the drafts, stats and quotes from a backup file</small></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></label>
+      </div>
+      <input id="bkFile" type="file">
+      <div class="blabel" style="margin-top:24px">Help</div>
+      <div class="setcard">
+        <a class="setrow" id="meGuide" href="https://github.com/ieatchi/TT-APP#readme" target="_blank" rel="noopener"><span><b>Change Taffy yourself</b><small>Add quotes, change colours, get updates</small></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a>
+      </div>
     </div>
   </div>
 </div>
@@ -683,6 +706,7 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
           <button class="bigbtn acc" id="addYellow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add yellow caption</button>
           <button class="bigbtn" id="openQuotes"><span style="color:var(--accent);font-size:22px;font-weight:900;line-height:1;margin-top:8px">&ldquo;</span>Browse quotes</button>
           <button class="bigbtn" id="addText">Add white text</button>
+          <button class="bigbtn" id="addCta0">Add a share line</button>
           <p class="hint">Tap text on the canvas to edit it. Drag to move, pinch to resize, double-tap to centre.</p>
         </div>
         <div id="tedit" class="panel" hidden>
@@ -701,7 +725,7 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
             <button class="sw" data-c="#7cff4f" style="--c:#7cff4f" aria-label="Green" aria-pressed="false"></button>
             <label class="sw custom" aria-label="Custom colour"><input type="color" id="customColor" value="#a78bfa"></label>
           </div>
-          <div class="opts noemo"><button class="opt" id="evenLines"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 7h14M7 12h10M5 17h14"/></svg>Even out lines</button><button class="opt" id="swapQuote"><span style="color:var(--accent);font-size:20px;font-weight:900;line-height:1;margin-top:7px">&ldquo;</span>Pick a quote</button></div>
+          <div class="opts noemo"><button class="opt" id="evenLines"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 7h14M7 12h10M5 17h14"/></svg>Even out lines</button><button class="opt" id="swapQuote"><span style="color:var(--accent);font-size:20px;font-weight:900;line-height:1;margin-top:7px">&ldquo;</span>Pick a quote</button><button class="opt" id="addCta">Share line</button></div>
           <div class="opts noemo" id="fontPick">
             <button class="opt f-tiktok" data-f="tiktok" aria-pressed="true">TikTok</button>
             <button class="opt f-bold" data-f="bold" aria-pressed="false">Bold</button>
@@ -946,6 +970,7 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
         <button class="opt" data-l="last" aria-pressed="true">Same as my last post</button>
         <button class="opt" data-l="default" aria-pressed="false">Default</button>
       </div>
+      <label class="bcheck"><input type="checkbox" id="qkCta"><span><b>Add a share line</b><small id="qkCtaS">Like “send this to someone who needs it”</small></span><button class="minib" id="qkCtaNext" type="button" aria-label="Different line"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button></label>
       <label class="bcheck"><input type="checkbox" id="qkAuto"><span><b>Auto-enhance photo</b><small>Fixes dull, dark or washed-out photos</small></span></label>
       <div class="blabel">TikTok description</div>
       <textarea id="qkDesc" class="qk-desc" rows="3" placeholder="Optional. It gets copied so you can paste it in TikTok."></textarea>
@@ -1019,6 +1044,7 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
       </div>
       <div class="blabel">Filter</div>
       <div class="opts bfx" id="bFx"></div>
+      <label class="bcheck"><input type="checkbox" id="bCta"><span><b>Add a share line to each post</b><small>A different one each time, like “save this for later”</small></span></label>
       <label class="bcheck"><input type="checkbox" id="bAuto"><span><b>Auto-enhance each photo</b><small>Fixes dull, dark or washed-out photos</small></span></label>
       <label class="bcheck"><input type="checkbox" id="bSave" checked><span><b>Save all to my gallery</b><small>Also adds them to Stats</small></span></label>
       <label class="bcheck"><input type="checkbox" id="bFresh" checked><span><b>Skip quotes I've already used</b><small>So you never post the same one twice</small></span></label>
@@ -1062,7 +1088,7 @@ input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,43,58,.18)
 <script>
 const W=1080;let H=1920;
 const TT_YELLOW='#f7ce46';
-const FONTS={tiktok:{family:'"TikTok Sans"',weight:900},bold:{family:'Montserrat',weight:900},tall:{family:'Anton',weight:400}};
+const FONTS={tiktok:{family:'"TikTok Sans"',weight:900},bold:{family:'Montserrat',weight:900},tall:{family:'Anton',weight:400},soft:{family:'"TikTok Sans"',weight:700}};
 const TOOLS={0:'Stretch',1:'Text',2:'Adjust',4:'Backdrop',5:'Watermark',6:'Filters',7:'Tools',8:'Crop & rotate',9:'Focus blur',10:'Effects',11:'Draw',12:'Stickers',13:'Frame',14:'Canvas size',15:'Trim'};
 const GRID=new Set([2,5,8,9,10,11,12,13,14,15]);
 const DEF={sw:178,sh:100,blur:0,bgblur:50,bgbr:80,bri:100,con:100,sat:100,fint:100,anchor:'right',bgmode:'blur',flip:false,filter:'none',
@@ -1589,10 +1615,11 @@ async function exportVideoCached(title){
 }
 /* native file helpers: write the video into the app cache in pieces, then hand the file over */
 function blobB64(b){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]||'');r.onerror=()=>rej(r.error);r.readAsDataURL(b);});}
-async function blobToCache(blob,name){
+async function blobToCache(blob,name,onProg){
   const FS=Cap.Plugins.Filesystem,CH=3*1024*1024;let uri=null;
   for(let o=0;o<blob.size;o+=CH){const d=await blobB64(blob.slice(o,o+CH));
-    if(o===0)uri=(await FS.writeFile({path:name,data:d,directory:'CACHE'})).uri;else await FS.appendFile({path:name,data:d,directory:'CACHE'});}
+    if(o===0)uri=(await FS.writeFile({path:name,data:d,directory:'CACHE'})).uri;else await FS.appendFile({path:name,data:d,directory:'CACHE'});
+    if(onProg)onProg(Math.min(1,(o+CH)/blob.size));}
   return uri||(await FS.getUri({path:name,directory:'CACHE'})).uri;
 }
 async function saveVideoToGallery(blob,name){
@@ -1955,6 +1982,37 @@ $('reset').onclick=()=>{['sw','sh'].forEach(k=>$(k).value=DEF[k]);anchor=DEF.anc
 $('adjReset').onclick=()=>{['bri','con','sat','hue','hi','shd','wht','blk','fade','temp','tint','vib','sharp','clar','blur'].forEach(k=>$(k).value=DEF[k]);autoOn=false;autoPrev=null;syncAuto();fastPreview=false;draw();vibe();toast('Adjustments reset');};
 $('toolAuto').onclick=toggleAuto;$('adjAuto').onclick=toggleAuto;
 
+/* ---------- share line (small line under the quote that gets shares and saves) ---------- */
+const SHARE_LINES=['send this to someone who needs it','save this for the days you forget','send this to your person','tag someone who needs to hear this',
+ 'read that again','for whoever needs this today','send this to the one you thought of','you found this for a reason','this is your sign',
+ 'if you read this, it was meant for you','screenshot this','come back to this when you need it','save this for later','share this with your best friend',
+ 'someone needs this today, send it','keep this one close','pass this on','follow for more like this','double tap if you felt this',
+ 'comment if you needed this','send this to your best friend','save this, you will need it','read this twice','take this with you today'];
+function nextShareLine(){
+  let st=null;try{st=JSON.parse(localStorage.getItem('taffy-cta-seq')||'null');}catch(e){}
+  if(!st||!Array.isArray(st.o)||st.o.length!==SHARE_LINES.length||typeof st.i!=='number'){
+    const o=SHARE_LINES.map((_,i)=>i);for(let i=o.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[o[i],o[j]]=[o[j],o[i]];}st={o,i:0};}
+  const line=SHARE_LINES[st.o[st.i%st.o.length]];st.i=(st.i+1)%st.o.length;
+  try{localStorage.setItem('taffy-cta-seq',JSON.stringify(st));}catch(e){}return line;
+}
+function ctaPref(){try{return localStorage.getItem('taffy-cta')==='1';}catch(e){return false;}}
+function setCtaPref(on){try{localStorage.setItem('taffy-cta',on?'1':'0');}catch(e){}}
+function placeCta(t,main){
+  const hb=bounds(t).h,gap=40;
+  if(!main){t.x=W/2;t.y=H*.62;return t;}
+  const b=bounds(main);let y=b.y+b.h+gap+hb/2;
+  if(y+hb/2>H*.8)y=b.y-gap-hb/2;
+  t.x=main.x;t.y=Math.max(hb/2+20,y);return t;
+}
+function shareLayer(main,text){const t={text,kind:'cta',font:'soft',color:'#ffffff',style:'plain',size:46,sx:100,sy:100,x:W/2,y:H*.62};placeCta(t,main);autoFit(t);return t;}
+const mainText=()=>texts.find(t=>t.kind!=='cta'&&t.kind!=='emoji')||null;
+function addShareLine(){
+  if(sel&&sel.kind==='cta'){sel.text=nextShareLine();autoFit(sel);syncTextUI();$('txt').value=sel.text;vibe();return;}
+  const ex=texts.find(t=>t.kind==='cta');
+  if(ex){ex.text=nextShareLine();autoFit(ex);sel=ex;syncTextUI();vibe();return;}
+  const main=sel&&sel.kind!=='emoji'?sel:mainText(),t=shareLayer(main,nextShareLine());
+  texts.push(t);sel=t;openPanel(1);syncTextUI();vibe();
+}
 /* ---------- text ---------- */
 function syncTextUI(){
   $('tnone').hidden=!!sel;$('tedit').hidden=!sel;$('tedit').classList.toggle('emoji',!!(sel&&sel.kind==='emoji'));
@@ -1962,6 +2020,7 @@ function syncTextUI(){
     $('tsz').value=Math.round(sel.size);$('tsw').value=Math.round(sel.sx);$('tsh').value=Math.round(sel.sy);
     press('fontPick','f',sel.font);press('stylePick','s',sel.style);
     $('colors').querySelectorAll('.sw[data-c]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.c===sel.color));}
+  $('addCta').textContent=sel&&sel.kind==='cta'?'Next line':'Share line';
   draw();
 }
 function addText(preset,noFocus){
@@ -1974,6 +2033,7 @@ function myStyle(){try{const v=JSON.parse(localStorage.getItem('taffy-style')||'
 function rememberStyle(t){if(!t)return;try{localStorage.setItem('taffy-style',JSON.stringify({font:t.font,style:t.style,color:t.color}));}catch(e){}}
 $('addYellow').onclick=()=>addText({...myStyle(),color:TT_YELLOW});
 $('addText').onclick=()=>addText();
+$('addCta0').onclick=addShareLine;$('addCta').onclick=addShareLine;
 $('addText2').onclick=()=>addText(sel?{font:sel.font,color:sel.color,style:sel.style}:myStyle());
 $('delText').onclick=()=>{texts=texts.filter(t=>t!==sel);sel=null;syncTextUI();vibe();};
 function autoFit(t){const b=bounds(t),max=W*.92;if(b.w>max){t.size=Math.max(30,t.size*max/b.w);$('tsz').value=Math.round(t.size);}}
@@ -2102,10 +2162,18 @@ const legacyExport=async()=>{
 
 /* ---------- quote library ---------- */
 const QDATA=window.QUOTES||{};
-const QALL=Object.entries(QDATA).flatMap(([c,arr])=>arr.map(t=>({t,c})));
+const QBASE=Object.entries(QDATA).flatMap(([c,arr])=>arr.map(t=>({t,c})));
+function mine(){try{const a=JSON.parse(localStorage.getItem('taffy-mine')||'[]');return Array.isArray(a)?a.filter(x=>typeof x==='string'&&x.trim()):[];}catch(e){return[];}}
+function setMine(a){try{localStorage.setItem('taffy-mine',JSON.stringify(a));}catch(e){}rebuildQALL();}
+let QALL=[];function rebuildQALL(){QALL=mine().map(t=>({t,c:'Mine'})).concat(QBASE);}
+rebuildQALL();
 const CALM=new Set(window.CALM_CATS||[]);
 const AES='Aesthetic';
 const inCat=(q,cat)=>cat===AES?CALM.has(q.c):cat==='All'||cat==='Mix'?true:q.c===cat;
+function cleanQuote(t){return String(t).replace(/^[\s"“”'‘’«»]+|[\s"“”'‘’«»]+$/g,'').replace(/\s+/g,' ').trim();}
+function addMine(text){const cur=mine(),have=new Set(cur.map(x=>x.toLowerCase()));let n=0;const add=[];
+  String(text).split(/\n+/).map(cleanQuote).filter(t=>t.length>1&&t.length<=300).forEach(t=>{if(!have.has(t.toLowerCase())){have.add(t.toLowerCase());add.push(t);n++;}});
+  if(n)setMine(add.concat(cur));return n;}
 let qCat=AES,qMode='editor',qOrder=null,qPending=null;
 function favs(){try{return JSON.parse(localStorage.getItem('taffy-favs')||'[]');}catch(e){return[];}}
 function setFavs(a){try{localStorage.setItem('taffy-favs',JSON.stringify(a));}catch(e){}}
@@ -2128,17 +2196,17 @@ function wrapQuote(str){
   return out.join('\n');
 }
 function renderChips(){
-  const cats=[AES,'Viral','Saved','All',...Object.keys(QDATA).filter(c=>c!=='Viral')];
+  const cats=[AES,'Viral','Saved','Mine','All',...Object.keys(QDATA).filter(c=>c!=='Viral')];
   $('qChips').innerHTML=cats.map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===qCat}">${chipLabel(c)}</button>`).join('');
   $('qChips').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{qCat=b.dataset.c;qOrder=null;renderChips();renderQuotes();$('qList').scrollTop=0;vibe();});
 }
-function chipLabel(c){return c==='Saved'?'&#9733; Saved':c==='Viral'?'&#128293; Viral':c===AES?'&#127749; Aesthetic':c==='Mix'?'Mix of everything':esc(c);}
+function chipLabel(c){return c==='Mine'?'&#9998; Mine':c==='Saved'?'&#9733; Saved':c==='Viral'?'&#128293; Viral':c===AES?'&#127749; Aesthetic':c==='Mix'?'Mix of everything':esc(c);}
 let qRows=[],qShown=0,qShowCat=false,qUsed=new Set(),qFav=new Set();const QPAGE=60;
 function qRowHTML(q,i){
-  const cat=qShowCat?esc(q.c):'',u=qUsed.has(q.t),on=qFav.has(q.t);
+  const cat=qShowCat?esc(q.c==='Mine'?'Mine':q.c):'',u=qUsed.has(q.t),on=qFav.has(q.t),own=q.c==='Mine'&&qCat==='Mine';
   return `<div class="q" data-i="${i}"><button class="qt">${esc(q.t)}${cat||u?`<small>${cat}${u?`<span class="usedtag">Used</span>`:''}</small>`:''}</button><div class="qa">
     <button class="fav" aria-label="Save" aria-pressed="${on}"><svg viewBox="0 0 24 24" fill="${on?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></button>
-    <button class="cp" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg></button></div></div>`;
+    ${own?`<button class="del" aria-label="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>`:`<button class="cp" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg></button>`}</div></div>`;
 }
 function qMore(){
   if(qShown>=qRows.length)return;
@@ -2153,13 +2221,20 @@ function renderQuotes(){
   if(qOrder)list=[...list].sort((a,b)=>(qOrder.get(a.t)||0)-(qOrder.get(b.t)||0));
   $('qCount').textContent=list.length.toLocaleString();
   qRows=list;qShown=0;qShowCat=qCat==='All'||qCat===AES||!!term;
-  if(!list.length){$('qList').innerHTML=`<div class="qnone">${qCat==='Saved'&&!term?'Tap the star on any quote to save it here.':'No quotes match that search.'}</div>`;return;}
-  $('qList').innerHTML='';qMore();qFill();requestAnimationFrame(qFill);
+  const box=qCat==='Mine'&&!term?`<div class="qadd"><textarea id="qAddTxt" rows="3" placeholder="Type a quote, or paste a list (one per line)" aria-label="New quote"></textarea><button class="bigbtn acc" id="qAddBtn">Add to my quotes</button><small>Your quotes show up in search, Mine, All and batch posts. Share text from any app to Taffy to add it here.</small></div>`:'';
+  if(!list.length){$('qList').innerHTML=box+(qCat==='Mine'&&!term?'':`<div class="qnone">${qCat==='Saved'&&!term?'Tap the star on any quote to save it here.':'No quotes match that search.'}</div>`);return;}
+  $('qList').innerHTML=box;qMore();qFill();requestAnimationFrame(qFill);
 }
 function qFill(){const el=$('qList');let n=0;while(qShown<qRows.length&&el.clientHeight>0&&el.scrollHeight<=el.clientHeight+400&&n++<10)qMore();}
 $('qList').addEventListener('scroll',()=>{const el=$('qList');if(el.scrollTop+el.clientHeight>el.scrollHeight-1200)qMore();},{passive:true});
 $('qList').addEventListener('click',e=>{
+  if(e.target.closest('#qAddBtn')){const n=addMine($('qAddTxt').value);vibe();
+    if(!n){toast($('qAddTxt').value.trim()?'Already in your quotes':'Type a quote first');return;}
+    renderQuotes();toast(n===1?'Added to your quotes':'Added '+n+' quotes');return;}
   const row=e.target.closest('.q');if(!row)return;const q=qRows[+row.dataset.i];if(!q)return;
+  const delb=e.target.closest('.del');
+  if(delb){if(!delb.classList.contains('armed')){delb.classList.add('armed');vibe();toast('Tap again to delete');setTimeout(()=>delb.classList.remove('armed'),2500);return;}
+    setMine(mine().filter(x=>x!==q.t));const top=$('qList').scrollTop;renderQuotes();$('qList').scrollTop=top;vibe();toast('Deleted');return;}
   const fb=e.target.closest('.fav');
   if(fb){const a=favs(),k=a.indexOf(q.t);if(k>=0)a.splice(k,1);else a.unshift(q.t);setFavs(a);vibe();
     if(qCat==='Saved'){const top=$('qList').scrollTop;renderQuotes();let n=0;while(qShown<qRows.length&&$('qList').scrollHeight<top+$('qList').clientHeight&&n++<80)qMore();$('qList').scrollTop=top;return;}
@@ -2192,6 +2267,9 @@ function pickQuote(t,c){
 }
 $('qClose').onclick=closeQuotes;
 $('qSearch').addEventListener('input',renderQuotes);
+function openMine(prefill){qCat='Mine';qOrder=null;
+  if(curTab==='quotes'&&!qModal){$('qSearch').value='';renderChips();renderQuotes();}else goTab('quotes');
+  if(prefill!=null)requestAnimationFrame(()=>{const t=$('qAddTxt');if(t){t.value=prefill;t.focus();}});}
 $('qShuffle').onclick=()=>{qOrder=new Map(QALL.map(q=>[q.t,Math.random()]));renderQuotes();$('qList').scrollTop=0;vibe();};
 $('openQuotes').onclick=()=>openQuotes('editor');
 $('swapQuote').onclick=()=>openQuotes('editor');
@@ -2199,7 +2277,7 @@ $('evenLines').onclick=()=>{if(!sel)return;sel.text=wrapQuote(sel.text);autoFit(
 
 /* ================= POSTING ================= */
 const TAGS_BASE=['#fyp','#foryou','#quotes'];
-const CATTAGS={Sunsets:['#sunset','#goldenhour'],Ocean:['#ocean','#beach'],'Moon & stars':['#moon','#nightsky'],Healing:['#healing','#selflove'],Peace:['#peace','#calm'],
+const CATTAGS={Mine:['#aesthetic'],Sunsets:['#sunset','#goldenhour'],Ocean:['#ocean','#beach'],'Moon & stars':['#moon','#nightsky'],Healing:['#healing','#selflove'],Peace:['#peace','#calm'],
  'Life lessons':['#lifelessons','#lifequotes'],Reflections:['#deepthoughts','#reflection'],Gratitude:['#grateful','#gratitude'],'Letting go':['#lettinggo','#moveon'],
  Overthinking:['#overthinking','#relatable'],Timing:['#trusttheprocess'],Kindness:['#bekind'],'Alone time':['#alonetime','#solitude'],'Soft reminders':['#reminder','#selfcare'],
  Youth:['#nostalgia','#youth'],Worth:['#selfworth','#knowyourworth'],Friends:['#bestfriend','#friendship'],Love:['#love','#couple'],Heartbreak:['#heartbreak','#sadquotes'],
@@ -2277,11 +2355,11 @@ $('xPost').onclick=async()=>{
 };
 
 /* ---- quick post ---- */
-let qkVid=null,qkFile=null,qkImg=null,qkCat=null,qkPos='mid',qkLook='last',qkT=null;const qkTagSet=new Set();
+let qkCta=null,qkVid=null,qkFile=null,qkImg=null,qkCat=null,qkPos='mid',qkLook='last',qkT=null;const qkTagSet=new Set();
 function lastState(){const p=projects.find(p=>p.state&&p.img);return p?p.state:null;}
 function qkApply(){
   const base=qkLook==='last'?lastState():null,b2=base?JSON.parse(JSON.stringify(base)):null;
-  const t0=b2&&b2.texts?b2.texts.find(t=>t.kind!=='emoji'):null;
+  const t0=b2&&b2.texts?b2.texts.find(t=>t.kind!=='emoji'&&t.kind!=='cta'):null;
   if(b2){delete b2.texts;delete b2.strokes;delete b2.x;delete b2.y;delete b2.crop;b2.rot=0;b2.str=0;b2.flipV=false;b2.auto=false;b2.autoPrev=null;}
   loading=true;setControls(b2);img=qkImg;imgBlob=qkFile;vid=qkVid;trimS=0;trimE=null;sel=null;strokes=[];
   if(img&&$('qkAuto').checked){try{applyAuto(img);}catch(e){}}
@@ -2289,6 +2367,7 @@ function qkApply(){
   const st=t0?{font:t0.font,style:t0.style,color:t0.color}:myStyle(),cap=$('qkCap').value.trim();
   texts=cap?[{text:wrapQuote(cap),cat:qkCat||undefined,font:st.font,color:st.color,style:st.style,size:st.font==='tall'?150:120,sx:100,sy:100,x:W/2,y:H*POS[qkPos]}]:[];
   if(texts[0])autoFit(texts[0]);
+  if($('qkCta').checked){if(!qkCta)qkCta=nextShareLine();texts.push(shareLayer(texts[0]||null,qkCta));}
   loading=false;
 }
 function qkPreview(){
@@ -2302,6 +2381,7 @@ function openQuick(){
   $('qkPhoto').classList.remove('has');$('qkPhoto').querySelector('.qk-empty').hidden=false;$('qkPhoto').querySelector('.qk-change').hidden=true;
   qkLook=lastState()?'last':'default';press('qkLook','l',qkLook);$('qkLook').hidden=$('qkLookL').hidden=!lastState();
   qkTagSet.clear();renderTags($('qkTags'),qkTagSet,null);$('qkAuto').checked=autoPref();
+  $('qkCta').checked=ctaPref();qkCta=$('qkCta').checked?nextShareLine():null;syncQkCta();
   $('quick').hidden=false;history.pushState({qk:1},'',location.href);syncChrome();$('quick').querySelector('.sbody').scrollTop=0;
 }
 let qkPending=null;
@@ -2310,15 +2390,19 @@ function closeQuick(){if(history.state&&history.state.qk)history.back();else clo
 $('openQuick').onclick=openQuick;
 $('csQuick').onclick=()=>{cPending=openQuick;closeCreate();};
 $('qkClose').onclick=closeQuick;
-$('qkFile').onchange=async e=>{const f=asMedia(e.target.files[0]);e.target.value='';if(!f)return;
+$('qkFile').onchange=async e=>{const f=asMedia(e.target.files[0]);e.target.value='';if(f)qkUseFile(f);};
+async function qkUseFile(f){
   let im=null,qv=null;if(isVid(f)){qv=await loadVideo(f);im=qv?qv.c:null;}else im=await loadImage(f);
   if(!im){toast(isVid(f)?'Couldn’t open that video':'Couldn’t open that photo');return;}
   qkFile=f;qkImg=im;qkVid=qv;$('qkPrev').hidden=false;$('qkPhoto').classList.add('has');$('qkPhoto').querySelector('.qk-empty').hidden=true;$('qkPhoto').querySelector('.qk-change').hidden=false;qkPreview();
-  if(!$('qkCap').value.trim())$('qkRandom').click();};
+  if(!$('qkCap').value.trim())$('qkRandom').click();}
 $('qkCap').addEventListener('input',()=>{qkCat=null;qkPreviewSoon();});
 $('qkRandom').onclick=()=>{const q=pickQuotes(1,AES,true)[0];if(!q)return;$('qkCap').value=q.t;qkCat=q.c;renderTags($('qkTags'),qkTagSet,q.c);qkPreviewSoon();vibe();};
 $('qkBrowse').onclick=()=>openQuotes('quick');
 $('qkAuto').onchange=e=>{setAutoPref(e.target.checked);qkPreviewSoon();vibe();};
+function syncQkCta(){$('qkCtaS').textContent=$('qkCta').checked&&qkCta?'“'+qkCta+'”':'Like “send this to someone who needs it”';$('qkCtaNext').hidden=!$('qkCta').checked;}
+$('qkCta').onchange=e=>{setCtaPref(e.target.checked);if(e.target.checked&&!qkCta)qkCta=nextShareLine();syncQkCta();qkPreviewSoon();vibe();};
+$('qkCtaNext').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();qkCta=nextShareLine();syncQkCta();qkPreviewSoon();vibe();});
 group('qkPos','p',v=>{qkPos=v;qkPreviewSoon();});
 group('qkLook','l',v=>{qkLook=v;qkPreviewSoon();});
 $('qkEdit').onclick=()=>{
@@ -2365,7 +2449,7 @@ function openBatch(files){
   if(files.length>40)toast('Using the first 40 photos');
   $('bCount').textContent=bFiles.length+' photo'+(bFiles.length>1?'s':'');
   $('bStrip').innerHTML='';bFiles.forEach(f=>{const im=document.createElement('img');im.src=URL.createObjectURL(f);im.alt='';$('bStrip').appendChild(im);});
-  const cats=[AES,'Viral','Mix',...Object.keys(QDATA).filter(c=>c!=='Viral')];
+  const cats=[AES,'Viral','Mix',...(mine().length?['Mine']:[]),...Object.keys(QDATA).filter(c=>c!=='Viral')];
   $('bCats').innerHTML=cats.map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===bCat}">${chipLabel(c)}</button>`).join('');
   $('bCats').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{bCat=b.dataset.c;$('bCats').querySelectorAll('.chip').forEach(o=>o.setAttribute('aria-pressed',o===b));vibe();});
   $('bWm').textContent=WM.on&&wmText()?'Watermark '+wmText()+' will be added to every post.':'Tip: set a watermark in the editor (Mark tool) and it gets added to batch posts too.';
@@ -2373,7 +2457,7 @@ function openBatch(files){
   press('bTs','y',bTs);
   $('bFx').innerHTML=FXORDER.map(k=>`<button class="opt" data-x="${k}" aria-pressed="${k===bFilter}">${FILTERS[k].n}</button>`).join('');
   $('bFx').querySelectorAll('button').forEach(b=>b.onclick=()=>{bFilter=b.dataset.x;press('bFx','x',bFilter);vibe();});
-  $('bAuto').checked=autoPref();
+  $('bAuto').checked=autoPref();$('bCta').checked=ctaPref();
   $('bGo').textContent='Make '+bFiles.length+' post'+(bFiles.length>1?'s':'');$('bGo').disabled=false;
   $('batch').hidden=false;history.pushState({bt:1},'',location.href);syncChrome();
 }
@@ -2382,6 +2466,7 @@ $('bClose').onclick=()=>{if(bBusy)return;if(history.state&&history.state.bt)hist
 $('batchFiles').onchange=e=>{const f=[...e.target.files];e.target.value='';if(!f.length)return;if(!$('cScrim').hidden){cPending=()=>openBatch(f);closeCreate();}else openBatch(f);};
 group('bPos','p',v=>bPos=v);group('bTs','y',v=>bTs=v);group('bFit','f',v=>bFitMode=v);
 $('bAuto').onchange=e=>{setAutoPref(e.target.checked);vibe();};
+$('bCta').onchange=e=>{setCtaPref(e.target.checked);vibe();};
 function pickQuotes(n,cat,fresh){
   const used=fresh?usedSet():new Set();
   let pool=QALL.filter(q=>inCat(q,cat));
@@ -2407,6 +2492,7 @@ $('bGo').onclick=async()=>{
     place();
     const q=qs[i],ts=TS[bTs]||TS.tall,col=myStyle().color||TT_YELLOW;
     texts=[{text:wrapQuote(q.t),cat:q.c,font:ts.font,color:col,style:ts.style,size:ts.font==='tall'?150:120,sx:100,sy:100,x:W/2,y:H*POS[bPos]}];autoFit(texts[0]);
+    if($('bCta').checked)texts.push(shareLayer(texts[0],nextShareLine()));
     loading=false;
     await saveNow();
     if(saveAll){
@@ -2428,11 +2514,11 @@ function usedSet(){try{return new Set(JSON.parse(localStorage.getItem('taffy-use
 function markUsed(list){const u=usedSet();list.forEach(t=>u.add(t));try{localStorage.setItem('taffy-used',JSON.stringify([...u]));}catch(e){}}
 async function logPost(){
   if(!proj)return;
-  markUsed(texts.map(t=>t.text.replace(/\s*\n\s*/g,' ').trim()));
+  markUsed(texts.filter(t=>t.kind!=='cta'&&t.kind!=='emoji').map(t=>t.text.replace(/\s*\n\s*/g,' ').trim()));
   let all=[];try{all=await postsAll();}catch(e){return;}
   let p=all.find(x=>x.projId===proj.id);
   if(!p)p={id:uid(),projId:proj.id,created:Date.now(),posted:Date.now(),views:null,likes:null,comments:null,shares:null};
-  const cap=(texts[0]?.text||'').replace(/\n/g,' ').trim();
+  const cap=((mainText()||texts[0])?.text||'').replace(/\n/g,' ').trim();
   Object.assign(p,{thumb:proj.thumb,caption:cap||proj.name,cat:(texts.find(t=>t.cat)||{}).cat||p.cat||null,name:proj.name});
   try{await postPut(p);refreshStreak();}catch(e){}
 }
@@ -2574,6 +2660,129 @@ $('csText').onclick=()=>{cPending=()=>newProject(null,{text:true});closeCreate()
 $('csBlank').onclick=()=>{cPending=()=>newProject(null);closeCreate();};
 $('csQuotes').onclick=()=>{cPending=()=>goTab('quotes');closeCreate();};
 
+/* ================= BACKUP + RESTORE =================
+   A backup is a normal .zip: taffy-backup.json (drafts, stats, quotes, settings) plus media/
+   with every draft's photo or video, so nothing is locked inside Taffy. */
+const CRCT=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}return t;})();
+async function crc32Blob(b,onBytes){let c=0xFFFFFFFF;const CH=4*1024*1024;
+  for(let o=0;o<b.size;o+=CH){const u=new Uint8Array(await b.slice(o,o+CH).arrayBuffer());for(let i=0;i<u.length;i++)c=CRCT[(c^u[i])&255]^(c>>>8);if(onBytes)onBytes(Math.min(b.size,o+CH));}
+  return(c^0xFFFFFFFF)>>>0;}
+function dosTime(d){return{time:(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1),date:((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate()};}
+async function makeZip(entries,onProg){
+  const enc=new TextEncoder(),parts=[],cen=[],{time,date}=dosTime(new Date()),total=entries.reduce((a,e)=>a+e.blob.size,0)||1;let off=0,done=0;
+  for(const e of entries){
+    const nb=enc.encode(e.name),size=e.blob.size,crc=await crc32Blob(e.blob,n=>onProg&&onProg((done+n)/total));
+    const lh=new DataView(new ArrayBuffer(30));
+    [[0,0x04034b50,4],[4,20,2],[6,0x0800,2],[8,0,2],[10,time,2],[12,date,2],[14,crc,4],[18,size,4],[22,size,4],[26,nb.length,2],[28,0,2]].forEach(([o,v,n])=>n===4?lh.setUint32(o,v,true):lh.setUint16(o,v,true));
+    parts.push(lh.buffer,nb,e.blob);
+    const ch=new DataView(new ArrayBuffer(46));
+    [[0,0x02014b50,4],[4,20,2],[6,20,2],[8,0x0800,2],[10,0,2],[12,time,2],[14,date,2],[16,crc,4],[20,size,4],[24,size,4],[28,nb.length,2],[30,0,2],[32,0,2],[34,0,2],[36,0,2],[38,0,4],[42,off,4]].forEach(([o,v,n])=>n===4?ch.setUint32(o,v,true):ch.setUint16(o,v,true));
+    cen.push(ch.buffer,nb);off+=30+nb.length+size;done+=size;
+    if(off>0xFFFFFFF0)throw new Error('Backup is too big (over 4 GB)');
+  }
+  const cdSize=cen.reduce((a,b)=>a+b.byteLength,0),end=new DataView(new ArrayBuffer(22));
+  [[0,0x06054b50,4],[4,0,2],[6,0,2],[8,entries.length,2],[10,entries.length,2],[12,cdSize,4],[16,off,4],[20,0,2]].forEach(([o,v,n])=>n===4?end.setUint32(o,v,true):end.setUint16(o,v,true));
+  return new Blob([...parts,...cen,end.buffer],{type:'application/zip'});
+}
+async function readZip(file){
+  const tl=Math.min(file.size,65557),tail=new DataView(await file.slice(file.size-tl).arrayBuffer());let p=-1;
+  for(let i=tl-22;i>=0;i--)if(tail.getUint32(i,true)===0x06054b50){p=i;break;}
+  if(p<0)throw new Error('That isn’t a Taffy backup');
+  const n=tail.getUint16(p+10,true),cdSize=tail.getUint32(p+12,true),cdOff=tail.getUint32(p+16,true);
+  const cd=new DataView(await file.slice(cdOff,cdOff+cdSize).arrayBuffer()),dec=new TextDecoder(),out=new Map();let q=0;
+  for(let k=0;k<n;k++){
+    if(cd.getUint32(q,true)!==0x02014b50)throw new Error('This backup file is damaged');
+    const method=cd.getUint16(q+10,true),csize=cd.getUint32(q+20,true),nl=cd.getUint16(q+28,true),xl=cd.getUint16(q+30,true),cl=cd.getUint16(q+32,true),lo=cd.getUint32(q+42,true);
+    const name=dec.decode(new Uint8Array(cd.buffer,cd.byteOffset+q+46,nl)),lh=new DataView(await file.slice(lo,lo+30).arrayBuffer()),start=lo+30+lh.getUint16(26,true)+lh.getUint16(28,true);
+    out.set(name,{method,blob:file.slice(start,start+csize)});q+=46+nl+xl+cl;
+  }
+  return out;
+}
+const MEXT={'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif','image/heic':'heic','video/mp4':'mp4','video/quicktime':'mov','video/webm':'webm','video/3gpp':'3gp'};
+const extOf=t=>MEXT[t]||(t&&t.startsWith('video/')?'mp4':t&&t.startsWith('image/')?'jpg':'bin');
+const typeOf=name=>{const e=(name.split('.').pop()||'').toLowerCase();return Object.keys(MEXT).find(k=>MEXT[k]===e)||'';};
+function lastBackup(){try{return+localStorage.getItem('taffy-lastbk')||0;}catch(e){return 0;}}
+function fmtSize(b){return b>=1e9?(b/1e9).toFixed(1)+' GB':b>=1e6?Math.round(b/1e6)+' MB':Math.max(1,Math.round(b/1e3))+' KB';}
+async function saveBackup(){
+  showVxo('Saving your backup');$('vxoCancel').hidden=true;
+  try{
+    const projs=await dbAll(),posts=await postsAll(),entries=[],pj=[];
+    for(const p of projs){const o={...p};delete o.img;
+      if(p.img){const name=`media/${p.id}.${extOf(p.img.type)}`;entries.push({name,blob:p.img});o.imgFile=name;o.imgType=p.img.type||'';o.imgName=p.img.name||'';}
+      pj.push(o);}
+    const ls={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('taffy-')&&k!=='taffy-lastbk')ls[k]=localStorage.getItem(k);}
+    const json=JSON.stringify({app:'taffy',v:1,made:Date.now(),projects:pj,posts,ls});
+    entries.unshift({name:'taffy-backup.json',blob:new Blob([json],{type:'application/json'})});
+    const zip=await makeZip(entries,f=>setVxo(native?f*.4:f*.95));
+    const name='taffy-backup-'+new Date().toISOString().slice(0,10)+'.zip';
+    let ok=false;
+    if(native&&Cap.Plugins.Share){
+      $('vxoS').textContent='Writing the file…';
+      const uri=await blobToCache(zip,name,f=>setVxo(.4+f*.6));
+      $('vxo').hidden=true;
+      try{await Cap.Plugins.Share.share({title:'Save your Taffy backup',dialogTitle:'Save your backup (Google Drive is safest)',files:[uri]});ok=true;}
+      catch(e){toast('Backup not saved. Try again and pick Drive or Files');}
+    }else{const a=document.createElement('a');a.href=URL.createObjectURL(zip);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),20000);ok=true;}
+    if(ok){try{localStorage.setItem('taffy-lastbk',String(Date.now()));}catch(e){}toast(`Backup saved · ${projs.length} draft${projs.length===1?'':'s'}, ${fmtSize(zip.size)}`,2600);}
+  }catch(e){toast('Couldn’t make the backup: '+(e.message||e),3200);}
+  finally{$('vxo').hidden=true;$('vxoCancel').hidden=false;renderMe();}
+}
+async function restoreBackup(file){
+  showVxo('Restoring your backup');$('vxoCancel').hidden=true;
+  try{
+    const z=await readZip(file),j=z.get('taffy-backup.json');
+    if(!j)throw new Error('That isn’t a Taffy backup');
+    if(j.method!==0)throw new Error('This backup was changed by another app');
+    const data=JSON.parse(await j.blob.text());if(data.app!=='taffy')throw new Error('That isn’t a Taffy backup');
+    const have=new Map((await dbAll()).map(p=>[p.id,p])),havePosts=new Set((await postsAll()).map(p=>p.id));
+    const list=data.projects||[];let np=0,nq=0;
+    for(let i=0;i<list.length;i++){const o=list[i],p={...o};delete p.imgFile;delete p.imgType;delete p.imgName;p.img=null;
+      const cur=have.get(o.id);if(cur&&(cur.updated||0)>(o.updated||0)){continue;}
+      if(o.imgFile){const m=z.get(o.imgFile);if(m&&m.method===0)p.img=new File([m.blob],o.imgName||o.imgFile.split('/').pop(),{type:o.imgType||typeOf(o.imgFile)});}
+      await dbPut(p);np++;setVxo((i+1)/list.length*.9);}
+    for(const s of data.posts||[]){if(!havePosts.has(s.id)){await postPut(s);nq++;}}
+    const LISTS=['taffy-favs','taffy-used','taffy-mine'];
+    for(const [k,v] of Object.entries(data.ls||{})){if(!k.startsWith('taffy-'))continue;
+      try{if(LISTS.includes(k)){const a=JSON.parse(localStorage.getItem(k)||'[]'),b=JSON.parse(v||'[]');localStorage.setItem(k,JSON.stringify([...new Set([...a,...b])]));}
+        else if(localStorage.getItem(k)==null)localStorage.setItem(k,v);}catch(e){}}
+    try{sessionStorage.setItem('taffy-msg',`Restored ${np} draft${np===1?'':'s'} and ${nq} post${nq===1?'':'s'}`);}catch(e){}
+    location.reload();
+  }catch(e){$('vxo').hidden=true;$('vxoCancel').hidden=false;toast(e.message||'Couldn’t restore that file',3200);}
+}
+$('bkSave').onclick=()=>{vibe();saveBackup();};
+$('bkFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)restoreBackup(f);};
+$('meMine').onclick=()=>{vibe();openMine();};
+$('meGuide').addEventListener('click',e=>{if(native){e.preventDefault();location.href=$('meGuide').href;}});
+
+/* ================= SHARE TO TAFFY (from the gallery or any app) ================= */
+let shareQueue=null;
+function busyNow(){return bBusy||vExporting||!$('vxo').hidden;}
+async function toHome(){
+  if(!$('editor').hidden){await closeEditor();if(location.hash==='#edit')history.replaceState(null,'',location.pathname);}
+  ['xScrim','pScrim','cScrim','scrim'].forEach(id=>{$(id).hidden=true;});
+  if(!$('quick').hidden){$('quick').hidden=true;img=null;imgBlob=null;vid=null;texts=[];proj=null;}
+  if(!$('batch').hidden)$('batch').hidden=true;
+  if(qModal){$('qp').hidden=true;qModal=false;}
+  if(curTab!=='home')showTabScreen('home');
+  syncChrome();
+}
+async function receiveShared(files,text){
+  if(busyNow()){shareQueue={files,text};toast('Got it. Opening when this is done');return;}
+  files=files.map(asMedia).filter(Boolean);
+  if(!files.length&&!text)return;
+  await toHome();
+  const imgs=files.filter(f=>!isVid(f)),vids=files.filter(isVid);
+  if(files.length===1||(!imgs.length&&vids.length)){openQuick();await qkUseFile(files.length===1?files[0]:vids[0]);if(vids.length>1)toast('Opened the first clip');return;}
+  if(imgs.length>1){openBatch(imgs);if(vids.length)toast('Batch is photos only, so videos were skipped');return;}
+  if(text)openMine(text);
+}
+setInterval(()=>{if(shareQueue&&!busyNow()){const q=shareQueue;shareQueue=null;receiveShared(q.files,q.text);}},1000);
+async function nativeFile(o){const r=await fetch(Cap.convertFileSrc?Cap.convertFileSrc(o.path):o.path),b=await r.blob();return new File([b],o.name||'shared',{type:o.mime||b.type||''});}
+(function(){try{
+  const IS=native&&Cap&&((Cap.Plugins&&Cap.Plugins.IncomingShare)||(Cap.registerPlugin&&Cap.registerPlugin('IncomingShare')));
+  if(IS&&IS.addListener)IS.addListener('shared',async d=>{const fs=[];for(const o of (d&&d.files)||[]){try{fs.push(await nativeFile(o));}catch(e){}}receiveShared(fs,((d&&d.text)||'').trim());});
+}catch(e){}})();
+
 /* ================= STREAK + REMINDER ================= */
 const DAYS_LONG=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 const FLAME='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.6 2.2c.4 2.9 4.9 5.2 4.9 10.3a5.5 5.5 0 0 1-11 0c0-2.4 1-4 2.4-5.3.2 1.9 1 3 2.1 3.5-.3-3.1.8-5.9 1.6-8.5z"/></svg>';
@@ -2650,6 +2859,10 @@ function renderMe(){
   $('remHint').textContent=streak.bestDay!=null?`Your best day to post is ${DAYS_LONG[streak.bestDay]}`:'When you usually post';
   $('remWebNote').hidden=native;
   $('meWmOn').checked=WM.on;if(document.activeElement!==$('meWmHandle'))$('meWmHandle').value=WM.handle;
+  const mq=mine().length;$('meMineS').textContent=mq?mq+' quote'+(mq===1?'':'s')+' · add more or paste a list':'Add your own quotes';
+  const lb=lastBackup();$('bkSave').classList.toggle('warn',!lb||Date.now()-lb>14*864e5);
+  $('bkSaveS').textContent=lb?'Last saved '+ago(lb).toLowerCase():'Never saved. Do one so you can’t lose your drafts';
+  dbAll().then(ps=>{const b=ps.reduce((a,p)=>a+(p.img?p.img.size:0),0);if(ps.length)$('bkSaveS').textContent+=` · ${ps.length} draft${ps.length===1?'':'s'}, about ${fmtSize(b+2e5)}`;}).catch(()=>{});
 }
 $('remOn').onchange=async e=>{
   if(e.target.checked){
@@ -2676,8 +2889,9 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!proj)ref
 
 /* ---------- boot ---------- */
 if(location.hash==='#edit')history.replaceState(null,'',location.pathname);
-Promise.all(['900 60px "TikTok Sans"','900 60px Montserrat','400 60px Anton'].map(f=>document.fonts.load(f))).catch(()=>{}).then(()=>{if(proj)draw();});
+Promise.all(['900 60px "TikTok Sans"','700 60px "TikTok Sans"','900 60px Montserrat','400 60px Anton'].map(f=>document.fonts.load(f))).catch(()=>{}).then(()=>{if(proj)draw();});
 renderHome();syncChrome();refreshStreak();
+try{const m=sessionStorage.getItem('taffy-msg');if(m){sessionStorage.removeItem('taffy-msg');setTimeout(()=>toast(m,3000),400);}}catch(e){}
 </script>
 </body>
 </html>
